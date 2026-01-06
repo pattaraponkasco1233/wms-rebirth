@@ -6,6 +6,7 @@ import { RouteProps } from "react-router-dom";
 // นำเข้า Components ที่จำเป็น
 import Dashboard from "../../../pages/dashboard/index";
 import DashboardBookingCar from "../../../pages/dashboard/booking-car";
+import DashboardCar from "../../../pages/dashboard/car";
 import MainLayout from "../../../components/layout/MainLayout"; // <<< ต้อง Import Layout
 
 // Interface ถูกแล้ว (CustomRouteProps)
@@ -27,6 +28,12 @@ export const DashboardRoutes: CustomRouteProps[] = [
   {
     path: "/dashboard/booking-car",
     element: <DashboardBookingCar />,
+    isProtected: true,
+    layout: MainLayout,
+  },
+  {
+    path: "/dashboard/car",
+    element: <DashboardCar />,
     isProtected: true,
     layout: MainLayout,
   },

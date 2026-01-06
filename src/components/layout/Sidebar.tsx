@@ -9,6 +9,7 @@ import {
   UserOutlined,
   CarOutlined,
   DashboardOutlined,
+  LineChartOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -17,6 +18,11 @@ const menuItems = [
     key: "/dashboard/booking-car",
     icon: <DashboardOutlined />,
     label: "Dashboard จองรถ",
+  },
+  {
+    key: "/dashboard/car",
+    icon: <LineChartOutlined />,
+    label: "Dashboard รถขนส่ง",
   },
   { key: "/booking-car", icon: <CarOutlined />, label: "จองรถขนส่ง" },
   { key: "/users", icon: <UserOutlined />, label: "ผู้ใช้งาน" },

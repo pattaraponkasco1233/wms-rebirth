@@ -24,9 +24,18 @@
   },
   "scripts": {
     "start": "react-scripts start",
+    "start:dev": "set REACT_APP_ENV=development&& react-scripts start",
+    "start:uat": "set REACT_APP_ENV=uat&& react-scripts start",
+    "start:prod": "set REACT_APP_ENV=production&& react-scripts start",
     "build": "react-scripts build",
+    "build:dev": "set REACT_APP_ENV=development&& react-scripts build",
+    "build:uat": "set REACT_APP_ENV=uat&& react-scripts build",
+    "build:prod": "set REACT_APP_ENV=production&& react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "version:patch": "node scripts/update-version.js patch",
+    "version:minor": "node scripts/update-version.js minor",
+    "version:major": "node scripts/update-version.js major"
   },
   "eslintConfig": {
     "extends": [

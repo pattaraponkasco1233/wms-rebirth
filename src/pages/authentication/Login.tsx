@@ -17,8 +17,9 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../shares/hooks/useAuth";
 // ต้องมั่นใจว่า updateWmsStorage และ WmsData ถูก Import อย่างถูกต้อง
 import { WmsData, updateWmsStorage } from "../../utils/setServerHelper";
+import VersionDisplay from "../../components/common/VersionDisplay";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 const { Option } = Select;
 
 // 1. กำหนด Interface สำหรับ Plant Option เพื่อความชัดเจนของ Type
@@ -171,6 +172,23 @@ const LoginPage: React.FC = () => {
               </Button>
             </Form.Item>
           </Form>
+
+          {/* Version Display */}
+          <div
+            style={{
+              marginTop: 24,
+              paddingTop: 16,
+              borderTop: "1px solid #f0f0f0",
+            }}
+          >
+            <VersionDisplay
+              showEnvironment={true}
+              showBuildDate={false}
+              size="default"
+              align="center"
+              showTooltip={true}
+            />
+          </div>
         </Card>
       </Col>
     </Row>
