@@ -30,11 +30,11 @@ import RecentActivityList, {
 import SimpleBarChart, {
   BarChartData,
 } from "../../components/dashboard/SimpleBarChart";
-import {
-  dashboardCarApi,
+import { dashboardCarApi } from "../../services/api";
+import type {
   DashboardCarFilter,
   DashboardCarResponse,
-} from "../../services/api/dashboardCarService";
+} from "../../models/dashboard/car.model";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -230,14 +230,14 @@ const DashboardCar: React.FC = () => {
       const blob = await dashboardCarApi.exportToExcel(filter);
 
       // สร้าง Download Link
-      const url = window.URL.createObjectURL(blob);
+      const url = globalThis.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
       link.download = `dashboard-car-${dayjs().format("YYYY-MM-DD")}.xlsx`;
       document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      link.remove();
+      globalThis.URL.revokeObjectURL(url);
 
       message.destroy();
       message.success("Export สำเร็จ!");
@@ -252,7 +252,7 @@ const DashboardCar: React.FC = () => {
   const getDailyBookingChartData = (): BarChartData[] => {
     if (!dashboardData?.dailyBookings) return [];
 
-    return dashboardData.dailyBookings.map((item) => ({
+    return dashboardData.dailyBookings.map((item: any) => ({
       label: dayjs(item.date).format("DD/MM"),
       value: item.count,
       color: "#1890ff",
@@ -263,7 +263,7 @@ const DashboardCar: React.FC = () => {
     if (!dashboardData?.vehicleUsage) return [];
 
     const colors = ["#1890ff", "#52c41a", "#faad14", "#ff4d4f"];
-    return dashboardData.vehicleUsage.map((item, index) => ({
+    return dashboardData.vehicleUsage.map((item: any, index: number) => ({
       label: item.vehicleType,
       value: item.count,
       color: colors[index % colors.length],
@@ -274,7 +274,7 @@ const DashboardCar: React.FC = () => {
     if (!dashboardData?.popularRoutes) return [];
 
     const colors = ["#1890ff", "#52c41a", "#faad14", "#ff4d4f", "#8c8c8c"];
-    return dashboardData.popularRoutes.map((item, index) => ({
+    return dashboardData.popularRoutes.map((item: any, index: number) => ({
       label: item.destination,
       value: item.count,
       color: colors[index % colors.length],
@@ -293,7 +293,7 @@ const DashboardCar: React.FC = () => {
       cancelled: "error",
     };
 
-    return dashboardData.recentBookings.map((booking) => ({
+    return dashboardData.recentBookings.map((booking: any) => ({
       id: booking.id,
       title: booking.orderNumber,
       description: `${booking.vehicleType} (${booking.licensePlate}) → ${booking.destination} | คนขับ: ${booking.driverName}`,
