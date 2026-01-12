@@ -72,7 +72,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             lineHeight: "32px",
           }}
         >
-          {collapsed ? "App" : "Cockpit"}
+          {collapsed ? "Menu" : "Cockpit"}
         </div>
         <Sidebar />
       </Sider>
