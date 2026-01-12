@@ -116,7 +116,7 @@ link.remove();
 ### 1. **Ant Design Deprecated Props**
 
 ```typescript
-// Card bordered={false} - deprecated in v6
+// Card  - deprecated in v6
 // Statistic valueStyle - deprecated in v6
 // Card bodyStyle - deprecated in v6
 // Space direction - deprecated in v6
@@ -126,7 +126,7 @@ link.remove();
 
 ```typescript
 // แบบเก่า
-<Card bordered={false} bodyStyle={{ padding: 20 }}>
+<Card  bodyStyle={{ padding: 20 }}>
 
 // แบบใหม่ (Ant Design v6)
 <Card styles={{ body: { padding: 20 } }}>

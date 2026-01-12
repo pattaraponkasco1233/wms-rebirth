@@ -310,7 +310,7 @@ const BookingCarPage: React.FC = () => {
 
   return (
     <div style={{ padding: "24px" }}>
-      <Card title="จัดการจองรถ (Booking Car)" bordered={false}>
+      <Card title="จัดการจองรถ (Booking Car)">
         {/* Filter Section */}
         <Card
           title="ค้นหาและกรองข้อมูล"

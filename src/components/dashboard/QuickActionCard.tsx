@@ -23,7 +23,7 @@ const QuickActionCard: React.FC<QuickActionCardProps> = ({
   loading = false,
 }) => {
   return (
-    <Card title={title} bordered={false} loading={loading}>
+    <Card title={title} loading={loading}>
       <Space direction="vertical" style={{ width: "100%" }} size="middle">
         {actions.map((action) => (
           <Button

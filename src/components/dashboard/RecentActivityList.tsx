@@ -69,7 +69,7 @@ const RecentActivityList: React.FC<RecentActivityListProps> = ({
   const displayActivities = activities.slice(0, maxItems);
 
   return (
-    <Card title={title} bordered={false} loading={loading}>
+    <Card title={title} loading={loading}>
       <List
         itemLayout="horizontal"
         dataSource={displayActivities}

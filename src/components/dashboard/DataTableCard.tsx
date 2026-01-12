@@ -24,7 +24,7 @@ function DataTableCard<T extends object>({
   rowKey = "id",
 }: DataTableCardProps<T>) {
   return (
-    <Card title={title} extra={extra} bordered={false} loading={loading}>
+    <Card title={title} extra={extra} loading={loading}>
       <Table
         columns={columns}
         dataSource={dataSource}

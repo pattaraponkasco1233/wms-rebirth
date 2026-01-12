@@ -24,7 +24,7 @@ const ProgressCard: React.FC<ProgressCardProps> = ({
   type = "line",
 }) => {
   return (
-    <Card title={title} bordered={false} loading={loading}>
+    <Card title={title} loading={loading}>
       <Space direction="vertical" style={{ width: "100%" }} size="large">
         {items.map((item, index) => (
           <div key={index}>

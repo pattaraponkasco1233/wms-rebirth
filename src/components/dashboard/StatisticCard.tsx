@@ -40,7 +40,7 @@ const StatisticCard: React.FC<StatisticCardProps> = ({
   };
 
   return (
-    <Card bordered={false} loading={loading}>
+    <Card loading={loading}>
       <Statistic
         title={title}
         value={value}

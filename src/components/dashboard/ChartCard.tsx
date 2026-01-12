@@ -22,7 +22,6 @@ const ChartCard: React.FC<ChartCardProps> = ({
     <Card
       title={title}
       extra={extra}
-      bordered={false}
       loading={loading}
       bodyStyle={bodyStyle || { padding: "20px 24px" }}
     >
