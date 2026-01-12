@@ -1,0 +1,5 @@
+# Assets images that require webpack processing
+
+# Folders:
+# - illustrations/ : SVG illustrations, empty states, error pages
+# - backgrounds/   : Background images

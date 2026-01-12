@@ -1,0 +1,11 @@
+# This file ensures the folder structure is tracked by Git
+# even when empty
+
+# Folders:
+# - logo/      : Company logos, app logos
+# - icons/     : Icon files (SVG, PNG)
+# - banners/   : Banner images
+# - defaults/  : Default images (no-image, avatar)
+# - vehicles/  : Vehicle photos
+# - products/  : Product photos
+# - profiles/  : User profile photos
