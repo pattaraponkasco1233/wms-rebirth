@@ -10,6 +10,7 @@ import {
   CarOutlined,
   DashboardOutlined,
   LineChartOutlined,
+  ContainerOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -25,6 +26,11 @@ const menuItems = [
     label: "Dashboard รถขนส่ง",
   },
   { key: "/booking-car", icon: <CarOutlined />, label: "จองรถขนส่ง" },
+  {
+    key: "/truck-checkin",
+    icon: <ContainerOutlined />,
+    label: "Truck Check-in",
+  },
   { key: "/users", icon: <UserOutlined />, label: "ผู้ใช้งาน" },
   { key: "/settings", icon: <DesktopOutlined />, label: "ตั้งค่าระบบ" },
 ];
@@ -37,7 +43,7 @@ const Sidebar: React.FC = () => {
   };
 
   // กำหนด Key ที่ถูกเลือกตาม Path ปัจจุบัน
-  const currentPath = window.location.pathname;
+  const currentPath = globalThis.location.pathname;
 
   return (
     <Menu
