@@ -13,6 +13,7 @@ export type CustomRouteProps = RouteProps & {
   path: string;
   isProtected?: boolean;
   layout?: React.ElementType;
+  pageTitle?: string; // ชื่อหน้าที่จะแสดงใน Header
 };
 
 // Array ของ Routes สำหรับ Booking Car
@@ -22,5 +23,6 @@ export const BookingCarRoutes: CustomRouteProps[] = [
     element: <BookingCarPage />,
     isProtected: true, // ป้องกันด้วย Authentication
     layout: MainLayout, // ใช้ Layout หลักที่มี Navbar/Sidebar
+    pageTitle: "จองรถขนส่ง",
   },
 ];

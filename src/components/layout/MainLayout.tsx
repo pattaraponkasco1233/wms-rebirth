@@ -9,6 +9,7 @@ import {
   MenuProps,
   Space,
   Avatar,
+  Typography,
 } from "antd";
 import {
   MenuFoldOutlined,
@@ -16,11 +17,14 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar"; // นำเข้า Sidebar
 import useAuth from "../../shares/hooks/useAuth"; // นำเข้า Auth Logic
 import { navigateAppName } from "../../utils/Utils";
+import { AppRoutes } from "../../guard/router/routers"; // นำเข้า Routes
 
 const { Header, Sider, Content } = Layout;
+const { Title } = Typography;
 
 interface MainLayoutProps {
   children: React.ReactNode; // Prop ที่รับเนื้อหาของ Page (เช่น DashboardPage)
@@ -29,14 +33,22 @@ interface MainLayoutProps {
 const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false); // สถานะการยุบ/ขยาย Side Menu
   const { logout } = useAuth(); // ดึง logout function
+  const location = useLocation(); // ดึง current path
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  // ฟังก์ชันแปลง path เป็นชื่อหน้า
+  const getPageTitle = (pathname: string): string => {
+    // หาชื่อหน้าจาก AppRoutes
+    const currentRoute = AppRoutes.find((route) => route.path === pathname);
+    return currentRoute?.pageTitle || "หน้าหลัก";
+  };
+
   const handleLogout = () => {
     logout();
-    window.location.href = navigateAppName("/login"); // Redirect ไปหน้า Login หลัง Logout
+    globalThis.location.href = navigateAppName("/login"); // Redirect ไปหน้า Login หลัง Logout
   };
 
   const menu: MenuProps = {
@@ -86,15 +98,23 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             background: colorBgContainer,
             display: "flex",
             justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          {/* ปุ่มยุบ/ขยายเมนู */}
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
-          />
+          <div style={{ display: "flex", alignItems: "center" }}>
+            {/* ปุ่มยุบ/ขยายเมนู */}
+            <Button
+              type="text"
+              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+              onClick={() => setCollapsed(!collapsed)}
+              style={{ fontSize: "16px", width: 64, height: 64 }}
+            />
+
+            {/* ชื่อหน้าปัจจุบัน */}
+            <Title level={4} style={{ margin: 0, marginLeft: 16 }}>
+              {getPageTitle(location.pathname)}
+            </Title>
+          </div>
 
           {/* ข้อมูลผู้ใช้/Logout Button */}
           <Space style={{ marginRight: 24 }}>

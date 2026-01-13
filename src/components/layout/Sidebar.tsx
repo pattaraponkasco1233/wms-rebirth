@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
   };
 
   // กำหนด Key ที่ถูกเลือกตาม Path ปัจจุบัน
-  const currentPath = window.location.pathname;
+  const currentPath = globalThis.location.pathname;
 
   return (
     <Menu
