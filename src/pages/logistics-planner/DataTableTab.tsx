@@ -371,7 +371,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
                 prefix={<SearchOutlined />}
                 value={filterPlant}
                 onChange={(e) => setFilterPlant(e.target.value)}
-                onPressEnter={handleSearch}
+                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
@@ -382,7 +382,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
                 prefix={<SearchOutlined />}
                 value={filterLicense}
                 onChange={(e) => setFilterLicense(e.target.value)}
-                onPressEnter={handleSearch}
+                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
@@ -393,7 +393,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
                 prefix={<SearchOutlined />}
                 value={filterShipmentNo}
                 onChange={(e) => setFilterShipmentNo(e.target.value)}
-                onPressEnter={handleSearch}
+                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
