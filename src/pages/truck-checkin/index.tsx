@@ -13,20 +13,15 @@ import {
   Tag,
   Modal,
   Form,
-  TimePicker,
   Select,
   message,
   Card,
 } from "antd";
-import {
-  SearchOutlined,
-  EditOutlined,
-  ReloadOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { SearchOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import "dayjs/locale/th";
+import { useTranslation } from "react-i18next";
 import { truckCheckinApi } from "../../services/api/truckCheckinService";
 import type {
   TruckCheckin,
@@ -40,6 +35,7 @@ const { Option } = Select;
 
 // Component สำหรับหน้า Truck Check-in
 const TruckCheckinPage: React.FC = () => {
+  const { t } = useTranslation(); // เพิ่ม useTranslation hook
   const [loading, setLoading] = useState(false);
   const [dataSource, setDataSource] = useState<TruckCheckin[]>([]);
   const [total, setTotal] = useState(0);
@@ -75,7 +71,7 @@ const TruckCheckinPage: React.FC = () => {
       setCurrentPage(page);
     } catch (error: any) {
       console.error("Error fetching truck check-ins:", error);
-      message.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      message.error(t("truckCheckin.errorFetching"));
 
       // Mock data สำหรับ demo
       loadMockData();
@@ -225,18 +221,18 @@ const TruckCheckinPage: React.FC = () => {
       if (editingRecord) {
         // อัพเดทข้อมูลเดิม
         await truckCheckinApi.updateTruckCheckin(editingRecord.id, updateData);
-        message.success("อัพเดทข้อมูลสำเร็จ");
+        message.success(t("truckCheckin.updateSuccess"));
       } else {
         // เพิ่มข้อมูลใหม่
         await truckCheckinApi.createTruckCheckin(updateData);
-        message.success("เพิ่มข้อมูลสำเร็จ");
+        message.success(t("truckCheckin.addSuccess"));
       }
 
       handleCancel();
       fetchTruckCheckins(currentPage, pageSize);
     } catch (error: any) {
       console.error("Error saving truck check-in:", error);
-      message.error("เกิดข้อผิดพลาดในการบันทึกข้อมูล");
+      message.error(t("truckCheckin.errorSaving"));
     }
   };
 
@@ -244,11 +240,11 @@ const TruckCheckinPage: React.FC = () => {
   const renderStatusTag = (status: TruckCheckinStatus) => {
     switch (status) {
       case "CHECKED_IN":
-        return <Tag color="success">Check In แล้ว</Tag>;
+        return <Tag color="success">{t("truckCheckin.statusCheckedIn")}</Tag>;
       case "NOT_CHECKED_IN":
-        return <Tag color="error">ยังไม่ Check In</Tag>;
+        return <Tag color="error">{t("truckCheckin.statusNotCheckedIn")}</Tag>;
       case "PENDING":
-        return <Tag color="warning">รอดำเนินการ</Tag>;
+        return <Tag color="warning">{t("truckCheckin.statusPending")}</Tag>;
       default:
         return <Tag>{status}</Tag>;
     }
@@ -257,7 +253,7 @@ const TruckCheckinPage: React.FC = () => {
   // Columns สำหรับตาราง
   const columns: ColumnsType<TruckCheckin> = [
     {
-      title: "ลำดับ",
+      title: t("labels.runno"), // ใช้ key เพื่อเปลี่ยนภาษา
       key: "index",
       width: 80,
       align: "center",
@@ -265,50 +261,50 @@ const TruckCheckinPage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: "Plant",
+      title: t("truckCheckin.plant"),
       dataIndex: "plant",
       key: "plant",
       width: 150,
     },
     {
-      title: "Carrier",
+      title: t("truckCheckin.carrier"),
       dataIndex: "carrier",
       key: "carrier",
       width: 150,
     },
     {
-      title: "Vehicle Type",
+      title: t("truckCheckin.vehicleType"),
       dataIndex: "vehicleType",
       key: "vehicleType",
       width: 150,
     },
     {
-      title: "Truck License",
+      title: t("truckCheckin.truckLicense"),
       dataIndex: "license",
       key: "license",
       width: 150,
     },
     {
-      title: "ชื่อคนขับ",
+      title: t("truckCheckin.driverName"),
       dataIndex: "driver",
       key: "driver",
       width: 200,
     },
     {
-      title: "Tel.",
+      title: t("truckCheckin.tel"),
       dataIndex: "tel",
       key: "tel",
       width: 150,
     },
     {
-      title: "วันเวลา Check In",
+      title: t("truckCheckin.checkinDateTime"),
       dataIndex: "checkin",
       key: "checkin",
       width: 150,
       // render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
-      title: "สถานะ",
+      title: t("truckCheckin.status"),
       dataIndex: "status",
       key: "status",
       width: 150,
@@ -316,13 +312,13 @@ const TruckCheckinPage: React.FC = () => {
       render: (status: TruckCheckinStatus) => renderStatusTag(status),
     },
     {
-      title: "หมายเหตุ",
+      title: t("truckCheckin.remark"),
       dataIndex: "remark",
       key: "remark",
       width: 200,
     },
     {
-      title: "จัดการ",
+      title: t("truckCheckin.action"),
       key: "action",
       width: 100,
       align: "center",
@@ -334,7 +330,7 @@ const TruckCheckinPage: React.FC = () => {
           size="small"
           onClick={() => handleEdit(record)}
         >
-          แก้ไข
+          {t("actions.edit")}
         </Button>
       ),
     },
@@ -349,7 +345,7 @@ const TruckCheckinPage: React.FC = () => {
         <Row gutter={[16, 16]} align="middle">
           <Col xs={24} sm={12} md={8} lg={6}>
             <Input
-              placeholder="ค้นหาทะเบียนรถ, ชื่อคนขับ..."
+              placeholder={t("truckCheckin.searchPlaceholder")}
               prefix={<SearchOutlined />}
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
@@ -359,7 +355,7 @@ const TruckCheckinPage: React.FC = () => {
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
             <Select
-              placeholder="เลือก Plant"
+              placeholder={t("truckCheckin.selectPlant")}
               value={searchPlant}
               onChange={(value) => setSearchPlant(value)}
               style={{ width: "100%" }}
@@ -373,7 +369,7 @@ const TruckCheckinPage: React.FC = () => {
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
             <DatePicker
-              placeholder="เลือกวันที่ Check In"
+              placeholder={t("truckCheckin.selectDate")}
               format="DD/MM/YYYY"
               value={searchDate}
               onChange={(date) => setSearchDate(date)}
@@ -389,15 +385,15 @@ const TruckCheckinPage: React.FC = () => {
                 onClick={handleSearch}
                 loading={loading}
               >
-                ค้นหา
+                {t("actions.search")}
               </Button>
-              <Button onClick={handleReset}>ล้างค่า</Button>
+              <Button onClick={handleReset}>{t("actions.clearFilter")}</Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleAdd}
               >
-                เพิ่มข้อมูล
+                {t("actions.addData")}
               </Button>
             </Space>
           </Col>
@@ -416,7 +412,8 @@ const TruckCheckinPage: React.FC = () => {
             pageSize: pageSize,
             total: total,
             showSizeChanger: true,
-            showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+            showTotal: (total) =>
+              `${t("labels.total")} ${total} ${t("labels.items")}`,
             onChange: (page, size) => {
               setPageSize(size);
               fetchTruckCheckins(page, size);
@@ -430,47 +427,60 @@ const TruckCheckinPage: React.FC = () => {
       <Modal
         title={
           editingRecord
-            ? "แก้ไขข้อมูล Truck Check-in"
-            : "เพิ่มข้อมูล Truck Check-in"
+            ? t("truckCheckin.editTitle")
+            : t("truckCheckin.addTitle")
         }
         open={isModalVisible}
         onOk={handleSave}
         onCancel={handleCancel}
         width={600}
-        okText="บันทึก"
-        cancelText="ยกเลิก"
+        okText={t("actions.save")}
+        cancelText={t("actions.cancel")}
       >
         <Form form={form} layout="vertical">
           <Form.Item
             name="license"
-            label="ทะเบียนรถ"
-            rules={[{ required: true, message: "กรุณากรอกทะเบียนรถ" }]}
+            label={t("truckCheckin.truckLicense")}
+            rules={[
+              { required: true, message: t("truckCheckin.licenseRequired") },
+            ]}
           >
-            <Input placeholder="เช่น 80-1234" />
+            <Input placeholder={t("truckCheckin.licensePlaceholder")} />
           </Form.Item>
 
           <Form.Item
             name="driver"
-            label="ชื่อคนขับ"
-            rules={[{ required: true, message: "กรุณากรอกชื่อคนขับ" }]}
+            label={t("truckCheckin.driverName")}
+            rules={[
+              { required: true, message: t("truckCheckin.driverRequired") },
+            ]}
           >
-            <Input placeholder="เช่น สมชาย ใจดี" />
+            <Input placeholder={t("truckCheckin.driverPlaceholder")} />
           </Form.Item>
 
           <Form.Item
             name="status"
-            label="สถานะ"
-            rules={[{ required: true, message: "กรุณาเลือกสถานะ" }]}
+            label={t("truckCheckin.status")}
+            rules={[
+              { required: true, message: t("truckCheckin.statusRequired") },
+            ]}
           >
-            <Select placeholder="เลือกสถานะ">
-              <Option value="CHECKED_IN">Check In แล้ว</Option>
-              <Option value="NOT_CHECKED_IN">ยังไม่ Check In</Option>
-              <Option value="PENDING">รอดำเนินการ</Option>
+            <Select placeholder={t("truckCheckin.selectStatus")}>
+              <Option value="CHECKED_IN">
+                {t("truckCheckin.statusCheckedIn")}
+              </Option>
+              <Option value="NOT_CHECKED_IN">
+                {t("truckCheckin.statusNotCheckedIn")}
+              </Option>
+              <Option value="PENDING">{t("truckCheckin.statusPending")}</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item name="remark" label="หมายเหตุ">
-            <Input.TextArea rows={3} placeholder="กรอกหมายเหตุ (ถ้ามี)" />
+          <Form.Item name="remark" label={t("truckCheckin.remark")}>
+            <Input.TextArea
+              rows={3}
+              placeholder={t("truckCheckin.remarkPlaceholder")}
+            />
           </Form.Item>
         </Form>
       </Modal>

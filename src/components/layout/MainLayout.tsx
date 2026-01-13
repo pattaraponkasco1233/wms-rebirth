@@ -10,6 +10,7 @@ import {
   Space,
   Avatar,
   Typography,
+  Select,
 } from "antd";
 import {
   MenuFoldOutlined,
@@ -18,6 +19,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import Sidebar from "./Sidebar"; // นำเข้า Sidebar
 import useAuth from "../../shares/hooks/useAuth"; // นำเข้า Auth Logic
 import { navigateAppName } from "../../utils/Utils";
@@ -34,10 +36,16 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = useState(false); // สถานะการยุบ/ขยาย Side Menu
   const { logout } = useAuth(); // ดึง logout function
   const location = useLocation(); // ดึง current path
+  const { t, i18n } = useTranslation(); // ใช้ i18n
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
+  // ฟังก์ชันเปลี่ยนภาษา
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   // ฟังก์ชันแปลง path เป็นชื่อหน้า
   const getPageTitle = (pathname: string): string => {
@@ -62,7 +70,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             icon={<LogoutOutlined />}
             style={{ padding: 0 }}
           >
-            ออกจากระบบ
+            {t("common.logout")}
           </Button>
         ),
       },
@@ -84,7 +92,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             lineHeight: "32px",
           }}
         >
-          {collapsed ? "Menu" : "Cockpit"}
+          {collapsed ? t("common.menu") : t("common.appName")}
         </div>
         <Sidebar />
       </Sider>
@@ -118,11 +126,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
           {/* ข้อมูลผู้ใช้/Logout Button */}
           <Space style={{ marginRight: 24 }}>
+            {/* ปุ่มเปลี่ยนภาษา */}
+            <Select
+              value={i18n.language}
+              onChange={changeLanguage}
+              style={{ width: 80 }}
+              options={[
+                { value: "en", label: "EN" },
+                { value: "th", label: "TH" },
+              ]}
+            />
+
             <Dropdown menu={menu} placement="bottomRight" arrow>
               <Button type="text" style={{ padding: 0 }}>
                 <Space>
                   <Avatar icon={<UserOutlined />} />
-                  <span>User Name</span>
+                  <span>{t("common.user")}</span>
                 </Space>
               </Button>
             </Dropdown>
