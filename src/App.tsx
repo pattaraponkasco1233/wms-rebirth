@@ -1,6 +1,6 @@
-import React from 'react';
-import Router from './guard/router/Router';
+import React from "react";
+import Router from "./guard/router/Router";
 
-const App = () => <Router />
+const App = () => <Router />;
 
 export default App;

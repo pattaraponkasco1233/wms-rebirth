@@ -63,6 +63,11 @@ const LoginPage: React.FC = () => {
   }
 
   const onFinish = async (values: LoginFormValues) => {
+    updateWmsStorage({
+      token:
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluZGV2IiwibGV2ZWxfdXNlciI6IjEiLCJpcCI6IjU4LjEzNi41OS42MCIsImV4cCI6MTc2ODI5Mzk0MywiaXNzIjoiS2FzY29fQXV0aGVudGljYXRpb25fQVBJIiwiYXVkIjoiVE1TIn0.7ToCX8BQy_Tndz8ylIsrEWuUhwJVXL6ztGNQR0XD4Nk",
+      refreshToken: "dummyRefreshToken",
+    });
     navigate("/dashboard", { replace: true });
     // if (selectedPlant) {
     //   values.plant = selectedPlant;
