@@ -65,7 +65,7 @@ const LoginPage: React.FC = () => {
   const onFinish = async (values: LoginFormValues) => {
     updateWmsStorage({
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluZGV2IiwibGV2ZWxfdXNlciI6IjEiLCJpcCI6IjU4LjEzNi41OS42MCIsImV4cCI6MTc2ODI5Mzk0MywiaXNzIjoiS2FzY29fQXV0aGVudGljYXRpb25fQVBJIiwiYXVkIjoiVE1TIn0.7ToCX8BQy_Tndz8ylIsrEWuUhwJVXL6ztGNQR0XD4Nk",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdHRhcmFwb25ub29rQGdtYWlsLmNvbSIsImxldmVsX3VzZXIiOiIxIiwiaXAiOiI1OC4xMzYuNTkuNjAiLCJleHAiOjE3NjgzODA0MzcsImlzcyI6Ikthc2NvX0F1dGhlbnRpY2F0aW9uX0FQSSIsImF1ZCI6IlRNUyJ9.yp7GA_i7125HtjxeV6t_VM6wIvFsiwjmDP9JDyEBFOs",
       refreshToken: "dummyRefreshToken",
     });
     navigate("/dashboard", { replace: true });

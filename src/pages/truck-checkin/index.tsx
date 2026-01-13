@@ -429,7 +429,7 @@ const TruckCheckinPage: React.FC = () => {
             current: currentPage,
             pageSize: pageSize,
             total: total,
-            showSizeChanger: true,
+            // showSizeChanger: true,
             showTotal: (total) =>
               `${t("labels.total")} ${total} ${t("labels.items")}`,
             onChange: (page, size) => {
