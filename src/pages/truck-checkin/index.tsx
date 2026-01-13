@@ -30,7 +30,10 @@ import type {
   UpdateTruckCheckinRequest,
 } from "../../models/truck-checkin/truck-checkin.model";
 import {
+  TABLE,
   PLANT_OPTIONS,
+  CARRIER_OPTIONS,
+  VEHICLE_TYPE_OPTIONS,
   TRUCK_CHECKIN_STATUS_OPTIONS,
 } from "../../constant/constants";
 
@@ -44,7 +47,7 @@ const TruckCheckinPage: React.FC = () => {
   const [dataSource, setDataSource] = useState<TruckCheckin[]>([]);
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState<number>(TABLE.pageSizeDefault);
 
   // Search States
   const [searchText, setSearchText] = useState("");
@@ -186,8 +189,13 @@ const TruckCheckinPage: React.FC = () => {
   const handleEdit = (record: TruckCheckin) => {
     setEditingRecord(record);
     form.setFieldsValue({
+      plant: record.plant,
+      carrier: record.carrier,
+      vehicleType: record.vehicleType,
       license: record.license,
       driver: record.driver,
+      tel: record.tel,
+      shipmentNo: record.shipmentNo || "",
       checkin: record.checkin,
       status: record.status,
       remark: record.remark,
@@ -215,8 +223,13 @@ const TruckCheckinPage: React.FC = () => {
       const values = await form.validateFields();
 
       const updateData: UpdateTruckCheckinRequest = {
+        plant: values.plant,
+        carrier: values.carrier,
+        vehicleType: values.vehicleType,
         license: values.license,
         driver: values.driver,
+        tel: values.tel,
+        shipmentNo: values.shipmentNo,
         checkin: Date.now().toString(), // สมมติใช้เวลาปัจจุบัน
         status: values.status,
         remark: values.remark,
@@ -443,48 +456,172 @@ const TruckCheckinPage: React.FC = () => {
         cancelText={t("actions.cancel")}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="license"
-            label={t("truckCheckin.truckLicense")}
-            rules={[
-              { required: true, message: t("truckCheckin.licenseRequired") },
-            ]}
-          >
-            <Input placeholder={t("truckCheckin.licensePlaceholder")} />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="plant"
+                label={t("truckCheckin.plant")}
+                rules={[
+                  { required: true, message: t("truckCheckin.plantRequired") },
+                ]}
+              >
+                <Select placeholder={t("truckCheckin.selectPlant")}>
+                  {PLANT_OPTIONS.map((plant) => (
+                    <Option key={plant.value} value={plant.label}>
+                      {plant.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="carrier"
+                label={t("truckCheckin.carrier")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("truckCheckin.carrierRequired"),
+                  },
+                ]}
+              >
+                <Select placeholder={t("truckCheckin.selectCarrier")}>
+                  {CARRIER_OPTIONS.map((carrier) => (
+                    <Option key={carrier.value} value={carrier.label}>
+                      {carrier.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
 
-          <Form.Item
-            name="driver"
-            label={t("truckCheckin.driverName")}
-            rules={[
-              { required: true, message: t("truckCheckin.driverRequired") },
-            ]}
-          >
-            <Input placeholder={t("truckCheckin.driverPlaceholder")} />
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="vehicleType"
+                label={t("truckCheckin.vehicleType")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("truckCheckin.vehicleTypeRequired"),
+                  },
+                ]}
+              >
+                <Select placeholder={t("truckCheckin.selectVehicleType")}>
+                  {VEHICLE_TYPE_OPTIONS.map((vehicle) => (
+                    <Option key={vehicle.value} value={vehicle.label}>
+                      {vehicle.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="status"
+                label={t("truckCheckin.status")}
+                rules={[
+                  { required: true, message: t("truckCheckin.statusRequired") },
+                ]}
+              >
+                <Select placeholder={t("truckCheckin.selectStatus")}>
+                  {TRUCK_CHECKIN_STATUS_OPTIONS.map((status) => (
+                    <Option key={status.value} value={status.value}>
+                      {t(status.labelKey)}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
 
-          <Form.Item
-            name="status"
-            label={t("truckCheckin.status")}
-            rules={[
-              { required: true, message: t("truckCheckin.statusRequired") },
-            ]}
-          >
-            <Select placeholder={t("truckCheckin.selectStatus")}>
-              {TRUCK_CHECKIN_STATUS_OPTIONS.map((status) => (
-                <Option key={status.value} value={status.value}>
-                  {t(status.labelKey)}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="license"
+                label={t("truckCheckin.truckLicense")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("truckCheckin.licenseRequired"),
+                  },
+                ]}
+              >
+                <Input placeholder={t("truckCheckin.licensePlaceholder")} />
+              </Form.Item>
+            </Col>
 
-          <Form.Item name="remark" label={t("truckCheckin.remark")}>
-            <Input.TextArea
-              rows={3}
-              placeholder={t("truckCheckin.remarkPlaceholder")}
-            />
-          </Form.Item>
+            <Col span={12}>
+              <Form.Item
+                name="shipmentNo"
+                label={t("truckCheckin.shipmentNo")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("truckCheckin.shipmentNoRequired"),
+                  },
+                  // {
+                  //   pattern: /^[A-Z0-9-]+$/,
+                  //   message: t("truckCheckin.shipmentNoInvalid"),
+                  // },
+                  // {
+                  //   min: 5,
+                  //   message: t("truckCheckin.shipmentNoMinLength"),
+                  // },
+                ]}
+              >
+                <Input
+                  placeholder={t("truckCheckin.shipmentNoPlaceholder")}
+                  maxLength={20}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="driver"
+                label={t("truckCheckin.driverName")}
+                rules={[
+                  { required: true, message: t("truckCheckin.driverRequired") },
+                ]}
+              >
+                <Input placeholder={t("truckCheckin.driverPlaceholder")} />
+              </Form.Item>
+            </Col>
+
+            <Col span={12}>
+              <Form.Item
+                name="tel"
+                label={t("truckCheckin.tel")}
+                rules={[
+                  { required: true, message: t("truckCheckin.telRequired") },
+                  {
+                    pattern: /^[0-9-]+$/,
+                    message: t("truckCheckin.telInvalid"),
+                  },
+                ]}
+              >
+                <Input
+                  placeholder={t("truckCheckin.telPlaceholder")}
+                  maxLength={12}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item name="remark" label={t("truckCheckin.remark")}>
+                <Input.TextArea
+                  rows={3}
+                  placeholder={t("truckCheckin.remarkPlaceholder")}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Modal>
     </div>

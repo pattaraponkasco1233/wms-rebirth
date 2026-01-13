@@ -1,6 +1,11 @@
 // src/constant/constants.ts
 // ไฟล์ Constants กลางสำหรับทั้งระบบ
 
+export const TABLE = {
+    pageSizeDefault: 10,
+    pageSizeOptions: [10, 20, 50, 100],
+} as const;
+
 /**
  * ========================================
  * TRUCK CHECK-IN CONSTANTS
@@ -18,13 +23,23 @@ export const PLANT_OPTIONS = [
 ] as const;
 
 /**
+ * Carrier options
+ */
+export const CARRIER_OPTIONS = [
+    { value: "CARRIER_X", label: "Carrier X" },
+    { value: "CARRIER_Y", label: "Carrier Y" },
+    { value: "CARRIER_Z", label: "Carrier Z" },
+    { value: "CARRIER_W", label: "Carrier W" },
+] as const;
+
+/**
  * Vehicle Type options
  */
 export const VEHICLE_TYPE_OPTIONS = [
-    { value: "4_WHEEL", labelKey: "truckCheckin.vehicleType4Wheel" },
-    { value: "6_WHEEL", labelKey: "truckCheckin.vehicleType6Wheel" },
-    { value: "8_WHEEL", labelKey: "truckCheckin.vehicleType8Wheel" },
-    { value: "10_WHEEL", labelKey: "truckCheckin.vehicleType10Wheel" },
+    { value: "4_WHEEL", label: "4 ล้อ" },
+    { value: "6_WHEEL", label: "6 ล้อ" },
+    { value: "8_WHEEL", label: "8 ล้อ" },
+    { value: "10_WHEEL", label: "10 ล้อ" },
 ] as const;
 
 /**
@@ -33,11 +48,11 @@ export const VEHICLE_TYPE_OPTIONS = [
 export const TRUCK_CHECKIN_STATUS_OPTIONS = [
     { value: "CHECKED_IN", labelKey: "truckCheckin.statusCheckedIn" },
     { value: "NOT_CHECKED_IN", labelKey: "truckCheckin.statusNotCheckedIn" },
-    { value: "PENDING", labelKey: "truckCheckin.statusPending" },
 ] as const;
 
 // Truck Check-in Types
 export type PlantValue = typeof PLANT_OPTIONS[number]["value"];
+export type CarrierValue = typeof CARRIER_OPTIONS[number]["value"];
 export type VehicleTypeValue = typeof VEHICLE_TYPE_OPTIONS[number]["value"];
 export type TruckCheckinStatusValue = typeof TRUCK_CHECKIN_STATUS_OPTIONS[number]["value"];
 

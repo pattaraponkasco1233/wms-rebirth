@@ -5,6 +5,7 @@ export interface TruckCheckin {
     plant?: string;
     carrier?: string;
     vehicleType?: string;
+    shipmentNo?: string;
     license: string;
     driver?: string;
     tel?: string;
@@ -39,7 +40,12 @@ export interface TruckCheckinResponse {
 
 export interface UpdateTruckCheckinRequest {
     license?: string;
+    carrier?: string;
+    vehicleType?: string;
+    shipmentNo?: string;
+    plant?: string;
     driver?: string;
+    tel?: string;
     checkin?: string;
     status?: TruckCheckinStatus;
     remark?: string;
