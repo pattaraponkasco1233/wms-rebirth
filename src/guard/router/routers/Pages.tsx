@@ -13,6 +13,7 @@ export type CustomRouteProps = RouteProps & {
   path: string;
   isProtected?: boolean; // false คือ Public, true คือ Protected
   layout?: React.ElementType; // ระบุ Component Layout
+  pageTitle?: string; // ชื่อหน้าที่จะแสดงใน Header
 };
 
 // Array ของ Routes สำหรับหน้าทั่วไป/สาธารณะ
@@ -22,11 +23,13 @@ export const PageRoutes: CustomRouteProps[] = [
     path: "/",
     element: <RootRedirect />,
     isProtected: false,
+    pageTitle: "หน้าหลัก",
   },
   // 2. Login Route (UNPROTECTED)
   {
     path: "/login",
     element: <LoginPage />,
     isProtected: false,
+    pageTitle: "เข้าสู่ระบบ",
   },
 ];

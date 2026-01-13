@@ -15,6 +15,7 @@ export type CustomRouteProps = RouteProps & {
   path: string;
   isProtected?: boolean;
   layout?: React.ElementType;
+  pageTitle?: string; // ชื่อหน้าที่จะแสดงใน Header
 };
 
 // Array ของ Routes สำหรับ Dashboard
@@ -24,17 +25,20 @@ export const DashboardRoutes: CustomRouteProps[] = [
     element: <Dashboard />,
     isProtected: true, // <<< แก้ไข: ต้องมี Guard ป้องกัน
     layout: MainLayout, // <<< เพิ่ม: ให้ใช้ Layout ที่มี Navbar/Sidebar
+    pageTitle: "Dashboard",
   },
   {
     path: "/dashboard/booking-car",
     element: <DashboardBookingCar />,
     isProtected: true,
     layout: MainLayout,
+    pageTitle: "Dashboard จองรถ",
   },
   {
     path: "/dashboard/car",
     element: <DashboardCar />,
     isProtected: true,
     layout: MainLayout,
+    pageTitle: "Dashboard รถขนส่ง",
   },
 ];
