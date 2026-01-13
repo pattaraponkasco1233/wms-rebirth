@@ -1,0 +1,108 @@
+// src/pages/logistics-planner/TimeSummaryTab.tsx
+
+import React, { useMemo } from "react";
+import { Table } from "antd";
+import type { ColumnsType } from "antd/es/table";
+import {
+  LogisticsShipment,
+  TimeSlotSummary,
+  calculateTimeSlotSummary,
+} from "../../models/logistics-planner/logistics-planner.model";
+import { TABLE } from "../../constant/constants";
+
+interface TimeSummaryTabProps {
+  shipments: LogisticsShipment[];
+}
+
+const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
+  // คำนวณข้อมูลสรุปตามช่วงเวลา
+  const timeSlotSummary = useMemo(() => {
+    return calculateTimeSlotSummary(shipments);
+  }, [shipments]);
+
+  // Columns สำหรับตาราง
+  const columns: ColumnsType<TimeSlotSummary> = [
+    {
+      title: "ช่วงเวลา",
+      dataIndex: "timeSlot",
+      key: "timeSlot",
+      width: 150,
+      fixed: "left",
+      render: (timeSlot: string) => (
+        <span style={{ fontWeight: "bold" }}>{timeSlot}</span>
+      ),
+    },
+    {
+      title: "จำนวนรอบขนส่ง",
+      dataIndex: "count",
+      key: "count",
+      width: 150,
+      align: "center",
+      render: (count: number) => (
+        <span
+          style={{
+            fontSize: "18px",
+            fontWeight: "bold",
+            color: count > 0 ? "#1890ff" : "#d9d9d9",
+          }}
+        >
+          {count}
+        </span>
+      ),
+    },
+    {
+      title: "รายละเอียด",
+      dataIndex: "shipments",
+      key: "shipments",
+      render: (shipments: LogisticsShipment[]) => (
+        <div>
+          {shipments.length > 0 ? (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+              {shipments.map((shipment) => (
+                <div
+                  key={shipment.id}
+                  style={{
+                    padding: "4px 8px",
+                    backgroundColor: "#e6f7ff",
+                    border: "1px solid #91d5ff",
+                    borderRadius: "4px",
+                    fontSize: "12px",
+                  }}
+                >
+                  {shipment.shipmentNo} - {shipment.route}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <span style={{ color: "#d9d9d9" }}>-</span>
+          )}
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div>
+      <div style={{ marginBottom: "16px" }}>
+        <h3>สรุปจำนวนรอบขนส่งตามช่วงเวลา</h3>
+        <p style={{ color: "#8c8c8c" }}>
+          แสดงจำนวนรอบขนส่งที่กำหนดเวลาในแต่ละช่วงเวลา (8:00 - 05:00)
+        </p>
+      </div>
+      <Table
+        columns={columns}
+        dataSource={timeSlotSummary}
+        rowKey="timeSlot"
+        pagination={{
+          pageSize: TABLE.pageSizeDefault,
+          //   showSizeChanger: true,
+          showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
+        }}
+        scroll={{ x: 800 }}
+        bordered
+      />
+    </div>
+  );
+};
+
+export default TimeSummaryTab;

@@ -9,6 +9,7 @@ import DashboardBookingCar from "../../../pages/dashboard/booking-car";
 import DashboardCar from "../../../pages/dashboard/car";
 import BookingCarPage from "../../../pages/booking-car/index";
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
+import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
 import MainLayout from "../../../components/layout/MainLayout";
 
 /**
@@ -79,5 +80,14 @@ export const AppRoutes: CustomRouteProps[] = [
     isProtected: true,
     layout: MainLayout,
     pageTitle: "Truck Check-in",
+  },
+
+  // ==================== Logistics Planner Routes ====================
+  {
+    path: "/logistics-planner",
+    element: <LogisticsPlannerCockpit />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Logistics Planner Cockpit",
   },
 ];

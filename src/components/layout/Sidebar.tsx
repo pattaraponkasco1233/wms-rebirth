@@ -11,6 +11,7 @@ import {
   DashboardOutlined,
   LineChartOutlined,
   ContainerOutlined,
+  ControlOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -30,6 +31,11 @@ const menuItems = [
     key: "/truck-checkin",
     icon: <ContainerOutlined />,
     label: "Truck Check-in",
+  },
+  {
+    key: "/logistics-planner",
+    icon: <ControlOutlined />,
+    label: "Logistics Planner",
   },
   { key: "/users", icon: <UserOutlined />, label: "ผู้ใช้งาน" },
   { key: "/settings", icon: <DesktopOutlined />, label: "ตั้งค่าระบบ" },
