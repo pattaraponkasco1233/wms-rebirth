@@ -50,7 +50,7 @@
     "truckLicense": "Truck License",
     "driverName": "Driver Name",
     "tel": "Tel.",
-    "checkinDateTime": "Check-in Date/Time",
+    "checkinDateTime": "Check-in Date",
     "status": "Status",
     "remark": "Remark",
     "action": "Action",

@@ -29,6 +29,10 @@ import type {
   TruckCheckinStatus,
   UpdateTruckCheckinRequest,
 } from "../../models/truck-checkin/truck-checkin.model";
+import {
+  PLANT_OPTIONS,
+  TRUCK_CHECKIN_STATUS_OPTIONS,
+} from "../../constant/constants";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -361,10 +365,11 @@ const TruckCheckinPage: React.FC = () => {
               style={{ width: "100%" }}
               allowClear
             >
-              <Option value="Plant A">Plant A</Option>
-              <Option value="Plant B">Plant B</Option>
-              <Option value="Plant C">Plant C</Option>
-              <Option value="Plant D">Plant D</Option>
+              {PLANT_OPTIONS.map((plant) => (
+                <Option key={plant.value} value={plant.value}>
+                  {plant.label}
+                </Option>
+              ))}
             </Select>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
@@ -466,13 +471,11 @@ const TruckCheckinPage: React.FC = () => {
             ]}
           >
             <Select placeholder={t("truckCheckin.selectStatus")}>
-              <Option value="CHECKED_IN">
-                {t("truckCheckin.statusCheckedIn")}
-              </Option>
-              <Option value="NOT_CHECKED_IN">
-                {t("truckCheckin.statusNotCheckedIn")}
-              </Option>
-              <Option value="PENDING">{t("truckCheckin.statusPending")}</Option>
+              {TRUCK_CHECKIN_STATUS_OPTIONS.map((status) => (
+                <Option key={status.value} value={status.value}>
+                  {t(status.labelKey)}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 
