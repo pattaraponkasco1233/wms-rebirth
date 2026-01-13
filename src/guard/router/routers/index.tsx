@@ -1,12 +1,83 @@
-import { CustomRouteProps, PageRoutes } from "./Pages";
-import { DashboardRoutes } from "./Dashboard";
-import { BookingCarRoutes } from "./BookingCar";
-import { TruckCheckinRoutes } from "./TruckCheckin";
+import React from "react";
+import { RouteProps } from "react-router-dom";
+
+// นำเข้า Components
+import LoginPage from "../../../pages/authentication/Login";
+import RootRedirect from "../../../pages/misc/RootRedirect";
+import Dashboard from "../../../pages/dashboard/index";
+import DashboardBookingCar from "../../../pages/dashboard/booking-car";
+import DashboardCar from "../../../pages/dashboard/car";
+import BookingCarPage from "../../../pages/booking-car/index";
+import TruckCheckinPage from "../../../pages/truck-checkin/index";
+import MainLayout from "../../../components/layout/MainLayout";
+
+/**
+ * Interface สำหรับ Route ที่รวมคุณสมบัติเพิ่มเติม
+ */
+export type CustomRouteProps = RouteProps & {
+  element: React.ReactNode;
+  path: string;
+  isProtected?: boolean; // false คือ Public, true คือ Protected
+  layout?: React.ElementType; // ระบุ Component Layout
+  pageTitle?: string; // ชื่อหน้าที่จะแสดงใน Header
+};
 
 // รวม Array ของ Routes ทั้งหมด
 export const AppRoutes: CustomRouteProps[] = [
-  ...PageRoutes,
-  ...DashboardRoutes,
-  ...BookingCarRoutes,
-  ...TruckCheckinRoutes,
+  // ==================== Public Routes ====================
+  // 1. Root Route - Redirect ตาม Token
+  {
+    path: "/",
+    element: <RootRedirect />,
+    isProtected: false,
+    pageTitle: "หน้าหลัก",
+  },
+  // 2. Login Route (UNPROTECTED)
+  {
+    path: "/login",
+    element: <LoginPage />,
+    isProtected: false,
+    pageTitle: "เข้าสู่ระบบ",
+  },
+
+  // ==================== Dashboard Routes ====================
+  {
+    path: "/dashboard",
+    element: <Dashboard />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Dashboard",
+  },
+  {
+    path: "/dashboard/booking-car",
+    element: <DashboardBookingCar />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Dashboard จองรถ",
+  },
+  {
+    path: "/dashboard/car",
+    element: <DashboardCar />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Dashboard รถขนส่ง",
+  },
+
+  // ==================== Booking Car Routes ====================
+  {
+    path: "/booking-car",
+    element: <BookingCarPage />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "จองรถขนส่ง",
+  },
+
+  // ==================== Truck Check-in Routes ====================
+  {
+    path: "/truck-checkin",
+    element: <TruckCheckinPage />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Truck Check-in",
+  },
 ];
