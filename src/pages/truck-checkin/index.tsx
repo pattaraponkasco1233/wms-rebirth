@@ -48,6 +48,7 @@ const TruckCheckinPage: React.FC = () => {
 
   // Search States
   const [searchText, setSearchText] = useState("");
+  const [searchPlant, setSearchPlant] = useState<string | undefined>(undefined);
   const [searchDate, setSearchDate] = useState<Dayjs | null>(null);
 
   // Modal States
@@ -62,6 +63,7 @@ const TruckCheckinPage: React.FC = () => {
 
       const params: TruckCheckinSearchParams = {
         search: searchText || undefined,
+        plant: searchPlant || undefined,
         checkinDate: searchDate?.format("YYYY-MM-DD") || undefined,
         page,
         limit,
@@ -87,10 +89,13 @@ const TruckCheckinPage: React.FC = () => {
     const mockData: TruckCheckin[] = [
       {
         id: "1",
-        truckNumber: "80-1234",
-        driverName: "สมชาย ใจดี",
-        checkinDate: "2026-01-13",
-        checkinTime: "08:30",
+        plant: "Plant A",
+        carrier: "Carrier X",
+        vehicleType: "10 ล้อ",
+        license: "80-1234",
+        driver: "สมชาย ใจดี",
+        tel: "081-234-5678",
+        checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
         remark: "ปกติ",
         createdAt: "2026-01-13T08:30:00",
@@ -98,10 +103,13 @@ const TruckCheckinPage: React.FC = () => {
       },
       {
         id: "2",
-        truckNumber: "70-5678",
-        driverName: "สมหญิง รักงาน",
-        checkinDate: "2026-01-13",
-        checkinTime: "09:15",
+        plant: "Plant B",
+        carrier: "Carrier Y",
+        vehicleType: "6 ล้อ",
+        license: "70-5678",
+        driver: "สมหญิง รักงาน",
+        tel: "082-345-6789",
+        checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
         remark: "",
         createdAt: "2026-01-13T09:15:00",
@@ -109,10 +117,13 @@ const TruckCheckinPage: React.FC = () => {
       },
       {
         id: "3",
-        truckNumber: "60-9999",
-        driverName: "สมศักดิ์ ขยัน",
-        checkinDate: "2026-01-13",
-        checkinTime: "10:00",
+        plant: "Plant C",
+        carrier: "Carrier Z",
+        vehicleType: "4 ล้อ",
+        license: "60-9999",
+        driver: "สมศักดิ์ ขยัน",
+        tel: "083-456-7890",
+        checkin: "13/1/2026 10:00",
         status: "NOT_CHECKED_IN" as TruckCheckinStatus,
         remark: "รอเข้า",
         createdAt: "2026-01-13T10:00:00",
@@ -120,10 +131,13 @@ const TruckCheckinPage: React.FC = () => {
       },
       {
         id: "4",
-        truckNumber: "50-1111",
-        driverName: "วิชัย มั่นคง",
-        checkinDate: "2026-01-12",
-        checkinTime: "14:30",
+        plant: "Plant D",
+        carrier: "Carrier W",
+        vehicleType: "8 ล้อ",
+        license: "50-1111",
+        driver: "วิชัย มั่นคง",
+        tel: "084-567-8901",
+        checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
         remark: "เข้าล่าช้า",
         createdAt: "2026-01-12T14:30:00",
@@ -131,10 +145,13 @@ const TruckCheckinPage: React.FC = () => {
       },
       {
         id: "5",
-        truckNumber: "40-2222",
-        driverName: "ประสิทธิ์ เร็ว",
-        checkinDate: "2026-01-12",
-        checkinTime: "11:00",
+        plant: "Plant D",
+        carrier: "Carrier W",
+        vehicleType: "8 ล้อ",
+        license: "40-2222",
+        driver: "ประสิทธิ์ เร็ว",
+        tel: "085-678-9012",
+        checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
         remark: "",
         createdAt: "2026-01-12T11:00:00",
@@ -159,6 +176,7 @@ const TruckCheckinPage: React.FC = () => {
   // ฟังก์ชัน Reset
   const handleReset = () => {
     setSearchText("");
+    setSearchPlant(undefined);
     setSearchDate(null);
     setCurrentPage(1);
     fetchTruckCheckins(1, pageSize);
@@ -168,12 +186,9 @@ const TruckCheckinPage: React.FC = () => {
   const handleEdit = (record: TruckCheckin) => {
     setEditingRecord(record);
     form.setFieldsValue({
-      truckNumber: record.truckNumber,
-      driverName: record.driverName,
-      checkinDate: record.checkinDate ? dayjs(record.checkinDate) : null,
-      checkinTime: record.checkinTime
-        ? dayjs(record.checkinTime, "HH:mm")
-        : null,
+      license: record.license,
+      driver: record.driver,
+      checkin: record.checkin,
       status: record.status,
       remark: record.remark,
     });
@@ -200,10 +215,9 @@ const TruckCheckinPage: React.FC = () => {
       const values = await form.validateFields();
 
       const updateData: UpdateTruckCheckinRequest = {
-        truckNumber: values.truckNumber,
-        driverName: values.driverName,
-        checkinDate: values.checkinDate?.format("YYYY-MM-DD"),
-        checkinTime: values.checkinTime?.format("HH:mm"),
+        license: values.license,
+        driver: values.driver,
+        checkin: Date.now().toString(), // สมมติใช้เวลาปัจจุบัน
         status: values.status,
         remark: values.remark,
       };
@@ -251,30 +265,47 @@ const TruckCheckinPage: React.FC = () => {
         (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: "ทะเบียนรถ",
-      dataIndex: "truckNumber",
-      key: "truckNumber",
+      title: "Plant",
+      dataIndex: "plant",
+      key: "plant",
+      width: 150,
+    },
+    {
+      title: "Carrier",
+      dataIndex: "carrier",
+      key: "carrier",
+      width: 150,
+    },
+    {
+      title: "Vehicle Type",
+      dataIndex: "vehicleType",
+      key: "vehicleType",
+      width: 150,
+    },
+    {
+      title: "Truck License",
+      dataIndex: "license",
+      key: "license",
       width: 150,
     },
     {
       title: "ชื่อคนขับ",
-      dataIndex: "driverName",
-      key: "driverName",
+      dataIndex: "driver",
+      key: "driver",
       width: 200,
     },
     {
-      title: "วันที่ Check In",
-      dataIndex: "checkinDate",
-      key: "checkinDate",
+      title: "Tel.",
+      dataIndex: "tel",
+      key: "tel",
       width: 150,
-      render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
-      title: "เวลา Check In",
-      dataIndex: "checkinTime",
-      key: "checkinTime",
-      width: 120,
-      align: "center",
+      title: "วันเวลา Check In",
+      dataIndex: "checkin",
+      key: "checkin",
+      width: 150,
+      // render: (date: string) => dayjs(date).format("DD/MM/YYYY"),
     },
     {
       title: "สถานะ",
@@ -310,29 +341,8 @@ const TruckCheckinPage: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: "24px" }}>
+    <div>
       {/* Header */}
-      <Row justify="space-between" align="middle" style={{ marginBottom: 24 }}>
-        <Col>
-          <Title level={2} style={{ margin: 0 }}>
-            Truck Check-in
-          </Title>
-        </Col>
-        <Col>
-          <Space>
-            <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
-              เพิ่มข้อมูล
-            </Button>
-            <Button
-              icon={<ReloadOutlined />}
-              onClick={handleReset}
-              loading={loading}
-            >
-              รีเฟรช
-            </Button>
-          </Space>
-        </Col>
-      </Row>
 
       {/* Search Form */}
       <Card style={{ marginBottom: 24 }}>
@@ -346,6 +356,20 @@ const TruckCheckinPage: React.FC = () => {
               onPressEnter={handleSearch}
               allowClear
             />
+          </Col>
+          <Col xs={24} sm={12} md={8} lg={6}>
+            <Select
+              placeholder="เลือก Plant"
+              value={searchPlant}
+              onChange={(value) => setSearchPlant(value)}
+              style={{ width: "100%" }}
+              allowClear
+            >
+              <Option value="Plant A">Plant A</Option>
+              <Option value="Plant B">Plant B</Option>
+              <Option value="Plant C">Plant C</Option>
+              <Option value="Plant D">Plant D</Option>
+            </Select>
           </Col>
           <Col xs={24} sm={12} md={8} lg={6}>
             <DatePicker
@@ -368,6 +392,13 @@ const TruckCheckinPage: React.FC = () => {
                 ค้นหา
               </Button>
               <Button onClick={handleReset}>ล้างค่า</Button>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={handleAdd}
+              >
+                เพิ่มข้อมูล
+              </Button>
             </Space>
           </Col>
         </Row>
@@ -411,7 +442,7 @@ const TruckCheckinPage: React.FC = () => {
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="truckNumber"
+            name="license"
             label="ทะเบียนรถ"
             rules={[{ required: true, message: "กรุณากรอกทะเบียนรถ" }]}
           >
@@ -419,41 +450,12 @@ const TruckCheckinPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item
-            name="driverName"
+            name="driver"
             label="ชื่อคนขับ"
             rules={[{ required: true, message: "กรุณากรอกชื่อคนขับ" }]}
           >
             <Input placeholder="เช่น สมชาย ใจดี" />
           </Form.Item>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
-                name="checkinDate"
-                label="วันที่ Check In"
-                rules={[{ required: true, message: "กรุณาเลือกวันที่" }]}
-              >
-                <DatePicker
-                  format="DD/MM/YYYY"
-                  style={{ width: "100%" }}
-                  placeholder="เลือกวันที่"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                name="checkinTime"
-                label="เวลา Check In"
-                rules={[{ required: true, message: "กรุณาเลือกเวลา" }]}
-              >
-                <TimePicker
-                  format="HH:mm"
-                  style={{ width: "100%" }}
-                  placeholder="เลือกเวลา"
-                />
-              </Form.Item>
-            </Col>
-          </Row>
 
           <Form.Item
             name="status"

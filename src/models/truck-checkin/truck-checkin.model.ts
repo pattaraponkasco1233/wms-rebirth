@@ -2,10 +2,13 @@
 
 export interface TruckCheckin {
     id: string;
-    truckNumber: string;
-    driverName?: string;
-    checkinDate: string;
-    checkinTime: string;
+    plant?: string;
+    carrier?: string;
+    vehicleType?: string;
+    license: string;
+    driver?: string;
+    tel?: string;
+    checkin: string;
     status: TruckCheckinStatus;
     remark?: string;
     createdAt?: string;
@@ -20,6 +23,7 @@ export enum TruckCheckinStatus {
 
 export interface TruckCheckinSearchParams {
     search?: string;
+    plant?: string;
     checkinDate?: string;
     status?: TruckCheckinStatus;
     page?: number;
@@ -34,10 +38,9 @@ export interface TruckCheckinResponse {
 }
 
 export interface UpdateTruckCheckinRequest {
-    truckNumber?: string;
-    driverName?: string;
-    checkinDate?: string;
-    checkinTime?: string;
+    license?: string;
+    driver?: string;
+    checkin?: string;
     status?: TruckCheckinStatus;
     remark?: string;
 }
