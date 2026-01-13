@@ -3,7 +3,7 @@ import { RouteProps } from "react-router-dom";
 
 // นำเข้า Components
 import LoginPage from "../../../pages/authentication/Login"; // <<< นำเข้า LoginPage
-import NotFoundPage from "../../../pages/misc/NotFound"; // <<< นำเข้า NotFoundPage';
+import RootRedirect from "../../../pages/misc/RootRedirect"; // <<< นำเข้า RootRedirect
 
 /**
  * Interface สำหรับ Route ที่รวมคุณสมบัติเพิ่มเติม
@@ -17,15 +17,16 @@ export type CustomRouteProps = RouteProps & {
 
 // Array ของ Routes สำหรับหน้าทั่วไป/สาธารณะ
 export const PageRoutes: CustomRouteProps[] = [
-  // 1. Login Route (UNPROTECTED)
+  // 1. Root Route - Redirect ตาม Token
+  {
+    path: "/",
+    element: <RootRedirect />,
+    isProtected: false,
+  },
+  // 2. Login Route (UNPROTECTED)
   {
     path: "/login",
     element: <LoginPage />,
-    isProtected: false,
-  },
-  {
-    path: "/",
-    element: <NotFoundPage />,
     isProtected: false,
   },
 ];
