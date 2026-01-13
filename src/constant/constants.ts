@@ -6,6 +6,11 @@ export const TABLE = {
     pageSizeOptions: [10, 20, 50, 100],
 } as const;
 
+export const PATTERN = {
+    licensePlate: /^[ก-ฮ]{1,3}-\d{1,4}$/, // ตัวอย่างรูปแบบทะเบียนรถยนต์ไทย
+    telephone: /^\d{9,10}$/, // ตัวอย่างรูปแบบหมายเลขโทรศัพท์ไทย
+} as const;
+
 /**
  * ========================================
  * TRUCK CHECK-IN CONSTANTS

@@ -30,6 +30,7 @@ import type {
   UpdateTruckCheckinRequest,
 } from "../../models/truck-checkin/truck-checkin.model";
 import {
+  PATTERN,
   TABLE,
   PLANT_OPTIONS,
   CARRIER_OPTIONS,
@@ -599,7 +600,7 @@ const TruckCheckinPage: React.FC = () => {
                 rules={[
                   { required: true, message: t("truckCheckin.telRequired") },
                   {
-                    pattern: /^[0-9-]+$/,
+                    pattern: PATTERN.telephone,
                     message: t("truckCheckin.telInvalid"),
                   },
                 ]}
