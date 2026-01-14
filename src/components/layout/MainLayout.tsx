@@ -152,10 +152,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         <Content
           style={{
             margin: "24px 16px",
-            padding: 24,
+            // padding: 24,
             minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
+            // background: colorBgContainer,
+            // borderRadius: borderRadiusLG,
           }}
         >
           {/* {children} คือ Component ของหน้า Page ที่ถูกเรียก (เช่น DashboardPage) */}

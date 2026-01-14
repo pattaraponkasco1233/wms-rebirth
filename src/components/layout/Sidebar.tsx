@@ -21,6 +21,11 @@ const menuItems = [
     label: "Dashboard รถขนส่ง",
   },
   {
+    key: "/proactive-monitor",
+    icon: <MonitorOutlined />,
+    label: "Proactive Monitor",
+  },
+  {
     key: "/truck-checkin",
     icon: <ContainerOutlined />,
     label: "Truck Check-in",
@@ -29,11 +34,6 @@ const menuItems = [
     key: "/logistics-planner",
     icon: <ControlOutlined />,
     label: "Logistics Planner",
-  },
-  {
-    key: "/proactive-monitor",
-    icon: <MonitorOutlined />,
-    label: "Proactive Monitor",
   },
   { key: "/users", icon: <UserOutlined />, label: "ผู้ใช้งาน" },
   { key: "/settings", icon: <DesktopOutlined />, label: "ตั้งค่าระบบ" },
