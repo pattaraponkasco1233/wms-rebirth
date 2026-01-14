@@ -67,7 +67,7 @@ const LoginPage: React.FC = () => {
         "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdHRhcmFwb25ub29rQGdtYWlsLmNvbSIsImxldmVsX3VzZXIiOiIxIiwiaXAiOiI1OC4xMzYuNTkuNjAiLCJleHAiOjE3Njg0NjcwMTYsImlzcyI6Ikthc2NvX0F1dGhlbnRpY2F0aW9uX0FQSSIsImF1ZCI6IlRNUyJ9.IQsFs5KboL1EOGOk7Asxj7M_gPfBopmo2d4RekoCW1g",
       refreshToken: "dummyRefreshToken",
     });
-    navigate("/dashboard", { replace: true });
+    navigate("/proactive-monitor", { replace: true });
     // if (selectedPlant) {
     //   values.plant = selectedPlant;
     // }
@@ -82,8 +82,8 @@ const LoginPage: React.FC = () => {
     //   );
 
     //   if (success) {
-    //     message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป Dashboard");
-    //     navigate("/dashboard", { replace: true });
+    //     message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป proactive-monitor");
+    //     navigate("/proactive-monitor", { replace: true });
     //   } else {
     //     message.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     //   }

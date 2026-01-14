@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Menu } from "antd";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   DesktopOutlined,
   PieChartOutlined,
@@ -41,19 +41,20 @@ const menuItems = [
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleMenuClick = (e: any) => {
     navigate(e.key);
   };
 
   // กำหนด Key ที่ถูกเลือกตาม Path ปัจจุบัน
-  const currentPath = globalThis.location.pathname;
+  const currentPath = location.pathname;
 
   return (
     <Menu
       theme="dark"
       mode="inline"
-      defaultSelectedKeys={[currentPath]}
+      selectedKeys={[currentPath]}
       onClick={handleMenuClick}
       items={menuItems}
     />
