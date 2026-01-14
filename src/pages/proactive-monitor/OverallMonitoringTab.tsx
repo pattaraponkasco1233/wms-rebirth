@@ -1,12 +1,14 @@
 // src/pages/proactive-monitor/OverallMonitoringTab.tsx
 
-import React, { useMemo } from "react";
-import { Table } from "antd";
+import React, { useMemo, useState } from "react";
+import { Table, DatePicker, Row, Col, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
+import dayjs, { Dayjs } from "dayjs";
 import {
   CARRIER_OPTIONS,
   LIST_TIEM_SLOTS,
   TABLE,
+  DATE_FORMATS,
 } from "../../constant/constants";
 
 interface PlantLoadData {
@@ -15,7 +17,10 @@ interface PlantLoadData {
 }
 
 const OverallMonitoringTab: React.FC = () => {
-  // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา
+  // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
+  const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+
+  // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา (ในอนาคตจะดึงจาก API ตาม selectedDate)
   const dataSource = useMemo(() => {
     return LIST_TIEM_SLOTS.map((timeSlot, index) => {
       const data: PlantLoadData = {
@@ -33,10 +38,30 @@ const OverallMonitoringTab: React.FC = () => {
       data.total = CARRIER_OPTIONS.reduce((sum, carrier) => {
         return sum + (data[carrier.value] as number);
       }, 0);
-
+      /*
+      json = [{
+    "timeSlot": "08:00 - 09:00",
+    "key": "time-0",
+    "KERRY_EXPRESS": 8,
+    "FLASH_EXPRESS": 6,
+    "JT_EXPRESS": 4,
+    "THAILAND_POST": 3,
+    "total": 21
+        },{
+    "timeSlot": "09:00 - 10:00",
+    "key": "time-1",
+    "KERRY_EXPRESS": 2,
+    "FLASH_EXPRESS": 2,
+    "JT_EXPRESS": 8,
+    "THAILAND_POST": 2,
+    "total": 14
+}
+    
+        ]
+      */
       return data;
     });
-  }, []);
+  }, [selectedDate]); // เพิ่m selectedDate เป็น dependency
 
   // คำนวณผลรวมของแต่ละ carrier
   const carrierTotals = useMemo(() => {
@@ -141,22 +166,33 @@ const OverallMonitoringTab: React.FC = () => {
     },
   ];
 
-  // คำนวณ Grand Total
-  const grandTotal = useMemo(() => {
-    return dataSource.reduce(
-      (sum, record) => sum + (record.total as number),
-      0
-    );
-  }, [dataSource]);
-
   return (
     <div>
-      <div style={{ marginBottom: "16px" }}>
-        <h3>Overall Monitoring - Plant Load Summary</h3>
-        <p style={{ color: "#8c8c8c" }}>
-          สรุปภาพรวมการโหลดสินค้าของแต่ละ Plant ตามช่วงเวลา (08:00 - 05:00)
-        </p>
-      </div>
+      {/* ช่องเลือกวันที่และสรุปข้อมูล */}
+      <Row gutter={16} style={{ marginBottom: "16px" }}>
+        <Col xs={24} sm={24} md={18}>
+          <h3>Overall Monitoring - Plant Load Summary</h3>
+          <p style={{ color: "#8c8c8c" }}>
+            สรุปภาพรวมการโหลดสินค้าของแต่ละ Plant ตามช่วงเวลา (08:00 - 05:00)
+          </p>
+        </Col>
+        <Col xs={24} sm={24} md={6}>
+          <Card size="small">
+            <div style={{ marginBottom: "8px", fontWeight: "500" }}>
+              เลือกวันที่
+            </div>
+            <DatePicker
+              value={selectedDate}
+              onChange={(date) => setSelectedDate(date || dayjs())}
+              format={DATE_FORMATS.DISPLAY}
+              style={{ width: "100%" }}
+              placeholder="เลือกวันที่"
+              allowClear={false}
+            />
+          </Card>
+        </Col>
+      </Row>
+
       <Table
         columns={columns}
         dataSource={dataSource}
