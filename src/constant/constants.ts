@@ -31,20 +31,18 @@ export const PLANT_OPTIONS = [
  * Carrier options
  */
 export const CARRIER_OPTIONS = [
-    { value: "CARRIER_X", label: "Carrier X" },
-    { value: "CARRIER_Y", label: "Carrier Y" },
-    { value: "CARRIER_Z", label: "Carrier Z" },
-    { value: "CARRIER_W", label: "Carrier W" },
+    { value: "KERRY_EXPRESS", label: "Kerry Express" },
+    { value: "FLASH_EXPRESS", label: "Flash Express" },
+    { value: "JT_EXPRESS", label: "J&T Express" },
+    { value: "THAILAND_POST", label: "Thailand Post" },
 ] as const;
 
 /**
  * Vehicle Type options
  */
 export const VEHICLE_TYPE_OPTIONS = [
-    { value: "4_WHEEL", label: "4 ล้อ" },
-    { value: "6_WHEEL", label: "6 ล้อ" },
-    { value: "8_WHEEL", label: "8 ล้อ" },
-    { value: "10_WHEEL", label: "10 ล้อ" },
+    { value: "4_WHEEL", label: "รถ 4 ล้อ" },
+    { value: "6_WHEEL", label: "รถ 6 ล้อ" },
 ] as const;
 
 /**

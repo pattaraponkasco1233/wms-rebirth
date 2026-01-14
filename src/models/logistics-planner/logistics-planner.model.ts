@@ -1,5 +1,7 @@
 // src/models/logistics-planner/logistics-planner.model.ts
 
+import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS } from "../../constant/constants";
+
 /**
  * Interface สำหรับข้อมูล Logistics Planner
  */
@@ -31,28 +33,14 @@ export interface TimeSlotSummary {
 }
 
 /**
- * ตัวเลือกสำหรับ Vehicle Type
+ * ตัวเลือกสำหรับ Vehicle Type (นำมาจาก constants)
  */
-export const VEHICLE_TYPES = [
-    "รถกระบะ",
-    "รถ 4 ล้อ",
-    "รถ 6 ล้อ",
-    "รถ 10 ล้อ",
-    "รถพ่วง",
-    "รถตู้",
-];
+export const VEHICLE_TYPES = VEHICLE_TYPE_OPTIONS.map((option) => option.label);
 
 /**
- * ตัวเลือกสำหรับ Carrier
+ * ตัวเลือกสำหรับ Carrier (นำมาจาก constants)
  */
-export const CARRIERS = [
-    "Kerry Express",
-    "Flash Express",
-    "J&T Express",
-    "Thailand Post",
-    "SCG Logistics",
-    "Nim See Seng",
-];
+export const CARRIERS = CARRIER_OPTIONS.map((option) => option.label);
 
 /**
  * ตัวเลือกสำหรับ First Time

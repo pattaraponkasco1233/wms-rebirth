@@ -8,7 +8,11 @@ import {
   TimeSlotSummary,
   calculateTimeSlotSummary,
 } from "../../models/logistics-planner/logistics-planner.model";
-import { TABLE } from "../../constant/constants";
+import {
+  TABLE,
+  CARRIER_OPTIONS,
+  VEHICLE_TYPE_OPTIONS,
+} from "../../constant/constants";
 
 interface TimeSummaryTabProps {
   shipments: LogisticsShipment[];
@@ -32,6 +36,35 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
         <span style={{ fontWeight: "bold" }}>{timeSlot}</span>
       ),
     },
+    {
+      title: "Plant",
+      dataIndex: "plant",
+      key: "plant",
+      width: 150,
+      fixed: "left",
+      render: (plant: string) => (
+        <span style={{ fontWeight: "bold" }}>{plant}</span>
+      ),
+      children: CARRIER_OPTIONS.map((carrier) => ({
+        title: carrier.label,
+        dataIndex: carrier.value,
+        key: carrier.value,
+        width: 150,
+        children: VEHICLE_TYPE_OPTIONS.map((vehicleType) => ({
+          title: vehicleType.label,
+          dataIndex: `${carrier.value}_${vehicleType.value}`,
+          key: `${carrier.value}_${vehicleType.value}`,
+          width: 100,
+          align: "center" as const,
+          render: (value: number) => (
+            <span style={{ fontWeight: value > 0 ? "bold" : "normal" }}>
+              {value || 0}
+            </span>
+          ),
+        })),
+      })),
+    },
+
     {
       title: "จำนวนรอบขนส่ง",
       dataIndex: "count",
