@@ -1,6 +1,6 @@
 // src/models/logistics-planner/logistics-planner.model.ts
 
-import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS, LIST_TIME_OPTIONS } from "../../constant/constants";
+import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS, LIST_TIME_OPTIONS, LIST_TIEM_SLOTS } from "../../constant/constants";
 
 /**
  * Interface สำหรับข้อมูล Logistics Planner
@@ -51,31 +51,12 @@ export const CARRIERS = CARRIER_OPTIONS.map((option) => option.label);
 export const FIRST_TIME_OPTIONS = LIST_TIME_OPTIONS.map((time) => time.label);
 
 /**
- * สร้างช่วงเวลาสำหรับ Tab 1 (8:00 - 9:00 ถึง 04:00 - 05:00)
- */
-export const generateTimeSlots = (): string[] => {
-    const slots: string[] = [];
-    for (let hour = 8; hour < 24; hour++) {
-        const startTime = hour.toString().padStart(2, "0") + ":00";
-        const endTime = (hour + 1).toString().padStart(2, "0") + ":00";
-        slots.push(`${startTime} - ${endTime}`);
-    }
-    // เพิ่มช่วงเวลาตี 1 - ตี 5
-    for (let hour = 0; hour < 5; hour++) {
-        const startTime = hour.toString().padStart(2, "0") + ":00";
-        const endTime = (hour + 1).toString().padStart(2, "0") + ":00";
-        slots.push(`${startTime} - ${endTime}`);
-    }
-    return slots;
-};
-
-/**
  * ฟังก์ชันสำหรับคำนวณข้อมูลสรุปตามช่วงเวลา
  */
 export const calculateTimeSlotSummary = (
     shipments: LogisticsShipment[]
 ): TimeSlotSummary[] => {
-    const timeSlots = generateTimeSlots();
+    const timeSlots = LIST_TIEM_SLOTS  //generateTimeSlots();
     const summaryMap = new Map<string, LogisticsShipment[]>();
 
     // Initialize map
@@ -85,12 +66,14 @@ export const calculateTimeSlotSummary = (
 
     // Group shipments by time slot
     shipments.forEach((shipment) => {
-        const firstTime = shipment.firstTime;
-        if (!firstTime) return;
 
-        // แปลงเวลาเป็นชั่วโมง
-        const [hourStr] = firstTime.split(":");
-        const hour = Number.parseInt(hourStr, 10);
+        const time = shipment.firstTime;
+        if (!time) return;
+
+        // แปลงเวลาเป็นชั่วโมง ไม่จำเป็นต้องสนใจนาทีและวินาที เพราะ ช่วงเวลาที่เราสนใจคือแบบชั่วโมงเต็ม
+        const hours = time.substring(0, 2);
+
+        const hour = Number.parseInt(hours, 10);
 
         // หาช่วงเวลาที่ตรงกัน
         const startTime = hour.toString().padStart(2, "0") + ":00";

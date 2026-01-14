@@ -19,14 +19,27 @@ import {
   LogisticsShipment,
   VEHICLE_TYPES,
   CARRIERS,
-  FIRST_TIME_OPTIONS,
 } from "../../models/logistics-planner/logistics-planner.model";
-import { TABLE } from "../../constant/constants";
+import { TABLE, LIST_TIME_OPTIONS } from "../../constant/constants";
 
 import { Dayjs } from "dayjs";
 
 import { useTranslation } from "react-i18next";
 import { formatDDMMYYYY } from "../../utils/Utils";
+
+// ฟังก์ชันแปลงเวลาจาก HHMMSS เป็น HH:MM
+const formatTime = (timeValue: string): string => {
+  if (timeValue?.length !== 6) return timeValue;
+  const hours = timeValue.substring(0, 2);
+  const minutes = timeValue.substring(2, 4);
+  return `${hours}:${minutes}`;
+};
+
+// ฟังก์ชันค้นหา label จาก LIST_TIME_OPTIONS
+const getTimeLabel = (timeValue: string): string => {
+  const option = LIST_TIME_OPTIONS.find((opt) => opt.value === timeValue);
+  return option ? option.label : formatTime(timeValue);
+};
 
 const { Option } = Select;
 
@@ -48,7 +61,6 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   const [filterShipmentNo, setFilterShipmentNo] = useState<string>("");
   const [filterRoute, setFilterRoute] = useState<string>("");
   const [filterDate, setFilterDate] = useState<Dayjs | null>(null);
-  const [filterJobNumber, setFilterJobNumber] = useState<string>("");
   const [filterTime, setFilterTime] = useState<string>("");
 
   // Applied filter states (ค่าที่ใช้กรองจริง)
@@ -60,8 +72,6 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   const [appliedFilterDate, setAppliedFilterDate] = useState<Dayjs | null>(
     null
   );
-  const [appliedFilterJobNumber, setAppliedFilterJobNumber] =
-    useState<string>("");
   const [appliedFilterTime, setAppliedFilterTime] = useState<string>("");
 
   // Edit states
@@ -128,9 +138,17 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
       const matchDate = appliedFilterDate
         ? shipment.loadDate === appliedFilterDate.format("DDMMYYYY")
         : true;
+      const matchTime = appliedFilterTime
+        ? shipment.firstTime === appliedFilterTime
+        : true;
 
       return (
-        matchPlant && matchLicense && matchShipmentNo && matchRoute && matchDate
+        matchPlant &&
+        matchLicense &&
+        matchShipmentNo &&
+        matchRoute &&
+        matchDate &&
+        matchTime
       );
     });
   }, [
@@ -140,6 +158,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     appliedFilterShipmentNo,
     appliedFilterRoute,
     appliedFilterDate,
+    appliedFilterTime,
   ]);
 
   // Columns สำหรับตาราง
@@ -251,15 +270,15 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
               onChange={(val) => updateEditData("firstTime", val)}
               style={{ width: "100%" }}
             >
-              {FIRST_TIME_OPTIONS.map((time) => (
-                <Option key={time} value={time}>
-                  {time}
+              {LIST_TIME_OPTIONS.map((time) => (
+                <Option key={time.value} value={time.value}>
+                  {time.label}
                 </Option>
               ))}
             </Select>
           );
         }
-        return value;
+        return getTimeLabel(value);
       },
     },
     {
@@ -374,6 +393,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     setAppliedFilterShipmentNo(filterShipmentNo);
     setAppliedFilterRoute(filterRoute);
     setAppliedFilterDate(filterDate);
+    setAppliedFilterTime(filterTime);
   };
 
   // รีเซ็ตฟิลเตอร์
@@ -383,11 +403,13 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     setFilterShipmentNo("");
     setFilterRoute("");
     setFilterDate(null);
+    setFilterTime("");
     setAppliedFilterPlant("");
     setAppliedFilterLicense("");
     setAppliedFilterShipmentNo("");
     setAppliedFilterRoute("");
     setAppliedFilterDate(null);
+    setAppliedFilterTime("");
   };
 
   return (
@@ -399,10 +421,8 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             <div>
               <Input
                 placeholder="ค้นหา Plant"
-                prefix={<SearchOutlined />}
                 value={filterPlant}
                 onChange={(e) => setFilterPlant(e.target.value)}
-                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
@@ -410,10 +430,8 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             <div>
               <Input
                 placeholder="ค้นหาทะเบียนรถ"
-                prefix={<SearchOutlined />}
                 value={filterLicense}
                 onChange={(e) => setFilterLicense(e.target.value)}
-                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
@@ -421,10 +439,8 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             <div>
               <Input
                 placeholder="ค้นหา Route"
-                prefix={<SearchOutlined />}
                 value={filterRoute}
                 onChange={(e) => setFilterRoute(e.target.value)}
-                // onPressEnter={handleSearch}
               />
             </div>
           </Col>
@@ -444,12 +460,26 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             <div>
               <Input
                 placeholder="ค้นหา Shipment No"
-                prefix={<SearchOutlined />}
                 value={filterShipmentNo}
                 onChange={(e) => setFilterShipmentNo(e.target.value)}
-                // onPressEnter={handleSearch}
               />
             </div>
+          </Col>
+
+          <Col xs={24} sm={12} md={6}>
+            <Select
+              placeholder="เลือกเวลา First Time"
+              value={filterTime || undefined}
+              onChange={(val) => setFilterTime(val)}
+              style={{ width: "100%" }}
+              allowClear
+            >
+              {LIST_TIME_OPTIONS.map((time) => (
+                <Option key={time.value} value={time.value}>
+                  {time.label}
+                </Option>
+              ))}
+            </Select>
           </Col>
 
           <Col xs={24} sm={12} md={6}>
