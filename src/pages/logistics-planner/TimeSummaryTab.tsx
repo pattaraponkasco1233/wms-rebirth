@@ -80,7 +80,10 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
                 <span
                   style={{
                     fontWeight: "bold",
-                    color: total > 0 ? "#52c41a" : "#d9d9d9",
+                    color:
+                      total > 0
+                        ? "var(--color-success)"
+                        : "var(--color-text-disabled)",
                   }}
                 >
                   {total}
@@ -102,7 +105,8 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
           style={{
             fontSize: "18px",
             fontWeight: "bold",
-            color: count > 0 ? "#1890ff" : "#d9d9d9",
+            color:
+              count > 0 ? "var(--color-primary)" : "var(--color-text-disabled)",
           }}
         >
           {count}
