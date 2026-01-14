@@ -30,6 +30,8 @@ export interface TimeSlotSummary {
     timeSlot: string; // เช่น "8:00 - 9:00"
     count: number;
     shipments: LogisticsShipment[];
+    // Dynamic properties for carrier_vehicleType combinations
+    [key: string]: any; // เช่น KERRY_EXPRESS_4_WHEEL: 5
 }
 
 /**
@@ -118,10 +120,40 @@ export const calculateTimeSlotSummary = (
         summaryMap.set(targetSlot, [...currentShipments, shipment]);
     });
 
-    // Convert to array
-    return timeSlots.map((slot) => ({
-        timeSlot: slot,
-        count: summaryMap.get(slot)?.length || 0,
-        shipments: summaryMap.get(slot) || [],
-    }));
+    // Helper function to count shipments by carrier and vehicle type
+    const countByCarrierAndVehicle = (
+        slotShipments: LogisticsShipment[],
+        carrierLabel: string,
+        vehicleLabel: string
+    ): number => {
+        return slotShipments.filter(
+            (shipment) =>
+                shipment.carrier === carrierLabel &&
+                shipment.vehicleType === vehicleLabel
+        ).length;
+    };
+
+    // Convert to array with detailed counts
+    return timeSlots.map((slot) => {
+        const slotShipments = summaryMap.get(slot) || [];
+        const summary: TimeSlotSummary = {
+            timeSlot: slot,
+            count: slotShipments.length,
+            shipments: slotShipments,
+        };
+
+        // คำนวณจำนวนสำหรับแต่ละ carrier และ vehicle type
+        CARRIER_OPTIONS.forEach((carrier) => {
+            VEHICLE_TYPE_OPTIONS.forEach((vehicleType) => {
+                const key = `${carrier.value}_${vehicleType.value}`;
+                summary[key] = countByCarrierAndVehicle(
+                    slotShipments,
+                    carrier.label,
+                    vehicleType.label
+                );
+            });
+        });
+
+        return summary;
+    });
 };

@@ -30,7 +30,7 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
       title: "ช่วงเวลา",
       dataIndex: "timeSlot",
       key: "timeSlot",
-      width: 150,
+      width: 120,
       fixed: "left",
       render: (timeSlot: string) => (
         <span style={{ fontWeight: "bold" }}>{timeSlot}</span>
