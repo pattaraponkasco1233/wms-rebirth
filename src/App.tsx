@@ -1,6 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Router from "./guard/router/Router";
+import { initializeStorage } from "./utils/storageInit";
 
-const App = () => <Router />;
+const App = () => {
+  // Initialize secure storage และ migrate ข้อมูลเก่า
+  useEffect(() => {
+    initializeStorage();
+  }, []);
+
+  return <Router />;
+};
 
 export default App;

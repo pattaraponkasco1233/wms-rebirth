@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../shares/hooks/useAuth";
 // ต้องมั่นใจว่า updateWmsStorage และ WmsData ถูก Import อย่างถูกต้อง
 import { WmsData, updateWmsStorage } from "../../utils/setServerHelper";
+import { wmsStorage } from "../../utils/wmsStorage";
 import VersionDisplay from "../../components/common/VersionDisplay";
 
 const { Title, Text } = Typography;
@@ -41,10 +42,8 @@ const LoginPage: React.FC = () => {
   const { login, isAuthenticated } = useAuth();
 
   const [selectedPlant, setSelectedPlant] = useState<string | undefined>(() => {
-    // 2. กำหนด Type ให้กับ oneWms ที่ดึงมาจาก localStorage
-    const oneWms: Partial<WmsData> = JSON.parse(
-      localStorage.getItem("wms") || "{}"
-    );
+    // 2. กำหนด Type ให้กับ oneWms ที่ดึงมาจาก secure storage
+    const oneWms = wmsStorage.getWMSData();
     return oneWms.server;
   });
 
@@ -65,7 +64,7 @@ const LoginPage: React.FC = () => {
   const onFinish = async (values: LoginFormValues) => {
     updateWmsStorage({
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdHRhcmFwb25ub29rQGdtYWlsLmNvbSIsImxldmVsX3VzZXIiOiIxIiwiaXAiOiI1OC4xMzYuNTkuNjAiLCJleHAiOjE3NjgzODA0MzcsImlzcyI6Ikthc2NvX0F1dGhlbnRpY2F0aW9uX0FQSSIsImF1ZCI6IlRNUyJ9.yp7GA_i7125HtjxeV6t_VM6wIvFsiwjmDP9JDyEBFOs",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdHRhcmFwb25ub29rQGdtYWlsLmNvbSIsImxldmVsX3VzZXIiOiIxIiwiaXAiOiI1OC4xMzYuNTkuNjAiLCJleHAiOjE3Njg0NjcwMTYsImlzcyI6Ikthc2NvX0F1dGhlbnRpY2F0aW9uX0FQSSIsImF1ZCI6IlRNUyJ9.IQsFs5KboL1EOGOk7Asxj7M_gPfBopmo2d4RekoCW1g",
       refreshToken: "dummyRefreshToken",
     });
     navigate("/dashboard", { replace: true });
@@ -75,17 +74,21 @@ const LoginPage: React.FC = () => {
 
     // // ตรวจสอบความถูกต้องของ values ก่อนเรียก login
     // if (values.username && values.password) {
-    //     // โชว์ Loading หรือ Disable Button ระหว่างรอ
-    //     const success = await login(values.username, values.password, values.plant);
+    //   // โชว์ Loading หรือ Disable Button ระหว่างรอ
+    //   const success = await login(
+    //     values.username,
+    //     values.password,
+    //     values.plant
+    //   );
 
-    //     if (success) {
-    //         message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป Dashboard");
-    //         navigate("/dashboard", { replace: true });
-    //     } else {
-    //         message.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-    //     }
+    //   if (success) {
+    //     message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป Dashboard");
+    //     navigate("/dashboard", { replace: true });
+    //   } else {
+    //     message.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+    //   }
     // } else {
-    //     message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+    //   message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
     // }
   };
 

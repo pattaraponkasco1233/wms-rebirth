@@ -1,5 +1,7 @@
 import { BaseConfigRecord } from "./api.base";
-const oneWms = JSON.parse(localStorage.getItem("wms") || "{}");
+import { wmsStorage } from "../utils/wmsStorage";
+
+const oneWms = wmsStorage.getWMSData();
 const SetServer = oneWms.server;
 
 const hederserver = "wmap01";
