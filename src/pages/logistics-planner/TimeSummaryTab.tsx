@@ -41,7 +41,6 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
       dataIndex: "plant",
       key: "plant",
       width: 150,
-      fixed: "left",
       render: (plant: string) => (
         <span style={{ fontWeight: "bold" }}>{plant}</span>
       ),
@@ -50,23 +49,50 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
         dataIndex: carrier.value,
         key: carrier.value,
         width: 150,
-        children: VEHICLE_TYPE_OPTIONS.map((vehicleType) => ({
-          title: vehicleType.label,
-          dataIndex: `${carrier.value}_${vehicleType.value}`,
-          key: `${carrier.value}_${vehicleType.value}`,
-          width: 100,
-          align: "center" as const,
-          render: (value: number) => (
-            <span style={{ fontWeight: value > 0 ? "bold" : "normal" }}>
-              {value || 0}
-            </span>
-          ),
-        })),
+        children: [
+          ...VEHICLE_TYPE_OPTIONS.map((vehicleType) => ({
+            title: vehicleType.label,
+            dataIndex: `${carrier.value}_${vehicleType.value}`,
+            key: `${carrier.value}_${vehicleType.value}`,
+            width: 100,
+            align: "center" as const,
+            render: (value: number) => (
+              <span style={{ fontWeight: value > 0 ? "bold" : "normal" }}>
+                {value || 0}
+              </span>
+            ),
+          })),
+          {
+            title: "Total",
+            dataIndex: `${carrier.value}_total`,
+            key: `${carrier.value}_total`,
+            width: 100,
+            align: "center" as const,
+            render: (_: any, record: TimeSlotSummary) => {
+              // คำนวณผลรวมของทุก vehicle type ใน carrier นี้
+              const total = VEHICLE_TYPE_OPTIONS.reduce((sum, vehicleType) => {
+                const key =
+                  `${carrier.value}_${vehicleType.value}` as keyof TimeSlotSummary;
+                const value = (record[key] as number) || 0;
+                return sum + value;
+              }, 0);
+              return (
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: total > 0 ? "#52c41a" : "#d9d9d9",
+                  }}
+                >
+                  {total}
+                </span>
+              );
+            },
+          },
+        ],
       })),
     },
-
     {
-      title: "จำนวนรอบขนส่ง",
+      title: "Total",
       dataIndex: "count",
       key: "count",
       width: 150,
@@ -83,35 +109,35 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({ shipments }) => {
         </span>
       ),
     },
-    {
-      title: "รายละเอียด",
-      dataIndex: "shipments",
-      key: "shipments",
-      render: (shipments: LogisticsShipment[]) => (
-        <div>
-          {shipments.length > 0 ? (
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-              {shipments.map((shipment) => (
-                <div
-                  key={shipment.id}
-                  style={{
-                    padding: "4px 8px",
-                    backgroundColor: "#e6f7ff",
-                    border: "1px solid #91d5ff",
-                    borderRadius: "4px",
-                    fontSize: "12px",
-                  }}
-                >
-                  {shipment.shipmentNo} - {shipment.route}
-                </div>
-              ))}
-            </div>
-          ) : (
-            <span style={{ color: "#d9d9d9" }}>-</span>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: "รายละเอียด",
+    //   dataIndex: "shipments",
+    //   key: "shipments",
+    //   render: (shipments: LogisticsShipment[]) => (
+    //     <div>
+    //       {shipments.length > 0 ? (
+    //         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+    //           {shipments.map((shipment) => (
+    //             <div
+    //               key={shipment.id}
+    //               style={{
+    //                 padding: "4px 8px",
+    //                 backgroundColor: "#e6f7ff",
+    //                 border: "1px solid #91d5ff",
+    //                 borderRadius: "4px",
+    //                 fontSize: "12px",
+    //               }}
+    //             >
+    //               {shipment.shipmentNo} - {shipment.route}
+    //             </div>
+    //           ))}
+    //         </div>
+    //       ) : (
+    //         <span style={{ color: "#d9d9d9" }}>-</span>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
