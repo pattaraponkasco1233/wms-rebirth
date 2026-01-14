@@ -7,7 +7,6 @@
   },
   "pages": {
     "dashboard": "แดชบอร์ด",
-    "bookingCar": "จองรถ",
     "truckCheckin": "เช็คอินรถบรรทุก",
     "home": "หน้าหลัก",
     "login": "เข้าสู่ระบบ"

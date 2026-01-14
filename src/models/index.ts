@@ -4,8 +4,5 @@
 // Dashboard Models
 export * from './dashboard/car.model';
 
-// Booking Car Models
-export * from './booking-car/booking-car.model';
-
 // Auth Models
 export * from './auth/auth.model';

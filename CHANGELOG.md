@@ -17,9 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
--
-
----
+- ***
 
 ## [1.0.0] - 2026-01-06
 
@@ -29,7 +27,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 🔐 ระบบ Login/Logout พร้อม Authentication
 - 📊 Dashboard หลักแสดงภาพรวมระบบ
 - 🚗 หน้า Dashboard Car พร้อมกราฟและสถิติ
-- 📋 หน้าจัดการ Booking Car (สร้าง, แก้ไข, ลบ)
 - 🔍 ระบบ Filter ข้อมูลแบบ Real-time
 - 📤 Export ข้อมูลเป็น Excel
 - 🌍 รองรับ Multiple Environments (Dev, UAT, Prod)

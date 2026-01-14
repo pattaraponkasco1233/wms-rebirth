@@ -262,7 +262,6 @@ import {
 - เปิดตัวเวอร์ชันแรก
 - ระบบ Login/Logout
 - Dashboard หลัก
-- การจัดการ Booking Car
 ```
 
 ---

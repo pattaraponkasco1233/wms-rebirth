@@ -61,24 +61,6 @@ export type CarrierValue = typeof CARRIER_OPTIONS[number]["value"];
 export type VehicleTypeValue = typeof VEHICLE_TYPE_OPTIONS[number]["value"];
 export type TruckCheckinStatusValue = typeof TRUCK_CHECKIN_STATUS_OPTIONS[number]["value"];
 
-/**
- * ========================================
- * BOOKING CAR CONSTANTS
- * ========================================
- */
-
-/**
- * Booking Car Status options
- */
-export const BOOKING_CAR_STATUS_OPTIONS = [
-    { value: "PENDING", labelKey: "bookingCar.statusPending" },
-    { value: "CONFIRMED", labelKey: "bookingCar.statusConfirmed" },
-    { value: "CANCELLED", labelKey: "bookingCar.statusCancelled" },
-    { value: "COMPLETED", labelKey: "bookingCar.statusCompleted" },
-] as const;
-
-// Booking Car Types
-export type BookingCarStatusValue = typeof BOOKING_CAR_STATUS_OPTIONS[number]["value"];
 
 /**
  * ========================================

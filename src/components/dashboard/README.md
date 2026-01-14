@@ -171,4 +171,3 @@ import { Row, Col } from "antd";
 ดูตัวอย่างการใช้งานได้ที่:
 
 - `/src/pages/dashboard/index.tsx` - Dashboard หลัก
-- `/src/pages/dashboard/booking-car.tsx` - Dashboard การจองรถ

@@ -144,16 +144,6 @@ import type {
 } from "../../models/dashboard/car.model";
 ```
 
-### 3. `src/services/api/bookingCarService.ts`
-
-```typescript
-// ✅ แก้แล้ว
-import type {
-  BookingCar,
-  // ...
-} from "../../models/booking-car/booking-car.model";
-```
-
 ### 4. `src/services/api/authService.ts`
 
 ```typescript
@@ -169,7 +159,6 @@ import type {
 ```typescript
 // ✅ แก้แล้ว
 export type { ... } from '../../models/dashboard/car.model';
-export type { ... } from '../../models/booking-car/booking-car.model';
 export type { ... } from '../../models/auth/auth.model';
 ```
 

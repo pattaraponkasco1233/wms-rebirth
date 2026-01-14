@@ -5,9 +5,8 @@ import { RouteProps } from "react-router-dom";
 import LoginPage from "../../../pages/authentication/Login";
 import RootRedirect from "../../../pages/misc/RootRedirect";
 import Dashboard from "../../../pages/dashboard/index";
-import DashboardBookingCar from "../../../pages/dashboard/booking-car";
 import DashboardCar from "../../../pages/dashboard/car";
-import BookingCarPage from "../../../pages/booking-car/index";
+// Dashboard Booking Car page removed
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
 import MainLayout from "../../../components/layout/MainLayout";
@@ -50,13 +49,6 @@ export const AppRoutes: CustomRouteProps[] = [
     pageTitle: "Dashboard",
   },
   {
-    path: "/dashboard/booking-car",
-    element: <DashboardBookingCar />,
-    isProtected: true,
-    layout: MainLayout,
-    pageTitle: "Dashboard จองรถ",
-  },
-  {
     path: "/dashboard/car",
     element: <DashboardCar />,
     isProtected: true,
@@ -64,14 +56,7 @@ export const AppRoutes: CustomRouteProps[] = [
     pageTitle: "Dashboard รถขนส่ง",
   },
 
-  // ==================== Booking Car Routes ====================
-  {
-    path: "/booking-car",
-    element: <BookingCarPage />,
-    isProtected: true,
-    layout: MainLayout,
-    pageTitle: "จองรถขนส่ง",
-  },
+  // Booking car page removed
 
   // ==================== Truck Check-in Routes ====================
   {

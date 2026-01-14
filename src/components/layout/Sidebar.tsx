@@ -17,16 +17,10 @@ import {
 const menuItems = [
   { key: "/dashboard", icon: <PieChartOutlined />, label: "Dashboard" },
   {
-    key: "/dashboard/booking-car",
-    icon: <DashboardOutlined />,
-    label: "Dashboard จองรถ",
-  },
-  {
     key: "/dashboard/car",
     icon: <LineChartOutlined />,
     label: "Dashboard รถขนส่ง",
   },
-  { key: "/booking-car", icon: <CarOutlined />, label: "จองรถขนส่ง" },
   {
     key: "/truck-checkin",
     icon: <ContainerOutlined />,

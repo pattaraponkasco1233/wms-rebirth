@@ -7,7 +7,6 @@
   },
   "pages": {
     "dashboard": "Dashboard",
-    "bookingCar": "Booking Car",
     "truckCheckin": "Truck Check-in",
     "home": "Home",
     "login": "Login"

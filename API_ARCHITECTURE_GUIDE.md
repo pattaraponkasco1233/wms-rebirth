@@ -8,8 +8,6 @@ src/
 │   ├── index.ts                 (Export ทั้งหมด)
 │   ├── dashboard/
 │   │   └── car.model.ts         (Dashboard Car Models)
-│   ├── booking-car/
-│   │   └── booking-car.model.ts (Booking Car Models)
 │   └── auth/
 │       └── auth.model.ts        (Authentication Models)
 │
@@ -18,14 +16,11 @@ src/
 │       ├── index.ts             (Export ทั้งหมด)
 │       ├── axiosInstance.ts     (Axios Config)
 │       ├── dashboardCarService.ts
-│       ├── bookingCarService.ts
 │       └── authService.ts
 │
 └── pages/
     ├── dashboard/
     │   └── car.tsx              (ใช้ dashboardCarApi)
-    ├── booking-car/
-    │   └── index.tsx            (ใช้ bookingCarApi)
     └── authentication/
         └── Login.tsx            (ใช้ authApi)
 ```
@@ -37,7 +32,7 @@ src/
 ### 1. **Models (Folder กลาง - แยกตามหน้า)**
 
 - เก็บ **Interfaces, Types, Constants** ทั้งหมด
-- **แยกตาม Feature** (dashboard, booking-car, auth)
+- **แยกตาม Feature** (dashboard, auth)
 - ไม่มีโค้ด logic, เป็นแค่ type definitions
 
 ### 2. **API Services (Folder กลาง - รวมทุกหน้า)**
@@ -140,73 +135,6 @@ const DashboardCar = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  return <div>...</div>;
-};
-```
-
-### 2. Booking Car Page
-
-```typescript
-// src/pages/booking-car/index.tsx
-import { useState } from "react";
-import { Form, message } from "antd";
-import { bookingCarApi } from "@/services/api";
-import type {
-  BookingCar,
-  BookingCarForm,
-  BookingCarFilter,
-} from "@/models/booking-car/booking-car.model";
-
-const BookingCarPage = () => {
-  const [bookings, setBookings] = useState<BookingCar[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  // ดึงข้อมูล
-  const fetchBookings = async (filter?: BookingCarFilter) => {
-    setLoading(true);
-    try {
-      const result = await bookingCarApi.getBookings(filter);
-      setBookings(result.data);
-    } catch (error) {
-      message.error("เกิดข้อผิดพลาด");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // สร้างใหม่
-  const handleCreate = async (values: BookingCarForm) => {
-    try {
-      const newBooking = await bookingCarApi.createBooking(values);
-      message.success("สร้างข้อมูลสำเร็จ");
-      setBookings([newBooking, ...bookings]);
-    } catch (error) {
-      message.error("สร้างข้อมูลไม่สำเร็จ");
-    }
-  };
-
-  // แก้ไข
-  const handleUpdate = async (id: string, values: Partial<BookingCarForm>) => {
-    try {
-      const updated = await bookingCarApi.updateBooking(id, values);
-      message.success("แก้ไขข้อมูลสำเร็จ");
-      // Update state
-    } catch (error) {
-      message.error("แก้ไขข้อมูลไม่สำเร็จ");
-    }
-  };
-
-  // ลบ
-  const handleDelete = async (id: string) => {
-    try {
-      await bookingCarApi.deleteBooking(id);
-      message.success("ลบข้อมูลสำเร็จ");
-      setBookings(bookings.filter((b) => b.id !== id));
-    } catch (error) {
-      message.error("ลบข้อมูลไม่สำเร็จ");
-    }
-  };
 
   return <div>...</div>;
 };
@@ -350,8 +278,6 @@ import type { DashboardCarFilter, BookingCar } from "@/models";
 // ❌ Messy imports
 import { dashboardCarApi } from "@/services/api/dashboardCarService";
 import { DashboardCarFilter } from "@/services/api/dashboardCarService";
-import { bookingCarApi } from "@/services/api/bookingCarService";
-import { BookingCar } from "@/services/api/bookingCarService";
 ```
 
 ### 5. **Reusability**
@@ -365,8 +291,8 @@ import { BookingCar } from "@/services/api/bookingCarService";
 
 | ส่วน             | ที่เก็บ                                            | ประกอบด้วย                   | ตัวอย่าง                                           |
 | ---------------- | -------------------------------------------------- | ---------------------------- | -------------------------------------------------- |
-| **Models**       | `src/models/{feature}/`                            | Interfaces, Types, Constants | `car.model.ts`, `booking-car.model.ts`             |
-| **API Services** | `src/services/api/`                                | API calls, Axios requests    | `dashboardCarService.ts`, `bookingCarService.ts`   |
+| **Models**       | `src/models/{feature}/`                            | Interfaces, Types, Constants | `car.model.ts`                                     |
+| **API Services** | `src/services/api/`                                | API calls, Axios requests    | `dashboardCarService.ts`                           |
 | **Export**       | `src/models/index.ts`, `src/services/api/index.ts` | Central exports              | `export * from './dashboard/car.model'`            |
 | **Usage**        | `src/pages/{feature}/`                             | Import & use                 | `import { dashboardCarApi } from '@/services/api'` |
 

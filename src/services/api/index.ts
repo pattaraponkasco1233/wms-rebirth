@@ -6,8 +6,6 @@ export { default as axiosInstance } from './axiosInstance';
 // Dashboard APIs
 export { dashboardCarApi } from './dashboardCarService';
 
-// Booking Car APIs
-export { bookingCarApi } from './bookingCarService';
 
 // Auth APIs
 export { authApi } from './authService';
@@ -24,16 +22,7 @@ export type {
     RecentBooking,
 } from '../../models/dashboard/car.model';
 
-export type {
-    // Booking Car Types
-    BookingCar,
-    BookingCarForm,
-    BookingCarFilter,
-    BookingCarResponse,
-    BookingCarListResponse,
-    BookingCarStatus,
-    VehicleType,
-} from '../../models/booking-car/booking-car.model';
+
 
 export type {
     // Auth Types

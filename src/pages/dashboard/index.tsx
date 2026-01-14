@@ -120,19 +120,7 @@ const Dashboard = () => {
 
   // การดำเนินการด่วน
   const quickActions: QuickAction[] = [
-    {
-      key: "create-booking",
-      label: "สร้างการจองรถใหม่",
-      icon: <PlusOutlined />,
-      type: "primary",
-      onClick: () => navigate("/booking-car"),
-    },
-    {
-      key: "view-bookings",
-      label: "ดูการจองทั้งหมด",
-      icon: <EyeOutlined />,
-      onClick: () => navigate("/booking-car"),
-    },
+    // Booking-related quick actions removed
   ];
 
   return (
