@@ -7,11 +7,10 @@ import {
   DesktopOutlined,
   PieChartOutlined,
   UserOutlined,
-  CarOutlined,
-  DashboardOutlined,
   LineChartOutlined,
   ContainerOutlined,
   ControlOutlined,
+  MonitorOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -30,6 +29,11 @@ const menuItems = [
     key: "/logistics-planner",
     icon: <ControlOutlined />,
     label: "Logistics Planner",
+  },
+  {
+    key: "/proactive-monitor",
+    icon: <MonitorOutlined />,
+    label: "Proactive Monitor",
   },
   { key: "/users", icon: <UserOutlined />, label: "ผู้ใช้งาน" },
   { key: "/settings", icon: <DesktopOutlined />, label: "ตั้งค่าระบบ" },

@@ -9,6 +9,7 @@ import DashboardCar from "../../../pages/dashboard/car";
 // Dashboard Booking Car page removed
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
+import { ProactiveMonitorCockpit } from "../../../pages/proactive-monitor";
 import MainLayout from "../../../components/layout/MainLayout";
 
 /**
@@ -74,5 +75,14 @@ export const AppRoutes: CustomRouteProps[] = [
     isProtected: true,
     layout: MainLayout,
     pageTitle: "Logistics Planner Cockpit",
+  },
+
+  // ==================== Proactive Monitor Routes ====================
+  {
+    path: "/proactive-monitor",
+    element: <ProactiveMonitorCockpit />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Pro-active Monitor Cockpit",
   },
 ];
