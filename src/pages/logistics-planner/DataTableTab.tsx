@@ -11,6 +11,7 @@ import {
   Col,
   Card,
   InputNumber,
+  DatePicker,
 } from "antd";
 import { SearchOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
@@ -22,7 +23,10 @@ import {
 } from "../../models/logistics-planner/logistics-planner.model";
 import { TABLE } from "../../constant/constants";
 
+import { Dayjs } from "dayjs";
+
 import { useTranslation } from "react-i18next";
+import { formatDDMMYYYY } from "../../utils/Utils";
 
 const { Option } = Select;
 
@@ -43,6 +47,9 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   const [filterLicense, setFilterLicense] = useState<string>("");
   const [filterShipmentNo, setFilterShipmentNo] = useState<string>("");
   const [filterRoute, setFilterRoute] = useState<string>("");
+  const [filterDate, setFilterDate] = useState<Dayjs | null>(null);
+  const [filterJobNumber, setFilterJobNumber] = useState<string>("");
+  const [filterTime, setFilterTime] = useState<string>("");
 
   // Applied filter states (ค่าที่ใช้กรองจริง)
   const [appliedFilterPlant, setAppliedFilterPlant] = useState<string>("");
@@ -50,6 +57,12 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   const [appliedFilterShipmentNo, setAppliedFilterShipmentNo] =
     useState<string>("");
   const [appliedFilterRoute, setAppliedFilterRoute] = useState<string>("");
+  const [appliedFilterDate, setAppliedFilterDate] = useState<Dayjs | null>(
+    null
+  );
+  const [appliedFilterJobNumber, setAppliedFilterJobNumber] =
+    useState<string>("");
+  const [appliedFilterTime, setAppliedFilterTime] = useState<string>("");
 
   // Edit states
   const [editingKey, setEditingKey] = useState<string>("");
@@ -93,7 +106,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   const filteredData = useMemo(() => {
     return shipments.filter((shipment) => {
       const matchPlant = appliedFilterPlant
-        ? shipment.route
+        ? shipment.plant
             .toLowerCase()
             .includes(appliedFilterPlant.toLowerCase())
         : true;
@@ -112,8 +125,13 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             .toLowerCase()
             .includes(appliedFilterRoute.toLowerCase())
         : true;
+      const matchDate = appliedFilterDate
+        ? shipment.loadDate === appliedFilterDate.format("DDMMYYYY")
+        : true;
 
-      return matchPlant && matchLicense && matchShipmentNo && matchRoute;
+      return (
+        matchPlant && matchLicense && matchShipmentNo && matchRoute && matchDate
+      );
     });
   }, [
     shipments,
@@ -121,6 +139,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     appliedFilterLicense,
     appliedFilterShipmentNo,
     appliedFilterRoute,
+    appliedFilterDate,
   ]);
 
   // Columns สำหรับตาราง
@@ -133,6 +152,12 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
       fixed: "left",
     },
     {
+      title: "Plant",
+      dataIndex: "plant",
+      key: "plant",
+      width: 120,
+    },
+    {
       title: "Route",
       dataIndex: "route",
       key: "route",
@@ -143,6 +168,9 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
       dataIndex: "loadDate",
       key: "loadDate",
       width: 120,
+      render: (value: string) => {
+        return formatDDMMYYYY(value);
+      },
     },
     {
       title: "Job Number",
@@ -318,10 +346,10 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
               size="small"
               onClick={handleSave}
             >
-              Submit
+              {t("actions.submit")}
             </Button>
             <Button size="small" onClick={handleCancel}>
-              Cancel
+              {t("actions.cancel")}
             </Button>
           </Space>
         ) : (
@@ -331,7 +359,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
             disabled={editingKey !== ""}
             onClick={() => handleEdit(record)}
           >
-            Edit
+            {t("actions.edit")}
           </Button>
         );
       },
@@ -345,6 +373,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     setAppliedFilterLicense(filterLicense);
     setAppliedFilterShipmentNo(filterShipmentNo);
     setAppliedFilterRoute(filterRoute);
+    setAppliedFilterDate(filterDate);
   };
 
   // รีเซ็ตฟิลเตอร์
@@ -353,21 +382,23 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     setFilterLicense("");
     setFilterShipmentNo("");
     setFilterRoute("");
+    setFilterDate(null);
     setAppliedFilterPlant("");
     setAppliedFilterLicense("");
     setAppliedFilterShipmentNo("");
     setAppliedFilterRoute("");
+    setAppliedFilterDate(null);
   };
 
   return (
     <div>
       {/* Filter Section */}
-      <Card style={{ marginBottom: "16px" }}>
+      <Card>
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={12} md={6}>
             <div>
               <Input
-                placeholder="ค้นหา Plant หรือ Route"
+                placeholder="ค้นหา Plant"
                 prefix={<SearchOutlined />}
                 value={filterPlant}
                 onChange={(e) => setFilterPlant(e.target.value)}
@@ -389,6 +420,29 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
           <Col xs={24} sm={12} md={6}>
             <div>
               <Input
+                placeholder="ค้นหา Route"
+                prefix={<SearchOutlined />}
+                value={filterRoute}
+                onChange={(e) => setFilterRoute(e.target.value)}
+                // onPressEnter={handleSearch}
+              />
+            </div>
+          </Col>
+          <Col xs={24} sm={12} md={6}>
+            <DatePicker
+              placeholder={t("truckCheckin.selectDate")}
+              format="DD/MM/YYYY"
+              value={filterDate}
+              onChange={(date) => setFilterDate(date)}
+              style={{ width: "100%" }}
+              allowClear
+            />
+          </Col>
+        </Row>
+        <Row gutter={[16, 16]} style={{ marginTop: "10px" }}>
+          <Col xs={24} sm={12} md={6}>
+            <div>
+              <Input
                 placeholder="ค้นหา Shipment No"
                 prefix={<SearchOutlined />}
                 value={filterShipmentNo}
@@ -397,6 +451,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
               />
             </div>
           </Col>
+
           <Col xs={24} sm={12} md={6}>
             <div style={{ display: "flex", gap: "8px" }}>
               <Button

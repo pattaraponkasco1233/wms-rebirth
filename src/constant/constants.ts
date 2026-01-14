@@ -46,6 +46,57 @@ export const VEHICLE_TYPE_OPTIONS = [
 ] as const;
 
 /**
+ * List time options  ไว้สำหรับเลือกเวลาเช็คอินรถบรรทุก รูปแบบ HHMMSS 8 โมงเช้า - ตี 5
+ */
+
+export const LIST_TIME_OPTIONS = [
+    { value: "080000", label: "08:00" },
+    { value: "083000", label: "08:30" },
+    { value: "090000", label: "09:00" },
+    { value: "093000", label: "09:30" },
+    { value: "100000", label: "10:00" },
+    { value: "103000", label: "10:30" },
+    { value: "110000", label: "11:00" },
+    { value: "113000", label: "11:30" },
+    { value: "120000", label: "12:00" },
+    { value: "123000", label: "12:30" },
+    { value: "130000", label: "13:00" },
+    { value: "133000", label: "13:30" },
+    { value: "140000", label: "14:00" },
+    { value: "143000", label: "14:30" },
+    { value: "150000", label: "15:00" },
+    { value: "153000", label: "15:30" },
+    { value: "160000", label: "16:00" },
+    { value: "163000", label: "16:30" },
+    { value: "170000", label: "17:00" },
+    { value: "173000", label: "17:30" },
+    { value: "180000", label: "18:00" },
+    { value: "183000", label: "18:30" },
+    { value: "190000", label: "19:00" },
+    { value: "193000", label: "19:30" },
+    { value: "200000", label: "20:00" },
+    { value: "203000", label: "20:30" },
+    { value: "210000", label: "21:00" },
+    { value: "213000", label: "21:30" },
+    { value: "220000", label: "22:00" },
+    { value: "223000", label: "22:30" },
+    { value: "230000", label: "23:00" },
+    { value: "233000", label: "23:30" },
+    { value: "000000", label: "00:00" },
+    { value: "003000", label: "00:30" },
+    { value: "010000", label: "01:00" },
+    { value: "013000", label: "01:30" },
+    { value: "020000", label: "02:00" },
+    { value: "023000", label: "02:30" },
+    { value: "030000", label: "03:00" },
+    { value: "033000", label: "03:30" },
+    { value: "040000", label: "04:00" },
+    { value: "043000", label: "04:30" },
+    { value: "050000", label: "05:00" }
+] as const;
+
+
+/**
  * Truck Check-in Status options with translation keys
  */
 export const TRUCK_CHECKIN_STATUS_OPTIONS = [
@@ -58,6 +109,7 @@ export type PlantValue = typeof PLANT_OPTIONS[number]["value"];
 export type CarrierValue = typeof CARRIER_OPTIONS[number]["value"];
 export type VehicleTypeValue = typeof VEHICLE_TYPE_OPTIONS[number]["value"];
 export type TruckCheckinStatusValue = typeof TRUCK_CHECKIN_STATUS_OPTIONS[number]["value"];
+export type ListTimeValue = typeof LIST_TIME_OPTIONS[number]["value"];
 
 
 /**

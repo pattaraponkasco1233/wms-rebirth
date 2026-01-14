@@ -76,7 +76,7 @@
     "shipmentNoMinLength": "เลขที่ Shipment ต้องมีอย่างน้อย 5 ตัวอักษร",
     "driverRequired": "กรุณากรอกชื่อคนขับ",
     "telRequired": "กรุณากรอกเบอร์โทร",
-    "telInvalid": "รูปแบบเบอร์โทรไม่ถูกต้อง (ใช้ตัวเลขและ - เท่านั้น)",
+    "telInvalid": "รูปแบบเบอร์โทรไม่ถูกต้อง (ใช้ตัวเลขเท่านั้น)",
     "statusRequired": "กรุณาเลือกสถานะ",
     "plantRequired": "กรุณาเลือก Plant",
     "carrierRequired": "กรุณาเลือก Carrier",

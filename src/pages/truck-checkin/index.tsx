@@ -98,10 +98,9 @@ const TruckCheckinPage: React.FC = () => {
         vehicleType: "10 ล้อ",
         license: "80-1234",
         driver: "สมชาย ใจดี",
-        tel: "081-234-5678",
+        tel: "0812345678",
         checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
-        remark: "ปกติ",
         createdAt: "2026-01-13T08:30:00",
         updatedAt: "2026-01-13T08:30:00",
       },
@@ -112,10 +111,9 @@ const TruckCheckinPage: React.FC = () => {
         vehicleType: "6 ล้อ",
         license: "70-5678",
         driver: "สมหญิง รักงาน",
-        tel: "082-345-6789",
+        tel: "0823456789",
         checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
-        remark: "",
         createdAt: "2026-01-13T09:15:00",
         updatedAt: "2026-01-13T09:15:00",
       },
@@ -126,10 +124,9 @@ const TruckCheckinPage: React.FC = () => {
         vehicleType: "4 ล้อ",
         license: "60-9999",
         driver: "สมศักดิ์ ขยัน",
-        tel: "083-456-7890",
+        tel: "0834567890",
         checkin: "13/1/2026 10:00",
         status: "NOT_CHECKED_IN" as TruckCheckinStatus,
-        remark: "รอเข้า",
         createdAt: "2026-01-13T10:00:00",
         updatedAt: "2026-01-13T10:00:00",
       },
@@ -140,10 +137,9 @@ const TruckCheckinPage: React.FC = () => {
         vehicleType: "8 ล้อ",
         license: "50-1111",
         driver: "วิชัย มั่นคง",
-        tel: "084-567-8901",
+        tel: "0845678901",
         checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
-        remark: "เข้าล่าช้า",
         createdAt: "2026-01-12T14:30:00",
         updatedAt: "2026-01-12T14:30:00",
       },
@@ -154,10 +150,9 @@ const TruckCheckinPage: React.FC = () => {
         vehicleType: "8 ล้อ",
         license: "40-2222",
         driver: "ประสิทธิ์ เร็ว",
-        tel: "085-678-9012",
+        tel: "0856789012",
         checkin: "13/1/2026 10:00",
         status: "CHECKED_IN" as TruckCheckinStatus,
-        remark: "",
         createdAt: "2026-01-12T11:00:00",
         updatedAt: "2026-01-12T11:00:00",
       },
@@ -199,7 +194,6 @@ const TruckCheckinPage: React.FC = () => {
       shipmentNo: record.shipmentNo || "",
       checkin: record.checkin,
       status: record.status,
-      remark: record.remark,
     });
     setIsModalVisible(true);
   };
@@ -233,7 +227,6 @@ const TruckCheckinPage: React.FC = () => {
         shipmentNo: values.shipmentNo,
         checkin: Date.now().toString(), // สมมติใช้เวลาปัจจุบัน
         status: values.status,
-        remark: values.remark,
       };
 
       if (editingRecord) {
@@ -330,12 +323,6 @@ const TruckCheckinPage: React.FC = () => {
       render: (status: TruckCheckinStatus) => renderStatusTag(status),
     },
     {
-      title: t("truckCheckin.remark"),
-      dataIndex: "remark",
-      key: "remark",
-      width: 200,
-    },
-    {
       title: t("truckCheckin.action"),
       key: "action",
       width: 100,
@@ -407,13 +394,13 @@ const TruckCheckinPage: React.FC = () => {
                 {t("actions.search")}
               </Button>
               <Button onClick={handleReset}>{t("actions.clearFilter")}</Button>
-              <Button
+              {/* <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleAdd}
               >
                 {t("actions.addData")}
-              </Button>
+              </Button> */}
             </Space>
           </Col>
         </Row>
@@ -607,18 +594,7 @@ const TruckCheckinPage: React.FC = () => {
               >
                 <Input
                   placeholder={t("truckCheckin.telPlaceholder")}
-                  maxLength={12}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={24}>
-              <Form.Item name="remark" label={t("truckCheckin.remark")}>
-                <Input.TextArea
-                  rows={3}
-                  placeholder={t("truckCheckin.remarkPlaceholder")}
+                  maxLength={10}
                 />
               </Form.Item>
             </Col>

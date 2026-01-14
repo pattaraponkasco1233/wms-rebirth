@@ -1,6 +1,6 @@
 // src/models/logistics-planner/logistics-planner.model.ts
 
-import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS } from "../../constant/constants";
+import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS, LIST_TIME_OPTIONS } from "../../constant/constants";
 
 /**
  * Interface สำหรับข้อมูล Logistics Planner
@@ -8,6 +8,7 @@ import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS } from "../../constant/constants"
 export interface LogisticsShipment {
     id: string;
     shipmentNo: string;
+    plant: string;
     route: string;
     loadDate: string;
     jobNumber: string;
@@ -45,29 +46,9 @@ export const VEHICLE_TYPES = VEHICLE_TYPE_OPTIONS.map((option) => option.label);
 export const CARRIERS = CARRIER_OPTIONS.map((option) => option.label);
 
 /**
- * ตัวเลือกสำหรับ First Time
+ * ตัวเลือกสำหรับ First Time (นำมาจาก constants)
  */
-export const FIRST_TIME_OPTIONS = [
-    "8:00",
-    "8:30",
-    "9:00",
-    "9:30",
-    "10:00",
-    "10:30",
-    "11:00",
-    "11:30",
-    "12:00",
-    "12:30",
-    "13:00",
-    "13:30",
-    "14:00",
-    "14:30",
-    "15:00",
-    "15:30",
-    "16:00",
-    "16:30",
-    "17:00",
-];
+export const FIRST_TIME_OPTIONS = LIST_TIME_OPTIONS.map((time) => time.label);
 
 /**
  * สร้างช่วงเวลาสำหรับ Tab 1 (8:00 - 9:00 ถึง 04:00 - 05:00)
