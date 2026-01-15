@@ -1,7 +1,7 @@
 // src/pages/proactive-monitor/OverallMonitoringTab.tsx
 
-import React, { useMemo, useState } from "react";
-import { Table, DatePicker, Row, Col, Card } from "antd";
+import React, { useMemo, useState, useEffect } from "react";
+import { Table, DatePicker, Row, Col, Card, Spin } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 import {
@@ -30,8 +30,11 @@ import {
   getRegionLabel,
   formatTimeHHMMSS,
 } from "../../utils/formatters";
-import { MOCK_SHIPMENT_DATA } from "./mockData";
 import { OVERALL_MONITORING_STYLES } from "./styles";
+import {
+  fetchShipmentData,
+  ShipmentApiResponse,
+} from "../../services/api/proactiveMonitorApi";
 
 import { useTranslation } from "react-i18next";
 
@@ -57,10 +60,32 @@ const OverallMonitoringTab: React.FC = () => {
   const { t } = useTranslation(); // เพิ่ม useTranslation hook
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
+  // State สำหรับเก็บข้อมูลจาก API
+  const [apiData, setApiData] = useState<ShipmentApiResponse[]>([]);
+  // State สำหรับ loading
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Effect สำหรับดึงข้อมูลจาก API เมื่อเปลี่ยนวันที่
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchShipmentData(selectedDate);
+        setApiData(data);
+      } catch (error) {
+        console.error("Error loading shipment data:", error);
+        setApiData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, [selectedDate]);
 
   // ข้อมูล Mock สำหรับตาราง Shipment (ใช้ข้อมูล JSON แทนการสุ่ม)
   const shipmentDataSource = useMemo(() => {
-    return MOCK_SHIPMENT_DATA.map((item, index) => ({
+    return apiData.map((item, index) => ({
       ...item,
       key: `shipment-${index}`,
       plantLoadDate: selectedDate.format(DATE_FORMATS.DISPLAY),
@@ -68,7 +93,7 @@ const OverallMonitoringTab: React.FC = () => {
         .subtract(Math.floor(Math.random() * 3), "day")
         .format(DATE_FORMATS.DISPLAY_WITH_TIME),
     }));
-  }, [selectedDate]);
+  }, [apiData, selectedDate]);
 
   // คำนวณข้อมูลสำหรับกราฟจำนวนตามภาค - จากข้อมูล shipmentDataSource
   const regionData = useMemo(() => {
@@ -307,110 +332,137 @@ const OverallMonitoringTab: React.FC = () => {
               style={{ width: "100%" }}
               placeholder="เลือกวันที่"
               allowClear={false}
+              disabled={loading}
             />
           </Card>
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col span={24}>
-          <Table
-            columns={columns}
-            dataSource={dataSource}
-            rowKey="key"
-            pagination={{
-              pageSize: TABLE.pageSizeDefault,
-              // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
-            }}
-            scroll={{ x: 1000 }}
-            bordered
-            size="middle"
-          />
-        </Col>
-      </Row>
 
-      {/* Charts Section - Region and Status */}
-      <Row gutter={16} style={{ marginTop: "12px" }}>
-        {/* ด้านซ้าย: กราฟแท่งแนวนอนแยกตามภาค */}
-        <Col xs={24} lg={12}>
-          <Card title="จำนวน Shipment แยกตามภาค" style={{ height: "100%" }}>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={regionData} layout="vertical">
-                <defs>
-                  <linearGradient id="colorRegion" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.8} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="region" type="category" width={80} />
-                <Tooltip />
-                <Bar
-                  dataKey="count"
-                  name="จำนวน"
-                  fill="url(#colorRegion)"
-                  radius={[0, 8, 8, 0]}
-                >
-                  <LabelList
-                    dataKey="count"
-                    position="right"
-                    style={CHART_LABEL_STYLE}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        </Col>
-
-        {/* ด้านขวา: กราฟแท่งแนวนอนแยกตาม Status */}
-        <Col xs={24} lg={12}>
-          <Card title="จำนวน Shipment แยกตาม Status" style={{ height: "100%" }}>
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart data={statusData} layout="vertical">
-                <defs>
-                  <linearGradient id="colorStatus" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8} />
-                    <stop offset="95%" stopColor="#ff7c7c" stopOpacity={0.8} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis type="number" />
-                <YAxis dataKey="status" type="category" width={130} />
-                <Tooltip />
-                <Bar
-                  dataKey="count"
-                  name="จำนวน"
-                  fill="url(#colorStatus)"
-                  radius={[0, 8, 8, 0]}
-                >
-                  <LabelList
-                    dataKey="count"
-                    position="right"
-                    style={CHART_LABEL_STYLE}
-                  />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </Card>
-        </Col>
-      </Row>
-
-      <Row gutter={16} style={{ marginTop: "12px" }}>
-        {/* ตารางข้อมูล Shipment */}
-        <Col span={24}>
-          <Card title="รายละเอียด Shipment" style={{ marginTop: "16px" }}>
+      <Spin spinning={loading} tip="กำลังโหลดข้อมูล...">
+        <Row gutter={16}>
+          <Col span={24}>
             <Table
-              columns={shipmentColumns}
-              dataSource={shipmentDataSource}
+              columns={columns}
+              dataSource={dataSource}
               rowKey="key"
               pagination={{
                 pageSize: TABLE.pageSizeDefault,
+                // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
               }}
-              size="small"
+              scroll={{ x: 1000 }}
+              bordered
+              size="middle"
             />
-          </Card>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
+
+        {/* Charts Section - Region and Status */}
+        <Row gutter={16} style={{ marginTop: "12px" }}>
+          {/* ด้านซ้าย: กราฟแท่งแนวนอนแยกตามภาค */}
+          <Col xs={24} lg={12}>
+            <Card title="จำนวน Shipment แยกตามภาค" style={{ height: "100%" }}>
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={regionData} layout="vertical">
+                  <defs>
+                    <linearGradient
+                      id="colorRegion"
+                      x1="0"
+                      y1="0"
+                      x2="1"
+                      y2="0"
+                    >
+                      <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                      <stop
+                        offset="95%"
+                        stopColor="#82ca9d"
+                        stopOpacity={0.8}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="region" type="category" width={80} />
+                  <Tooltip />
+                  <Bar
+                    dataKey="count"
+                    name="จำนวน"
+                    fill="url(#colorRegion)"
+                    radius={[0, 8, 8, 0]}
+                  >
+                    <LabelList
+                      dataKey="count"
+                      position="right"
+                      style={CHART_LABEL_STYLE}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+
+          {/* ด้านขวา: กราฟแท่งแนวนอนแยกตาม Status */}
+          <Col xs={24} lg={12}>
+            <Card
+              title="จำนวน Shipment แยกตาม Status"
+              style={{ height: "100%" }}
+            >
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart data={statusData} layout="vertical">
+                  <defs>
+                    <linearGradient
+                      id="colorStatus"
+                      x1="0"
+                      y1="0"
+                      x2="1"
+                      y2="0"
+                    >
+                      <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8} />
+                      <stop
+                        offset="95%"
+                        stopColor="#ff7c7c"
+                        stopOpacity={0.8}
+                      />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="status" type="category" width={130} />
+                  <Tooltip />
+                  <Bar
+                    dataKey="count"
+                    name="จำนวน"
+                    fill="url(#colorStatus)"
+                    radius={[0, 8, 8, 0]}
+                  >
+                    <LabelList
+                      dataKey="count"
+                      position="right"
+                      style={CHART_LABEL_STYLE}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row gutter={16} style={{ marginTop: "12px" }}>
+          {/* ตารางข้อมูล Shipment */}
+          <Col span={24}>
+            <Card title="รายละเอียด Shipment" style={{ marginTop: "16px" }}>
+              <Table
+                columns={shipmentColumns}
+                dataSource={shipmentDataSource}
+                rowKey="key"
+                pagination={{
+                  pageSize: TABLE.pageSizeDefault,
+                }}
+                size="small"
+              />
+            </Card>
+          </Col>
+        </Row>
+      </Spin>
     </div>
   );
 };
