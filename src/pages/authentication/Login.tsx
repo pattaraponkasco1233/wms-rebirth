@@ -64,7 +64,7 @@ const LoginPage: React.FC = () => {
   const onFinish = async (values: LoginFormValues) => {
     updateWmsStorage({
       token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InBhdHRhcmFwb25ub29rQGdtYWlsLmNvbSIsImxldmVsX3VzZXIiOiIxIiwiaXAiOiI1OC4xMzYuNTkuNjAiLCJleHAiOjE3Njg0NjcwMTYsImlzcyI6Ikthc2NvX0F1dGhlbnRpY2F0aW9uX0FQSSIsImF1ZCI6IlRNUyJ9.IQsFs5KboL1EOGOk7Asxj7M_gPfBopmo2d4RekoCW1g",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluZGV2IiwibGV2ZWxfdXNlciI6IjEiLCJpcCI6IjU4LjEzNi41OS42MCIsImV4cCI6MTc2ODU1NDM4MCwiaXNzIjoiS2FzY29fQXV0aGVudGljYXRpb25fQVBJIiwiYXVkIjoiVE1TIn0.sFJ-zNP26qzIqpjpIYhX5NZRQNnf5-7z3Hmeavu4DE8",
       refreshToken: "dummyRefreshToken",
     });
     navigate("/proactive-monitor", { replace: true });

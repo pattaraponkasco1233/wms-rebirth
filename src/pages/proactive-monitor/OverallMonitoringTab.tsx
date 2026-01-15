@@ -349,8 +349,7 @@ const OverallMonitoringTab: React.FC = () => {
                 pageSize: TABLE.pageSizeDefault,
                 // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
               }}
-              scroll={{ x: 1000 }}
-              bordered
+              scroll={{ x: 500 }}
               size="middle"
             />
           </Col>
@@ -391,7 +390,7 @@ const OverallMonitoringTab: React.FC = () => {
                   >
                     <LabelList
                       dataKey="count"
-                      position="right"
+                      position="center"
                       style={CHART_LABEL_STYLE}
                     />
                   </Bar>
@@ -436,7 +435,7 @@ const OverallMonitoringTab: React.FC = () => {
                   >
                     <LabelList
                       dataKey="count"
-                      position="right"
+                      position="center"
                       style={CHART_LABEL_STYLE}
                     />
                   </Bar>
