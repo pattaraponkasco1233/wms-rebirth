@@ -5,7 +5,6 @@ import { Table, DatePicker, Row, Col, Card } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import dayjs, { Dayjs } from "dayjs";
 import {
-  CARRIER_OPTIONS,
   LIST_TIEM_SLOTS,
   TABLE,
   DATE_FORMATS,
@@ -24,6 +23,15 @@ import {
   ResponsiveContainer,
   LabelList,
 } from "recharts";
+import {
+  getPlantLabel,
+  getCarrierLabel,
+  getStatusLabel,
+  getRegionLabel,
+  formatTimeHHMMSS,
+} from "../../utils/formatters";
+import { MOCK_SHIPMENT_DATA } from "./mockData";
+import { OVERALL_MONITORING_STYLES } from "./styles";
 
 import { useTranslation } from "react-i18next";
 
@@ -44,75 +52,6 @@ interface ShipmentData {
   timeSlot: string;
   booked: string;
 }
-
-// Mock Data - ข้อมูล Shipment ตัวอย่าง (ใช้ value จาก Constants)
-const MOCK_SHIPMENT_DATA: Omit<
-  ShipmentData,
-  "key" | "plantLoadDate" | "booked"
->[] = [
-  {
-    shipmentNo: "SH000001",
-    plant: "snk", // PLANT_OPTIONS[0].value
-    carrier: "KERRY_EXPRESS", // CARRIER_OPTIONS[0].value
-    shipmentStatus: "001", // STATUS_OPTIONS[0].value - Loading Scheduler
-    region: "CENTRAL", // REGION_OPTIONS[2].value - นครหลวง
-    loadingScheduled: "080000", // LIST_TIME_OPTIONS[0].value
-    timeSlot: "08:00 - 09:00",
-  },
-  {
-    shipmentNo: "SH000002",
-    plant: "glx", // PLANT_OPTIONS[1].value
-    carrier: "FLASH_EXPRESS", // CARRIER_OPTIONS[1].value
-    shipmentStatus: "002", // STATUS_OPTIONS[1].value - Booked
-    region: "EAST", // REGION_OPTIONS[3].value - ตะวันออก
-    loadingScheduled: "093000", // LIST_TIME_OPTIONS[3].value
-    timeSlot: "09:00 - 10:00",
-  },
-  {
-    shipmentNo: "SH000003",
-    plant: "ssi", // PLANT_OPTIONS[2].value
-    carrier: "JT_EXPRESS", // CARRIER_OPTIONS[2].value
-    shipmentStatus: "003", // STATUS_OPTIONS[2].value - Start Pick
-    region: "NORTHEAST", // REGION_OPTIONS[1].value - อีสาน
-    loadingScheduled: "100000", // LIST_TIME_OPTIONS[4].value
-    timeSlot: "10:00 - 11:00",
-  },
-  {
-    shipmentNo: "SH000004",
-    plant: "snk", // PLANT_OPTIONS[0].value
-    carrier: "THAILAND_POST", // CARRIER_OPTIONS[3].value
-    shipmentStatus: "004", // STATUS_OPTIONS[3].value - End Pick
-    region: "NORTH", // REGION_OPTIONS[0].value - เหนือ
-    loadingScheduled: "113000", // LIST_TIME_OPTIONS[7].value
-    timeSlot: "11:00 - 12:00",
-  },
-  {
-    shipmentNo: "SH000005",
-    plant: "snk", // PLANT_OPTIONS[0].value
-    carrier: "KERRY_EXPRESS", // CARRIER_OPTIONS[0].value
-    shipmentStatus: "005", // STATUS_OPTIONS[4].value - RTS
-    region: "WEST", // REGION_OPTIONS[4].value - ตะวันตก
-    loadingScheduled: "140000", // LIST_TIME_OPTIONS[12].value
-    timeSlot: "14:00 - 15:00",
-  },
-];
-
-// Helper functions เพื่อแปลง value เป็น label
-const getPlantLabel = (value: string) => {
-  return PLANT_OPTIONS.find((p) => p.value === value)?.label || value;
-};
-
-const getCarrierLabel = (value: string) => {
-  return CARRIER_OPTIONS.find((c) => c.value === value)?.label || value;
-};
-
-const getStatusLabel = (value: string) => {
-  return STATUS_OPTIONS.find((s) => s.value === value)?.label || value;
-};
-
-const getRegionLabel = (value: string) => {
-  return REGION_OPTIONS.find((r) => r.value === value)?.label || value;
-};
 
 const OverallMonitoringTab: React.FC = () => {
   const { t } = useTranslation(); // เพิ่ม useTranslation hook
@@ -220,7 +159,7 @@ const OverallMonitoringTab: React.FC = () => {
       fixed: "left",
       align: "center" as const,
       render: (timeSlot: string) => (
-        <span style={{ fontWeight: "bold", fontSize: "14px" }}>{timeSlot}</span>
+        <span style={OVERALL_MONITORING_STYLES.timeSlot}>{timeSlot}</span>
       ),
     },
     {
@@ -231,14 +170,7 @@ const OverallMonitoringTab: React.FC = () => {
           title: (
             <div>
               <div>{plant.label}</div>
-              <div
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  color: "#52c41a",
-                  marginTop: "4px",
-                }}
-              >
+              <div style={OVERALL_MONITORING_STYLES.plantSum}>
                 {t("labels.sum")}: {plantTotals[plant.value]}
               </div>
             </div>
@@ -249,10 +181,11 @@ const OverallMonitoringTab: React.FC = () => {
           align: "center" as const,
           render: (value: number) => (
             <span
-              style={{
-                fontWeight: value > 0 ? "600" : "normal",
-                color: value > 0 ? "#1890ff" : "#d9d9d9",
-              }}
+              style={
+                value > 0
+                  ? OVERALL_MONITORING_STYLES.activeValue
+                  : OVERALL_MONITORING_STYLES.inactiveValue
+              }
             >
               {value || 0}
             </span>
@@ -262,14 +195,7 @@ const OverallMonitoringTab: React.FC = () => {
           title: (
             <div>
               <div>{t("labels.total")}</div>
-              <div
-                style={{
-                  fontSize: "12px",
-                  fontWeight: "bold",
-                  color: "#52c41a",
-                  marginTop: "4px",
-                }}
-              >
+              <div style={OVERALL_MONITORING_STYLES.plantSum}>
                 {t("labels.sum")}: {plantTotals["total"] || 0}
               </div>
             </div>
@@ -279,18 +205,7 @@ const OverallMonitoringTab: React.FC = () => {
           width: 120,
           align: "center" as const,
           render: (value: number) => (
-            <span
-              style={{
-                fontWeight: "bold",
-                fontSize: "16px",
-                color:
-                  value > 0
-                    ? "var(--color-primary)"
-                    : "var(--color-text-disabled)",
-              }}
-            >
-              {value}
-            </span>
+            <span style={OVERALL_MONITORING_STYLES.totalValue}>{value}</span>
           ),
         },
       ],
@@ -307,9 +222,7 @@ const OverallMonitoringTab: React.FC = () => {
       fixed: "left",
       align: "center" as const,
       render: (shipmentNo: string) => (
-        <span style={{ fontWeight: "600", color: "#1890ff" }}>
-          {shipmentNo}
-        </span>
+        <span style={OVERALL_MONITORING_STYLES.shipmentNo}>{shipmentNo}</span>
       ),
     },
     {
@@ -319,7 +232,9 @@ const OverallMonitoringTab: React.FC = () => {
       width: 100,
       align: "center" as const,
       render: (plant: string) => (
-        <span style={{ fontWeight: "500" }}>{getPlantLabel(plant)}</span>
+        <span style={OVERALL_MONITORING_STYLES.plantLabel}>
+          {getPlantLabel(plant)}
+        </span>
       ),
     },
     {
@@ -337,15 +252,7 @@ const OverallMonitoringTab: React.FC = () => {
       width: 150,
       align: "center" as const,
       render: (status: string) => (
-        <span
-          style={{
-            padding: "4px 12px",
-            borderRadius: "4px",
-            backgroundColor: "#e6f7ff",
-            color: "#1890ff",
-            fontWeight: "500",
-          }}
-        >
+        <span style={OVERALL_MONITORING_STYLES.statusBadge}>
           {getStatusLabel(status)}
         </span>
       ),
@@ -364,10 +271,9 @@ const OverallMonitoringTab: React.FC = () => {
       width: 150,
       align: "center" as const,
       render: (time: string) => {
-        // แปลง "080000" เป็น "08:00"
-        const formattedTime = `${time.substring(0, 2)}:${time.substring(2, 4)}`;
+        const formattedTime = formatTimeHHMMSS(time);
         return (
-          <span style={{ fontWeight: "600", color: "#52c41a" }}>
+          <span style={OVERALL_MONITORING_STYLES.scheduledTime}>
             {formattedTime}
           </span>
         );
