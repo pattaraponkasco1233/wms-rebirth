@@ -192,19 +192,30 @@ const OverallMonitoringTab: React.FC = () => {
           </Card>
         </Col>
       </Row>
-
-      <Table
-        columns={columns}
-        dataSource={dataSource}
-        rowKey="key"
-        pagination={{
-          pageSize: TABLE.pageSizeDefault,
-          // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
-        }}
-        scroll={{ x: 1000 }}
-        bordered
-        size="middle"
-      />
+      <Row gutter={16}>
+        <Col span={24}>
+          <Table
+            columns={columns}
+            dataSource={dataSource}
+            rowKey="key"
+            pagination={{
+              pageSize: TABLE.pageSizeDefault,
+              // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
+            }}
+            scroll={{ x: 1000 }}
+            bordered
+            size="middle"
+          />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col span={12}>
+          {/* Count Shipment No By Region */}
+        </Col>
+        <Col span={12}>
+           {/* Count Shipment No By Status */}
+        </Col>
+      </Row>
     </div>
   );
 };
