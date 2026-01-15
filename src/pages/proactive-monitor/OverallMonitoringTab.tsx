@@ -9,7 +9,20 @@ import {
   LIST_TIEM_SLOTS,
   TABLE,
   DATE_FORMATS,
+  REGION_OPTIONS,
+  STATUS_OPTIONS,
+  CHART_LABEL_STYLE,
 } from "../../constant/constants";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  LabelList,
+} from "recharts";
 
 import { useTranslation } from "react-i18next";
 
@@ -23,30 +36,20 @@ const OverallMonitoringTab: React.FC = () => {
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
-  // ข้อมูล Mock สำหรับกราฟจำนวนตามภาค
+  // ข้อมูล Mock สำหรับกราฟจำนวนตามภาค - ดึง label จาก REGION_OPTIONS และ mock เฉพาะ count
   const regionData = useMemo(() => {
-    return [
-      { region: "นครหลวง", count: Math.floor(Math.random() * 100) + 50, color: "#1890ff" },
-      { region: "ตะวันออก", count: Math.floor(Math.random() * 100) + 50, color: "#52c41a" },
-      { region: "อีสาน", count: Math.floor(Math.random() * 100) + 50, color: "#faad14" },
-      { region: "เหนือ", count: Math.floor(Math.random() * 100) + 50, color: "#f5222d" },
-      { region: "ตะวันตก", count: Math.floor(Math.random() * 100) + 50, color: "#722ed1" },
-    ];
+    return REGION_OPTIONS.map((region) => ({
+      region: region.label,
+      count: Math.floor(Math.random() * 100) + 50,
+    }));
   }, [selectedDate]);
 
-  // ข้อมูล Mock สำหรับกราฟจำนวนตาม Status
+  // ข้อมูล Mock สำหรับกราฟจำนวนตาม Status - ดึง label จาก STATUS_OPTIONS และ mock เฉพาะ count
   const statusData = useMemo(() => {
-    return [
-      { status: "Loading Sc", count: Math.floor(Math.random() * 50) + 10, color: "#1890ff" },
-      { status: "Booked", count: Math.floor(Math.random() * 50) + 10, color: "#52c41a" },
-      { status: "Start Pick", count: Math.floor(Math.random() * 50) + 10, color: "#faad14" },
-      { status: "End Pick", count: Math.floor(Math.random() * 50) + 10, color: "#f5222d" },
-      { status: "RTS", count: Math.floor(Math.random() * 50) + 10, color: "#722ed1" },
-      { status: "Assign Bay", count: Math.floor(Math.random() * 50) + 10, color: "#13c2c2" },
-      { status: "Start Load", count: Math.floor(Math.random() * 50) + 10, color: "#eb2f96" },
-      { status: "End Load", count: Math.floor(Math.random() * 50) + 10, color: "#fa8c16" },
-      { status: "Check Out", count: Math.floor(Math.random() * 50) + 10, color: "#a0d911" },
-    ];
+    return STATUS_OPTIONS.map((status) => ({
+      status: status.label,
+      count: Math.floor(Math.random() * 50) + 10,
+    }));
   }, [selectedDate]);
 
   // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา (ในอนาคตจะดึงจาก API ตาม selectedDate)
@@ -234,13 +237,77 @@ const OverallMonitoringTab: React.FC = () => {
           />
         </Col>
       </Row>
-      <Row gutter={16}>
-        <Col span={12}>
-          {/* Count Shipment No By Region */}
+
+      {/* Charts Section - Region and Status */}
+      <Row gutter={16} style={{ marginTop: "12px" }}>
+        {/* ด้านซ้าย: กราฟแท่งแนวนอนแยกตามภาค */}
+        <Col xs={24} lg={12}>
+          <Card title="จำนวน Shipment แยกตามภาค" style={{ height: "100%" }}>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={regionData} layout="vertical">
+                <defs>
+                  <linearGradient id="colorRegion" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#82ca9d" stopOpacity={0.8} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis dataKey="region" type="category" width={80} />
+                <Tooltip />
+                <Bar
+                  dataKey="count"
+                  name="จำนวน"
+                  fill="url(#colorRegion)"
+                  radius={[0, 8, 8, 0]}
+                >
+                  <LabelList
+                    dataKey="count"
+                    position="right"
+                    style={CHART_LABEL_STYLE}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
         </Col>
-        <Col span={12}>
-           {/* Count Shipment No By Status */}
+
+        {/* ด้านขวา: กราฟแท่งแนวนอนแยกตาม Status */}
+        <Col xs={24} lg={12}>
+          <Card title="จำนวน Shipment แยกตาม Status" style={{ height: "100%" }}>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={statusData} layout="vertical">
+                <defs>
+                  <linearGradient id="colorStatus" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="5%" stopColor="#ffc658" stopOpacity={0.8} />
+                    <stop offset="95%" stopColor="#ff7c7c" stopOpacity={0.8} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis type="number" />
+                <YAxis dataKey="status" type="category" width={130} />
+                <Tooltip />
+                <Bar
+                  dataKey="count"
+                  name="จำนวน"
+                  fill="url(#colorStatus)"
+                  radius={[0, 8, 8, 0]}
+                >
+                  <LabelList
+                    dataKey="count"
+                    position="right"
+                    style={CHART_LABEL_STYLE}
+                  />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Card>
         </Col>
+      </Row>
+
+      <Row gutter={16} style={{ marginTop: "12px" }}>
+        {/* ตารางข้อมูลเพิ่มเติม */}
+        <Col span={24}></Col>
       </Row>
     </div>
   );

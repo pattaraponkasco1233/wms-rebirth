@@ -46,6 +46,34 @@ export const VEHICLE_TYPE_OPTIONS = [
 ] as const;
 
 /**
+ * Region Data options
+ */
+export const REGION_OPTIONS = [
+    { value: "NORTH", label: "เหนือ" },
+    { value: "NORTHEAST", label: "อีสาน" },
+    { value: "CENTRAL", label: "นครหลวง" },
+    { value: "EAST", label: "ตะวันออก" },
+    { value: "WEST", label: "ตะวันตก" },
+] as const;
+
+/**
+ * Status Data options
+ */
+export const STATUS_OPTIONS = [
+    { value: '001', label: 'Loading Scheduler' },
+    { value: '002', label: 'Booked' },
+    { value: '003', label: 'Start Pick' },
+    { value: '004', label: 'End Pick' },
+    { value: '005', label: 'RTS' },
+    { value: '006', label: 'Assign Bay' },
+    { value: '007', label: 'Start Load' },
+    { value: '008', label: 'End Load' },
+    { value: '009', label: 'Check Out' },
+] as const;
+
+
+
+/**
  * List time options  ไว้สำหรับเลือกเวลาเช็คอินรถบรรทุก รูปแบบ HHMMSS 8 โมงเช้า - ตี 5
  */
 
@@ -170,3 +198,18 @@ export const PAGINATION = {
 
 // Common Types
 export type CommonStatusValue = typeof COMMON_STATUS_OPTIONS[number]["value"];
+
+/**
+ * ========================================
+ * CHART STYLES
+ * ========================================
+ */
+
+/**
+ * Style สำหรับ Label ในกราฟ (recharts LabelList)
+ */
+export const CHART_LABEL_STYLE = {
+    fill: "#333",
+    fontWeight: "bold" as const,
+    fontSize: 12,
+} as const;
