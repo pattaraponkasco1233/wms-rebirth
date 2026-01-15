@@ -37,8 +37,10 @@ interface ShipmentData {
   plant: string;
   carrier: string;
   shipmentStatus: string;
+  region: string;
   plantLoadDate: string;
   loadingScheduled: string;
+  timeSlot: string;
   booked: string;
 }
 
@@ -47,87 +49,95 @@ const OverallMonitoringTab: React.FC = () => {
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
-  // ข้อมูล Mock สำหรับกราฟจำนวนตามภาค - ดึง label จาก REGION_OPTIONS และ mock เฉพาะ count
-  const regionData = useMemo(() => {
-    return REGION_OPTIONS.map((region) => ({
-      region: region.label,
-      count: Math.floor(Math.random() * 100) + 50,
-    }));
-  }, [selectedDate]);
-
-  // ข้อมูล Mock สำหรับกราฟจำนวนตาม Status - ดึง label จาก STATUS_OPTIONS และ mock เฉพาะ count
-  const statusData = useMemo(() => {
-    return STATUS_OPTIONS.map((status) => ({
-      status: status.label,
-      count: Math.floor(Math.random() * 50) + 10,
-    }));
-  }, [selectedDate]);
-
-  // ข้อมูล Mock สำหรับตาราง Shipment
+  // ข้อมูล Mock สำหรับตาราง Shipment (ต้องสร้างก่อนเพื่อให้ตารางอื่นใช้ข้อมูลจากนี้)
   const shipmentDataSource = useMemo(() => {
     const plants = ["SNK", "GLX", "SSI", "SSF"];
     const carriers = CARRIER_OPTIONS.map((c) => c.label);
     const statuses = STATUS_OPTIONS.map((s) => s.label);
+    const regions = REGION_OPTIONS.map((r) => r.label);
 
-    return Array.from({ length: 20 }, (_, index) => ({
+    return Array.from({ length: 50 }, (_, index) => ({
       key: `shipment-${index}`,
       shipmentNo: `SH${String(index + 1).padStart(6, "0")}`,
       plant: plants[Math.floor(Math.random() * plants.length)],
       carrier: carriers[Math.floor(Math.random() * carriers.length)],
       shipmentStatus: statuses[Math.floor(Math.random() * statuses.length)],
+      region: regions[Math.floor(Math.random() * regions.length)],
       plantLoadDate: selectedDate.format(DATE_FORMATS.DISPLAY),
       loadingScheduled: `${String(Math.floor(Math.random() * 17) + 8).padStart(
         2,
         "0"
       )}:${["00", "30"][Math.floor(Math.random() * 2)]}`,
+      timeSlot:
+        LIST_TIEM_SLOTS[Math.floor(Math.random() * LIST_TIEM_SLOTS.length)],
       booked: selectedDate
         .subtract(Math.floor(Math.random() * 3), "day")
         .format(DATE_FORMATS.DISPLAY_WITH_TIME),
     }));
   }, [selectedDate]);
 
-  // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา (ในอนาคตจะดึงจาก API ตาม selectedDate)
+  // คำนวณข้อมูลสำหรับกราฟจำนวนตามภาค - จากข้อมูล shipmentDataSource
+  const regionData = useMemo(() => {
+    const regionCounts: { [key: string]: number } = {};
+
+    // นับจำนวน shipment แต่ละภาค
+    shipmentDataSource.forEach((shipment) => {
+      const region = shipment.region;
+      regionCounts[region] = (regionCounts[region] || 0) + 1;
+    });
+
+    // แปลงเป็น format ที่กราฟต้องการ
+    return REGION_OPTIONS.map((region) => ({
+      region: region.label,
+      count: regionCounts[region.label] || 0,
+    }));
+  }, [shipmentDataSource]);
+
+  // คำนวณข้อมูลสำหรับกราฟจำนวนตาม Status - จากข้อมูล shipmentDataSource
+  const statusData = useMemo(() => {
+    const statusCounts: { [key: string]: number } = {};
+
+    // นับจำนวน shipment แต่ละ status
+    shipmentDataSource.forEach((shipment) => {
+      const status = shipment.shipmentStatus;
+      statusCounts[status] = (statusCounts[status] || 0) + 1;
+    });
+
+    // แปลงเป็น format ที่กราฟต้องการ
+    return STATUS_OPTIONS.map((status) => ({
+      status: status.label,
+      count: statusCounts[status.label] || 0,
+    }));
+  }, [shipmentDataSource]);
+
+  // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา (คำนวณจากข้อมูล shipmentDataSource)
   const dataSource = useMemo(() => {
-    return LIST_TIEM_SLOTS.map((timeSlot, index) => {
+    const result = LIST_TIEM_SLOTS.map((timeSlot, index) => {
       const data: PlantLoadData = {
         timeSlot,
         key: `time-${index}`,
       };
 
-      // สร้างข้อมูลสุ่มสำหรับแต่ละ carrier
-      CARRIER_OPTIONS.forEach((carrier) => {
-        // สุ่มจำนวน 0-10
-        data[carrier.value] = Math.floor(Math.random() * 11);
-      });
+      // กรองข้อมูล shipment ที่ตรงกับ timeSlot นี้
+      const shipmentsInSlot = shipmentDataSource.filter(
+        (s) => s.timeSlot === timeSlot
+      );
 
-      // คำนวณ total
-      data.total = CARRIER_OPTIONS.reduce((sum, carrier) => {
-        return sum + (data[carrier.value] as number);
-      }, 0);
-      /*
-      json = [{
-    "timeSlot": "08:00 - 09:00",
-    "key": "time-0",
-    "KERRY_EXPRESS": 8,
-    "FLASH_EXPRESS": 6,
-    "JT_EXPRESS": 4,
-    "THAILAND_POST": 3,
-    "total": 21
-        },{
-    "timeSlot": "09:00 - 10:00",
-    "key": "time-1",
-    "KERRY_EXPRESS": 2,
-    "FLASH_EXPRESS": 2,
-    "JT_EXPRESS": 8,
-    "THAILAND_POST": 2,
-    "total": 14
-}
-    
-        ]
-      */
+      // นับจำนวนแต่ละ carrier
+      let totalCount = 0;
+      for (const carrier of CARRIER_OPTIONS) {
+        const carrierCount = shipmentsInSlot.filter(
+          (s) => s.carrier === carrier.label
+        ).length;
+        data[carrier.value] = carrierCount;
+        totalCount += carrierCount;
+      }
+      data.total = totalCount;
+
       return data;
     });
-  }, [selectedDate]); // เพิ่m selectedDate เป็น dependency
+    return result;
+  }, [shipmentDataSource]);
 
   // คำนวณผลรวมของแต่ละ carrier
   const carrierTotals = useMemo(() => {
