@@ -1,7 +1,7 @@
-// src/pages/proactive-monitor/ProactiveMonitoringTab.tsx
+// src/pages/proactive-monitor/ProactiveMonitoring.tsx
 
 import React, { useState, useEffect } from "react";
-import { message } from "antd";
+import { Space, message } from "antd";
 import dayjs from "dayjs";
 import {
   ProactiveMonitorFilter,
@@ -12,7 +12,7 @@ import { ProactiveMonitorFilter as FilterType } from "../../models/proactive-mon
 import { fetchProactiveMonitorData } from "../../services/api/proactiveMonitor.service";
 import type { ProactiveMonitorResponse } from "../../models/proactive-monitor";
 
-const ProactiveMonitoringTab: React.FC = () => {
+const ProactiveMonitoring: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<FilterType>({
     date: dayjs().format("YYYY-MM-DD"),
@@ -68,25 +68,26 @@ const ProactiveMonitoringTab: React.FC = () => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* เป็นแบบ แยก เป็น Component */}
-      {/* Filter Section */}
-      <ProactiveMonitorFilter
-        filter={filter}
-        onFilterChange={handleFilterChange}
-        onSearch={handleSearch}
-      />
+    <div style={{ padding: "24px" }}>
+      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+        {/* Filter Section */}
+        <ProactiveMonitorFilter
+          filter={filter}
+          onFilterChange={handleFilterChange}
+          onSearch={handleSearch}
+        />
 
-      {/* Summary Table */}
-      <ProactiveMonitorSummary
-        data={data.summary}
-        grandTotal={data.grandTotal}
-      />
+        {/* Summary Table */}
+        <ProactiveMonitorSummary
+          data={data.summary}
+          grandTotal={data.grandTotal}
+        />
 
-      {/* Detail Table */}
-      <ProactiveMonitorDetail data={data.details} loading={loading} />
+        {/* Detail Table */}
+        <ProactiveMonitorDetail data={data.details} loading={loading} />
+      </Space>
     </div>
   );
 };
 
-export default ProactiveMonitoringTab;
+export default ProactiveMonitoring;
