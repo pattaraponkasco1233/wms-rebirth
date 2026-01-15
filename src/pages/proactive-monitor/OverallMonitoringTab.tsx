@@ -12,6 +12,7 @@ import {
   REGION_OPTIONS,
   STATUS_OPTIONS,
   CHART_LABEL_STYLE,
+  PLANT_OPTIONS,
 } from "../../constant/constants";
 import {
   BarChart,
@@ -51,7 +52,7 @@ const OverallMonitoringTab: React.FC = () => {
 
   // ข้อมูล Mock สำหรับตาราง Shipment (ต้องสร้างก่อนเพื่อให้ตารางอื่นใช้ข้อมูลจากนี้)
   const shipmentDataSource = useMemo(() => {
-    const plants = ["SNK", "GLX", "SSI", "SSF"];
+    const plants = PLANT_OPTIONS.map((p) => p.value); // ใช้ value จาก PLANT_OPTIONS
     const carriers = CARRIER_OPTIONS.map((c) => c.label);
     const statuses = STATUS_OPTIONS.map((s) => s.label);
     const regions = REGION_OPTIONS.map((r) => r.label);
@@ -123,14 +124,14 @@ const OverallMonitoringTab: React.FC = () => {
         (s) => s.timeSlot === timeSlot
       );
 
-      // นับจำนวนแต่ละ carrier
+      // นับจำนวนแต่ละ plant
       let totalCount = 0;
-      for (const carrier of CARRIER_OPTIONS) {
-        const carrierCount = shipmentsInSlot.filter(
-          (s) => s.carrier === carrier.label
+      for (const plant of PLANT_OPTIONS) {
+        const plantCount = shipmentsInSlot.filter(
+          (s) => s.plant === plant.value
         ).length;
-        data[carrier.value] = carrierCount;
-        totalCount += carrierCount;
+        data[plant.value] = plantCount;
+        totalCount += plantCount;
       }
       data.total = totalCount;
 
@@ -139,19 +140,19 @@ const OverallMonitoringTab: React.FC = () => {
     return result;
   }, [shipmentDataSource]);
 
-  // คำนวณผลรวมของแต่ละ carrier
-  const carrierTotals = useMemo(() => {
+  // คำนวณผลรวมของแต่ละ plant
+  const plantTotals = useMemo(() => {
     const totals: { [key: string]: number } = {};
-    CARRIER_OPTIONS.forEach((carrier) => {
-      totals[carrier.value] = dataSource.reduce((sum, record) => {
-        return sum + (record[carrier.value] as number);
+    PLANT_OPTIONS.forEach((plant) => {
+      totals[plant.value] = dataSource.reduce((sum, record) => {
+        return sum + (record[plant.value] as number);
       }, 0);
     });
     return totals;
   }, [dataSource]);
 
   // คำนวณผลรวมทั้งหมด
-  carrierTotals["total"] = dataSource.reduce((sum, record) => {
+  plantTotals["total"] = dataSource.reduce((sum, record) => {
     return sum + (record.total as number);
   }, 0);
 
@@ -172,10 +173,10 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Plant",
       key: "plant",
       children: [
-        ...CARRIER_OPTIONS.map((carrier) => ({
+        ...PLANT_OPTIONS.map((plant) => ({
           title: (
             <div>
-              <div>{carrier.label}</div>
+              <div>{plant.label}</div>
               <div
                 style={{
                   fontSize: "12px",
@@ -184,12 +185,12 @@ const OverallMonitoringTab: React.FC = () => {
                   marginTop: "4px",
                 }}
               >
-                {t("labels.sum")}: {carrierTotals[carrier.value]}
+                {t("labels.sum")}: {plantTotals[plant.value]}
               </div>
             </div>
           ),
-          dataIndex: carrier.value,
-          key: carrier.value,
+          dataIndex: plant.value,
+          key: plant.value,
           width: 150,
           align: "center" as const,
           render: (value: number) => (
@@ -215,7 +216,7 @@ const OverallMonitoringTab: React.FC = () => {
                   marginTop: "4px",
                 }}
               >
-                {t("labels.sum")}: {carrierTotals["total"] || 0}
+                {t("labels.sum")}: {plantTotals["total"] || 0}
               </div>
             </div>
           ),
