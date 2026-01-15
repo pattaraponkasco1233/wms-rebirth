@@ -23,6 +23,32 @@ const OverallMonitoringTab: React.FC = () => {
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
+  // ข้อมูล Mock สำหรับกราฟจำนวนตามภาค
+  const regionData = useMemo(() => {
+    return [
+      { region: "นครหลวง", count: Math.floor(Math.random() * 100) + 50, color: "#1890ff" },
+      { region: "ตะวันออก", count: Math.floor(Math.random() * 100) + 50, color: "#52c41a" },
+      { region: "อีสาน", count: Math.floor(Math.random() * 100) + 50, color: "#faad14" },
+      { region: "เหนือ", count: Math.floor(Math.random() * 100) + 50, color: "#f5222d" },
+      { region: "ตะวันตก", count: Math.floor(Math.random() * 100) + 50, color: "#722ed1" },
+    ];
+  }, [selectedDate]);
+
+  // ข้อมูล Mock สำหรับกราฟจำนวนตาม Status
+  const statusData = useMemo(() => {
+    return [
+      { status: "Loading Sc", count: Math.floor(Math.random() * 50) + 10, color: "#1890ff" },
+      { status: "Booked", count: Math.floor(Math.random() * 50) + 10, color: "#52c41a" },
+      { status: "Start Pick", count: Math.floor(Math.random() * 50) + 10, color: "#faad14" },
+      { status: "End Pick", count: Math.floor(Math.random() * 50) + 10, color: "#f5222d" },
+      { status: "RTS", count: Math.floor(Math.random() * 50) + 10, color: "#722ed1" },
+      { status: "Assign Bay", count: Math.floor(Math.random() * 50) + 10, color: "#13c2c2" },
+      { status: "Start Load", count: Math.floor(Math.random() * 50) + 10, color: "#eb2f96" },
+      { status: "End Load", count: Math.floor(Math.random() * 50) + 10, color: "#fa8c16" },
+      { status: "Check Out", count: Math.floor(Math.random() * 50) + 10, color: "#a0d911" },
+    ];
+  }, [selectedDate]);
+
   // สร้างข้อมูล mock สำหรับแต่ละช่วงเวลา (ในอนาคตจะดึงจาก API ตาม selectedDate)
   const dataSource = useMemo(() => {
     return LIST_TIEM_SLOTS.map((timeSlot, index) => {
