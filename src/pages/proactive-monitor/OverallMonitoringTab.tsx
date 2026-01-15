@@ -11,12 +11,15 @@ import {
   DATE_FORMATS,
 } from "../../constant/constants";
 
+import { useTranslation } from "react-i18next";
+
 interface PlantLoadData {
   timeSlot: string;
   [key: string]: string | number;
 }
 
 const OverallMonitoringTab: React.FC = () => {
+  const { t } = useTranslation(); // เพิ่ม useTranslation hook
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
@@ -108,7 +111,7 @@ const OverallMonitoringTab: React.FC = () => {
                   marginTop: "4px",
                 }}
               >
-                รวม: {carrierTotals[carrier.value]}
+                {t("labels.sum")}: {carrierTotals[carrier.value]}
               </div>
             </div>
           ),
@@ -130,7 +133,7 @@ const OverallMonitoringTab: React.FC = () => {
         {
           title: (
             <div>
-              <div>Total</div>
+              <div>{t("labels.total")}</div>
               <div
                 style={{
                   fontSize: "12px",
@@ -139,7 +142,7 @@ const OverallMonitoringTab: React.FC = () => {
                   marginTop: "4px",
                 }}
               >
-                รวม: {carrierTotals["total"] || 0}
+                {t("labels.sum")}: {carrierTotals["total"] || 0}
               </div>
             </div>
           ),
@@ -178,9 +181,6 @@ const OverallMonitoringTab: React.FC = () => {
         </Col>
         <Col xs={24} sm={24} md={6}>
           <Card size="small">
-            <div style={{ marginBottom: "8px", fontWeight: "500" }}>
-              เลือกวันที่
-            </div>
             <DatePicker
               value={selectedDate}
               onChange={(date) => setSelectedDate(date || dayjs())}
@@ -199,7 +199,7 @@ const OverallMonitoringTab: React.FC = () => {
         rowKey="key"
         pagination={{
           pageSize: TABLE.pageSizeDefault,
-          showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
+          // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
         }}
         scroll={{ x: 1000 }}
         bordered

@@ -38,7 +38,8 @@
     "info": "Information",
     "runno": "No.",
     "total": "Total",
-    "items": "items"
+    "items": "items",
+    "sum": "Sum"
   },
   "truckCheckin": {
     "title": "Truck Check-in",
@@ -85,5 +86,9 @@
     "addSuccess": "Data added successfully",
     "errorFetching": "Error fetching data",
     "errorSaving": "Error saving data"
+  },
+  "proactive": {
+    "title": "Proactive Monitoring",
+    "description": "Monitor system status and provide advance alerts"
   }
 }
