@@ -31,6 +31,17 @@ interface PlantLoadData {
   [key: string]: string | number;
 }
 
+interface ShipmentData {
+  key: string;
+  shipmentNo: string;
+  plant: string;
+  carrier: string;
+  shipmentStatus: string;
+  plantLoadDate: string;
+  loadingScheduled: string;
+  booked: string;
+}
+
 const OverallMonitoringTab: React.FC = () => {
   const { t } = useTranslation(); // เพิ่ม useTranslation hook
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
@@ -49,6 +60,29 @@ const OverallMonitoringTab: React.FC = () => {
     return STATUS_OPTIONS.map((status) => ({
       status: status.label,
       count: Math.floor(Math.random() * 50) + 10,
+    }));
+  }, [selectedDate]);
+
+  // ข้อมูล Mock สำหรับตาราง Shipment
+  const shipmentDataSource = useMemo(() => {
+    const plants = ["SNK", "GLX", "SSI", "SSF"];
+    const carriers = CARRIER_OPTIONS.map((c) => c.label);
+    const statuses = STATUS_OPTIONS.map((s) => s.label);
+
+    return Array.from({ length: 20 }, (_, index) => ({
+      key: `shipment-${index}`,
+      shipmentNo: `SH${String(index + 1).padStart(6, "0")}`,
+      plant: plants[Math.floor(Math.random() * plants.length)],
+      carrier: carriers[Math.floor(Math.random() * carriers.length)],
+      shipmentStatus: statuses[Math.floor(Math.random() * statuses.length)],
+      plantLoadDate: selectedDate.format(DATE_FORMATS.DISPLAY),
+      loadingScheduled: `${String(Math.floor(Math.random() * 17) + 8).padStart(
+        2,
+        "0"
+      )}:${["00", "30"][Math.floor(Math.random() * 2)]}`,
+      booked: selectedDate
+        .subtract(Math.floor(Math.random() * 3), "day")
+        .format(DATE_FORMATS.DISPLAY_WITH_TIME),
     }));
   }, [selectedDate]);
 
@@ -111,7 +145,7 @@ const OverallMonitoringTab: React.FC = () => {
     return sum + (record.total as number);
   }, 0);
 
-  // สร้าง columns สำหรับตาราง
+  // สร้าง columns สำหรับตาราง Plant Load
   const columns: ColumnsType<PlantLoadData> = [
     {
       title: "Plant Load Time",
@@ -195,6 +229,84 @@ const OverallMonitoringTab: React.FC = () => {
           ),
         },
       ],
+    },
+  ];
+
+  // สร้าง columns สำหรับตาราง Shipment
+  const shipmentColumns: ColumnsType<ShipmentData> = [
+    {
+      title: "Shipment No",
+      dataIndex: "shipmentNo",
+      key: "shipmentNo",
+      width: 130,
+      fixed: "left",
+      align: "center" as const,
+      render: (shipmentNo: string) => (
+        <span style={{ fontWeight: "600", color: "#1890ff" }}>
+          {shipmentNo}
+        </span>
+      ),
+    },
+    {
+      title: "Plant",
+      dataIndex: "plant",
+      key: "plant",
+      width: 100,
+      align: "center" as const,
+      render: (plant: string) => (
+        <span style={{ fontWeight: "500" }}>{plant}</span>
+      ),
+    },
+    {
+      title: "Carrier",
+      dataIndex: "carrier",
+      key: "carrier",
+      width: 150,
+      align: "center" as const,
+    },
+    {
+      title: "Shipment Status",
+      dataIndex: "shipmentStatus",
+      key: "shipmentStatus",
+      width: 150,
+      align: "center" as const,
+      render: (status: string) => (
+        <span
+          style={{
+            padding: "4px 12px",
+            borderRadius: "4px",
+            backgroundColor: "#e6f7ff",
+            color: "#1890ff",
+            fontWeight: "500",
+          }}
+        >
+          {status}
+        </span>
+      ),
+    },
+    {
+      title: "Plant Load Date",
+      dataIndex: "plantLoadDate",
+      key: "plantLoadDate",
+      width: 130,
+      align: "center" as const,
+    },
+    {
+      title: "Loading Scheduled",
+      dataIndex: "loadingScheduled",
+      key: "loadingScheduled",
+      width: 150,
+      align: "center" as const,
+      render: (time: string) => (
+        <span style={{ fontWeight: "600", color: "#52c41a" }}>{time}</span>
+      ),
+    },
+    {
+      title: "Booked",
+      dataIndex: "booked",
+      key: "booked",
+      width: 180,
+      align: "center" as const,
     },
   ];
 
@@ -306,8 +418,20 @@ const OverallMonitoringTab: React.FC = () => {
       </Row>
 
       <Row gutter={16} style={{ marginTop: "12px" }}>
-        {/* ตารางข้อมูลเพิ่มเติม */}
-        <Col span={24}></Col>
+        {/* ตารางข้อมูล Shipment */}
+        <Col span={24}>
+          <Card title="รายละเอียด Shipment" style={{ marginTop: "16px" }}>
+            <Table
+              columns={shipmentColumns}
+              dataSource={shipmentDataSource}
+              rowKey="key"
+              pagination={{
+                pageSize: TABLE.pageSizeDefault,
+              }}
+              size="small"
+            />
+          </Card>
+        </Col>
       </Row>
     </div>
   );
