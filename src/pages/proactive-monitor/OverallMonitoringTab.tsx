@@ -45,32 +45,86 @@ interface ShipmentData {
   booked: string;
 }
 
+// Mock Data - ข้อมูล Shipment ตัวอย่าง (ใช้ value จาก Constants)
+const MOCK_SHIPMENT_DATA: Omit<
+  ShipmentData,
+  "key" | "plantLoadDate" | "booked"
+>[] = [
+  {
+    shipmentNo: "SH000001",
+    plant: "snk", // PLANT_OPTIONS[0].value
+    carrier: "KERRY_EXPRESS", // CARRIER_OPTIONS[0].value
+    shipmentStatus: "001", // STATUS_OPTIONS[0].value - Loading Scheduler
+    region: "CENTRAL", // REGION_OPTIONS[2].value - นครหลวง
+    loadingScheduled: "080000", // LIST_TIME_OPTIONS[0].value
+    timeSlot: "08:00 - 09:00",
+  },
+  {
+    shipmentNo: "SH000002",
+    plant: "glx", // PLANT_OPTIONS[1].value
+    carrier: "FLASH_EXPRESS", // CARRIER_OPTIONS[1].value
+    shipmentStatus: "002", // STATUS_OPTIONS[1].value - Booked
+    region: "EAST", // REGION_OPTIONS[3].value - ตะวันออก
+    loadingScheduled: "093000", // LIST_TIME_OPTIONS[3].value
+    timeSlot: "09:00 - 10:00",
+  },
+  {
+    shipmentNo: "SH000003",
+    plant: "ssi", // PLANT_OPTIONS[2].value
+    carrier: "JT_EXPRESS", // CARRIER_OPTIONS[2].value
+    shipmentStatus: "003", // STATUS_OPTIONS[2].value - Start Pick
+    region: "NORTHEAST", // REGION_OPTIONS[1].value - อีสาน
+    loadingScheduled: "100000", // LIST_TIME_OPTIONS[4].value
+    timeSlot: "10:00 - 11:00",
+  },
+  {
+    shipmentNo: "SH000004",
+    plant: "snk", // PLANT_OPTIONS[0].value
+    carrier: "THAILAND_POST", // CARRIER_OPTIONS[3].value
+    shipmentStatus: "004", // STATUS_OPTIONS[3].value - End Pick
+    region: "NORTH", // REGION_OPTIONS[0].value - เหนือ
+    loadingScheduled: "113000", // LIST_TIME_OPTIONS[7].value
+    timeSlot: "11:00 - 12:00",
+  },
+  {
+    shipmentNo: "SH000005",
+    plant: "snk", // PLANT_OPTIONS[0].value
+    carrier: "KERRY_EXPRESS", // CARRIER_OPTIONS[0].value
+    shipmentStatus: "005", // STATUS_OPTIONS[4].value - RTS
+    region: "WEST", // REGION_OPTIONS[4].value - ตะวันตก
+    loadingScheduled: "140000", // LIST_TIME_OPTIONS[12].value
+    timeSlot: "14:00 - 15:00",
+  },
+];
+
+// Helper functions เพื่อแปลง value เป็น label
+const getPlantLabel = (value: string) => {
+  return PLANT_OPTIONS.find((p) => p.value === value)?.label || value;
+};
+
+const getCarrierLabel = (value: string) => {
+  return CARRIER_OPTIONS.find((c) => c.value === value)?.label || value;
+};
+
+const getStatusLabel = (value: string) => {
+  return STATUS_OPTIONS.find((s) => s.value === value)?.label || value;
+};
+
+const getRegionLabel = (value: string) => {
+  return REGION_OPTIONS.find((r) => r.value === value)?.label || value;
+};
+
 const OverallMonitoringTab: React.FC = () => {
   const { t } = useTranslation(); // เพิ่ม useTranslation hook
   // State สำหรับวันที่ที่เลือก - Default เป็นวันปัจจุบัน
   const [selectedDate, setSelectedDate] = useState<Dayjs>(dayjs());
 
-  // ข้อมูล Mock สำหรับตาราง Shipment (ต้องสร้างก่อนเพื่อให้ตารางอื่นใช้ข้อมูลจากนี้)
+  // ข้อมูล Mock สำหรับตาราง Shipment (ใช้ข้อมูล JSON แทนการสุ่ม)
   const shipmentDataSource = useMemo(() => {
-    const plants = PLANT_OPTIONS.map((p) => p.value); // ใช้ value จาก PLANT_OPTIONS
-    const carriers = CARRIER_OPTIONS.map((c) => c.label);
-    const statuses = STATUS_OPTIONS.map((s) => s.label);
-    const regions = REGION_OPTIONS.map((r) => r.label);
-
-    return Array.from({ length: 50 }, (_, index) => ({
+    return MOCK_SHIPMENT_DATA.map((item, index) => ({
+      ...item,
       key: `shipment-${index}`,
-      shipmentNo: `SH${String(index + 1).padStart(6, "0")}`,
-      plant: plants[Math.floor(Math.random() * plants.length)],
-      carrier: carriers[Math.floor(Math.random() * carriers.length)],
-      shipmentStatus: statuses[Math.floor(Math.random() * statuses.length)],
-      region: regions[Math.floor(Math.random() * regions.length)],
       plantLoadDate: selectedDate.format(DATE_FORMATS.DISPLAY),
-      loadingScheduled: `${String(Math.floor(Math.random() * 17) + 8).padStart(
-        2,
-        "0"
-      )}:${["00", "30"][Math.floor(Math.random() * 2)]}`,
-      timeSlot:
-        LIST_TIEM_SLOTS[Math.floor(Math.random() * LIST_TIEM_SLOTS.length)],
       booked: selectedDate
         .subtract(Math.floor(Math.random() * 3), "day")
         .format(DATE_FORMATS.DISPLAY_WITH_TIME),
@@ -81,10 +135,10 @@ const OverallMonitoringTab: React.FC = () => {
   const regionData = useMemo(() => {
     const regionCounts: { [key: string]: number } = {};
 
-    // นับจำนวน shipment แต่ละภาค
+    // นับจำนวน shipment แต่ละภาค (ใช้ label)
     shipmentDataSource.forEach((shipment) => {
-      const region = shipment.region;
-      regionCounts[region] = (regionCounts[region] || 0) + 1;
+      const regionLabel = getRegionLabel(shipment.region);
+      regionCounts[regionLabel] = (regionCounts[regionLabel] || 0) + 1;
     });
 
     // แปลงเป็น format ที่กราฟต้องการ
@@ -98,10 +152,10 @@ const OverallMonitoringTab: React.FC = () => {
   const statusData = useMemo(() => {
     const statusCounts: { [key: string]: number } = {};
 
-    // นับจำนวน shipment แต่ละ status
+    // นับจำนวน shipment แต่ละ status (ใช้ label)
     shipmentDataSource.forEach((shipment) => {
-      const status = shipment.shipmentStatus;
-      statusCounts[status] = (statusCounts[status] || 0) + 1;
+      const statusLabel = getStatusLabel(shipment.shipmentStatus);
+      statusCounts[statusLabel] = (statusCounts[statusLabel] || 0) + 1;
     });
 
     // แปลงเป็น format ที่กราฟต้องการ
@@ -265,7 +319,7 @@ const OverallMonitoringTab: React.FC = () => {
       width: 100,
       align: "center" as const,
       render: (plant: string) => (
-        <span style={{ fontWeight: "500" }}>{plant}</span>
+        <span style={{ fontWeight: "500" }}>{getPlantLabel(plant)}</span>
       ),
     },
     {
@@ -274,6 +328,7 @@ const OverallMonitoringTab: React.FC = () => {
       key: "carrier",
       width: 150,
       align: "center" as const,
+      render: (carrier: string) => getCarrierLabel(carrier),
     },
     {
       title: "Shipment Status",
@@ -291,7 +346,7 @@ const OverallMonitoringTab: React.FC = () => {
             fontWeight: "500",
           }}
         >
-          {status}
+          {getStatusLabel(status)}
         </span>
       ),
     },
@@ -308,9 +363,15 @@ const OverallMonitoringTab: React.FC = () => {
       key: "loadingScheduled",
       width: 150,
       align: "center" as const,
-      render: (time: string) => (
-        <span style={{ fontWeight: "600", color: "#52c41a" }}>{time}</span>
-      ),
+      render: (time: string) => {
+        // แปลง "080000" เป็น "08:00"
+        const formattedTime = `${time.substring(0, 2)}:${time.substring(2, 4)}`;
+        return (
+          <span style={{ fontWeight: "600", color: "#52c41a" }}>
+            {formattedTime}
+          </span>
+        );
+      },
     },
     {
       title: "Booked",
