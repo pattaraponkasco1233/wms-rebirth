@@ -25,6 +25,7 @@ const ProactiveMonitoring: React.FC = () => {
     operationDate: "",
   });
   const [data, setData] = useState<ProactiveMonitorResponse>({
+    target: { delivey_check_in: { target: 0, actual: 0, diff: 0 }, ready_to_ship: { target: 0, actual: 0, diff: 0 }, multipick: { target: 0, actual: 0, diff: 0 } },
     summary: [],
     details: [],
     grandTotal: {

@@ -65,6 +65,13 @@ export interface ProactiveMonitorDetail {
  * API Response Model
  */
 export interface ProactiveMonitorResponse {
+    target: {
+        delivey_check_in: { target: number, actual: number, diff: number }
+
+        ready_to_ship: { target: number, actual: number, diff: number }
+
+        multipick: { target: number, actual: number, diff: number }
+    };
     summary: ProactiveMonitorSummary[];
     details: ProactiveMonitorDetail[];
     grandTotal: {

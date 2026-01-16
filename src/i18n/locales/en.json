@@ -89,6 +89,14 @@
   },
   "proactive": {
     "title": "Proactive Monitoring",
-    "description": "Monitor system status and provide advance alerts"
+    "description": "Monitor system status and provide advance alerts",
+    "kpi": {
+      "driverCheckIns": "Driver Check-Ins",
+      "readyToShip": "Ready to Ship",
+      "multipickOperations": "Multipick Operations",
+      "target": "Target",
+      "actual": "Actual",
+      "diff": "Diff"
+    }
   }
 }

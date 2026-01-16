@@ -89,6 +89,14 @@
   },
   "proactive": {
     "title": "Proactive Monitoring",
-    "description": "ตรวจสอบสถานะระบบและแจ้งเตือนล่วงหน้า"
+    "description": "ตรวจสอบสถานะระบบและแจ้งเตือนล่วงหน้า",
+    "kpi": {
+      "driverCheckIns": "การเช็คอินคนขับรถ",
+      "readyToShip": "พร้อมจัดส่ง",
+      "multipickOperations": "การดำเนินงานมัลติพิค",
+      "target": "เป้าหมาย",
+      "actual": "ผลลัพธ์จริง",
+      "diff": "ส่วนต่าง"
+    }
   }
 }

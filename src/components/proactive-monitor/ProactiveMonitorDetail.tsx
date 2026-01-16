@@ -10,6 +10,7 @@ import {
   CARRIER_OPTIONS,
   PLANT_OPTIONS,
   VEHICLE_TYPE_OPTIONS,
+  TABLE,
 } from "../../constant/constants";
 
 const { Title } = Typography;
@@ -202,10 +203,10 @@ const ProactiveMonitorDetailTable: React.FC<ProactiveMonitorDetailProps> = ({
         rowKey="shipmentNo"
         loading={loading}
         pagination={{
-          defaultPageSize: 10,
-          showSizeChanger: true,
-          showTotal: (total) => `ทั้งหมด ${total} รายการ`,
-          pageSizeOptions: ["10", "20", "50", "100"],
+          defaultPageSize: TABLE.pageSizeDefault,
+          // showSizeChanger: true,
+          // showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+          // pageSizeOptions: ["10", "20", "50", "100"],
         }}
         scroll={{ x: 2500 }}
         bordered
