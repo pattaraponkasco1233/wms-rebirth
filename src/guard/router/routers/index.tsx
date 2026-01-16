@@ -4,9 +4,6 @@ import { RouteProps } from "react-router-dom";
 // นำเข้า Components
 import LoginPage from "../../../pages/authentication/Login";
 import RootRedirect from "../../../pages/misc/RootRedirect";
-import Dashboard from "../../../pages/dashboard/index";
-import DashboardCar from "../../../pages/dashboard/car";
-// Dashboard Booking Car page removed
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
 import { ProactiveMonitorCockpit } from "../../../pages/proactive-monitor";
@@ -40,24 +37,6 @@ export const AppRoutes: CustomRouteProps[] = [
     isProtected: false,
     pageTitle: "เข้าสู่ระบบ",
   },
-
-  // ==================== Dashboard Routes ====================
-  {
-    path: "/dashboard",
-    element: <Dashboard />,
-    isProtected: true,
-    layout: MainLayout,
-    pageTitle: "Dashboard",
-  },
-  {
-    path: "/dashboard/car",
-    element: <DashboardCar />,
-    isProtected: true,
-    layout: MainLayout,
-    pageTitle: "Dashboard รถขนส่ง",
-  },
-
-  // Booking car page removed
 
   // ==================== Truck Check-in Routes ====================
   {

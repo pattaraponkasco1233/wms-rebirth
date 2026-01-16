@@ -5,21 +5,13 @@ import { Menu } from "antd";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   DesktopOutlined,
-  PieChartOutlined,
   UserOutlined,
-  LineChartOutlined,
   ContainerOutlined,
   ControlOutlined,
   MonitorOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
-  { key: "/dashboard", icon: <PieChartOutlined />, label: "Dashboard" },
-  {
-    key: "/dashboard/car",
-    icon: <LineChartOutlined />,
-    label: "Dashboard รถขนส่ง",
-  },
   {
     key: "/proactive-monitor",
     icon: <MonitorOutlined />,
