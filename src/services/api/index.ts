@@ -6,6 +6,9 @@ export { default as axiosInstance } from './axiosInstance';
 // Auth APIs
 export { authApi } from './authService';
 
+// Warehouse Status APIs
+export { warehouseStatusApi } from './warehouseStatus.service';
+
 // Re-export types from models
 export type {
     // Auth Types
@@ -15,3 +18,12 @@ export type {
     UserRole,
     AuthContextType,
 } from '../../models/auth/auth.model';
+
+export type {
+    // Warehouse Status Types
+    WarehouseStatusFilter,
+    WarehouseStatusResponse,
+    WarehouseStatusDetail,
+    WarehouseStatusSummary,
+    SummaryData,
+} from '../../models/warehouse-status';

@@ -71,6 +71,20 @@ export const STATUS_OPTIONS = [
     { value: '009', label: 'Check Out' },
 ] as const;
 
+/**
+ * Route options for Warehouse Status Monitor
+ */
+export const ROUTE_OPTIONS = [
+    { value: "BKK_NORTH", label: "BKK North" },
+    { value: "BKK_SOUTH", label: "BKK South" },
+    { value: "BKK_EAST", label: "BKK East" },
+    { value: "BKK_WEST", label: "BKK West" },
+    { value: "CENTRAL", label: "Central" },
+    { value: "NORTHEAST", label: "Northeast" },
+    { value: "NORTH", label: "North" },
+    { value: "SOUTH", label: "South" },
+] as const;
+
 
 
 /**

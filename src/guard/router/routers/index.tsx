@@ -7,6 +7,7 @@ import RootRedirect from "../../../pages/misc/RootRedirect";
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
 import { ProactiveMonitorCockpit } from "../../../pages/proactive-monitor";
+import WarehouseStatusMonitor from "../../../pages/warehouse-status/index";
 import MainLayout from "../../../components/layout/MainLayout";
 
 /**
@@ -63,5 +64,14 @@ export const AppRoutes: CustomRouteProps[] = [
     isProtected: true,
     layout: MainLayout,
     pageTitle: "Pro-active Monitor Cockpit",
+  },
+
+  // ==================== Warehouse Status Monitor Routes ====================
+  {
+    path: "/warehouse-status",
+    element: <WarehouseStatusMonitor />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "Warehouse Status Monitor",
   },
 ];

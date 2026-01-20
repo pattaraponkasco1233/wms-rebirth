@@ -9,6 +9,7 @@ import {
   ContainerOutlined,
   ControlOutlined,
   MonitorOutlined,
+  DatabaseOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -16,6 +17,11 @@ const menuItems = [
     key: "/proactive-monitor",
     icon: <MonitorOutlined />,
     label: "Proactive Monitor",
+  },
+  {
+    key: "/warehouse-status",
+    icon: <DatabaseOutlined />,
+    label: "Warehouse Status Monitor",
   },
   {
     key: "/truck-checkin",
