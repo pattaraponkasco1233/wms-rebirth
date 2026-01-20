@@ -20,7 +20,7 @@ const jwtDefaultConfig: JwtConfig = {
   loginLdapEndpoint: '/ldap/login',
 
   tokenType: 'Bearer',
-  apiKey: 'S0FTQ09fV01TX0dBVEVXQVlfQVBJX0FVVEhFTg==',
+  apiKey: 'VE1TX0FVVEhJQ0FUSU9O', // S0FTQ09fV01TX0dBVEVXQVlfQVBJX0FVVEhFTg==
 
   storageTokenKeyName: 'accessToken',
   storageRefreshTokenKeyName: 'refreshToken'

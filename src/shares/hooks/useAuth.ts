@@ -33,10 +33,13 @@ const useAuth = () => {
           user_name: username,
           password: password,
           warehouse_id: plant,
+          ip: "00.000.00.00",
+          login_web: 1
         });
 
+
+
         // ตรวจสอบสถานะ Response ที่สำเร็จ (ปกติคือ 200 หรือ 201)
-        debugger;
         if (response.status === 200 || response.status === 201) {
           const { data } = response;
 

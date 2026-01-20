@@ -36,9 +36,15 @@ export default class JwtService { // <<< เปลี่ยนเป็น expor
   }
 
   // ** Method สำหรับการเรียก API **
+  // login(...args: any[]): Promise<AxiosResponse> {
+  //   return this.axiosInstance.post(this.jwtConfig.loginEndpoint, ...args);
+  // }
   login(...args: any[]): Promise<AxiosResponse> {
-    return this.axiosInstance.post(this.jwtConfig.loginEndpoint, ...args);
+    return this.axiosInstance.post('http://203.151.6.30/gateway_bms_penk/web-api/v1/auth/login', ...args);
   }
+
+
+
 
   loginLdap(...args: any[]): Promise<AxiosResponse> {
     return this.axiosInstance.post(this.jwtConfig.loginLdapEndpoint, ...args);

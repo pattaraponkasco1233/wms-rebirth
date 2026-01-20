@@ -47,9 +47,10 @@ const LoginPage: React.FC = () => {
     return oneWms.server;
   });
 
-  // หากผู้ใช้ล็อกอินอยู่แล้ว ให้ redirect ไปหน้า Dashboard ทันที
+  debugger
+  // หากผู้ใช้ล็อกอินอยู่แล้ว ให้ redirect ไปหน้า proactive-monito ทันที
   if (isAuthenticated) {
-    navigate("/dashboard", { replace: true });
+    navigate("/proactive-monitor", { replace: true });
     return null;
   }
 
@@ -62,34 +63,34 @@ const LoginPage: React.FC = () => {
   }
 
   const onFinish = async (values: LoginFormValues) => {
-    updateWmsStorage({
-      token:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluZGV2IiwibGV2ZWxfdXNlciI6IjEiLCJpcCI6IjU4LjEzNi41OS42MCIsImV4cCI6MTc2ODU1NDM4MCwiaXNzIjoiS2FzY29fQXV0aGVudGljYXRpb25fQVBJIiwiYXVkIjoiVE1TIn0.sFJ-zNP26qzIqpjpIYhX5NZRQNnf5-7z3Hmeavu4DE8",
-      refreshToken: "dummyRefreshToken",
-    });
-    navigate("/proactive-monitor", { replace: true });
-    // if (selectedPlant) {
-    //   values.plant = selectedPlant;
-    // }
+    // updateWmsStorage({
+    //   token:
+    //     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluZGV2IiwibGV2ZWxfdXNlciI6IjEiLCJpcCI6IjQ5LjIyOC45OS40NCIsImV4cCI6MTc2ODk2NzczMywiaXNzIjoiS2FzY29fQXV0aGVudGljYXRpb25fQVBJIiwiYXVkIjoiVE1TIn0.eYZp0HD-nleujqqsc2SYD1vyQB079NDnwrN_bLJuAFU",
+    //   refreshToken: "dummyRefreshToken",
+    // });
+    // navigate("/proactive-monitor", { replace: true });
+    if (selectedPlant) {
+      values.plant = selectedPlant;
+    }
 
-    // // ตรวจสอบความถูกต้องของ values ก่อนเรียก login
-    // if (values.username && values.password) {
-    //   // โชว์ Loading หรือ Disable Button ระหว่างรอ
-    //   const success = await login(
-    //     values.username,
-    //     values.password,
-    //     values.plant
-    //   );
-
-    //   if (success) {
-    //     message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป proactive-monitor");
-    //     navigate("/proactive-monitor", { replace: true });
-    //   } else {
-    //     message.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-    //   }
-    // } else {
-    //   message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
-    // }
+    // ตรวจสอบความถูกต้องของ values ก่อนเรียก login
+    if (values.username && values.password) {
+      // โชว์ Loading หรือ Disable Button ระหว่างรอ
+      const success = await login(
+        values.username,
+        values.password,
+        values.plant
+      );
+      debugger
+      if (success) {
+        message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป proactive-monitor");
+        navigate("/proactive-monitor", { replace: true });
+      } else {
+        message.error("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+      }
+    } else {
+      message.error("กรุณากรอกข้อมูลให้ครบถ้วน");
+    }
   };
 
   return (
