@@ -60,15 +60,15 @@ export const REGION_OPTIONS = [
  * Status Data options
  */
 export const STATUS_OPTIONS = [
-    { value: '001', label: 'Loading Scheduler' },
-    { value: '002', label: 'Booked' },
-    { value: '003', label: 'Start Pick' },
-    { value: '004', label: 'End Pick' },
-    { value: '005', label: 'RTS' },
-    { value: '006', label: 'Assign Bay' },
-    { value: '007', label: 'Start Load' },
-    { value: '008', label: 'End Load' },
-    { value: '009', label: 'Check Out' },
+    { value: '001', label: 'Loading Scheduler', color: '#FFFFFF' },//white
+    { value: '002', label: 'Booked', color: '#ffbcf6' }, // ชมพู
+    { value: '003', label: 'Start Pick', color: '#e9eb8f' },
+    { value: '004', label: 'End Pick', color: '#acf18c' },
+    { value: '005', label: 'RTS', color: '#57ebde' },
+    { value: '006', label: 'Assign Bay', color: '#73a6f3' },
+    { value: '007', label: 'Start Load', color: '#3f68da' },
+    { value: '008', label: 'End Load', color: '#79b37c' },
+    { value: '009', label: 'Check Out', color: '#57f152' },
 ] as const;
 
 /**
@@ -159,6 +159,31 @@ export const LIST_TIEM_SLOTS = [
     "02:00 - 03:00",
     "03:00 - 04:00",
     "04:00 - 05:00",
+]
+
+export const ListConditionKPI = [
+    "Before > 2 Days",
+    "Before 2 Days",
+    "Before 1 Day",
+    "Before > 12 Hours",
+    "Before > 8 Hours",
+    "Before > 4 Hours",
+    "Before 3 - 4 Hours",
+    "Before 2 - 3 Hours",
+    "Before 1 - 2 Hours",
+    "Before 30 - 60 Mins",
+    "Before 0 - 30 Mins",
+    "0 - 30 Mins",
+    "30 - 60 Mins",
+    "1 - 2 Hours",
+    "2 - 3 Hours",
+    "3 - 4 Hours",
+    "> 4 Hours",
+    "> 8 Hours",
+    "> 12 Hours",
+    "1 Day",
+    "2 Days",
+    "> 2 Days",
 ]
 
 /**
