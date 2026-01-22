@@ -10,6 +10,7 @@ import {
   ControlOutlined,
   MonitorOutlined,
   DatabaseOutlined,
+  DashboardOutlined,
 } from "@ant-design/icons";
 
 const menuItems = [
@@ -22,6 +23,11 @@ const menuItems = [
     key: "/warehouse-status",
     icon: <DatabaseOutlined />,
     label: "Warehouse Status Monitor",
+  },
+  {
+    key: "/kpi-on-time",
+    icon: <DashboardOutlined />,
+    label: "KPI On Time",
   },
   {
     key: "/truck-checkin",

@@ -345,18 +345,19 @@ const OverallMonitoringTab: React.FC = () => {
               columns={columns}
               dataSource={dataSource}
               rowKey="key"
-              pagination={{
-                pageSize: TABLE.pageSizeDefault,
-                // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
-              }}
-              scroll={{ x: 500 }}
+              pagination={false}
+              // pagination={{
+              //   pageSize: TABLE.pageSizeDefault,
+              //   // showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
+              // }}
+              // scroll={{ x: 500 }}
               size="middle"
             />
           </Col>
         </Row>
 
         {/* Charts Section - Region and Status */}
-        <Row gutter={16} style={{ marginTop: "12px" }}>
+        <Row gutter={16} style={{ marginTop: "16px" }}>
           {/* ด้านซ้าย: กราฟแท่งแนวนอนแยกตามภาค */}
           <Col xs={24} lg={12}>
             <Card title="จำนวน Shipment แยกตามภาค" style={{ height: "100%" }}>

@@ -8,6 +8,7 @@ import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
 import { ProactiveMonitorCockpit } from "../../../pages/proactive-monitor";
 import WarehouseStatusMonitor from "../../../pages/warehouse-status/index";
+import KpiOnTimePage from "../../../pages/kpi-on-time/index";
 import MainLayout from "../../../components/layout/MainLayout";
 
 /**
@@ -73,5 +74,14 @@ export const AppRoutes: CustomRouteProps[] = [
     isProtected: true,
     layout: MainLayout,
     pageTitle: "Warehouse Status Monitor",
+  },
+
+  // ==================== KPI On Time Routes ====================
+  {
+    path: "/kpi-on-time",
+    element: <KpiOnTimePage />,
+    isProtected: true,
+    layout: MainLayout,
+    pageTitle: "KPI On Time",
   },
 ];

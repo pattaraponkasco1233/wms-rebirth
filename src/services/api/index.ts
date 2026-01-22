@@ -9,6 +9,9 @@ export { authApi } from './authService';
 // Warehouse Status APIs
 export { warehouseStatusApi } from './warehouseStatus.service';
 
+// KPI On Time APIs
+export { kpiOnTimeApi } from './kpiOnTime.service';
+
 // Re-export types from models
 export type {
     // Auth Types
@@ -27,3 +30,12 @@ export type {
     WarehouseStatusSummary,
     SummaryData,
 } from '../../models/warehouse-status';
+
+export type {
+    // KPI On Time Types
+    KpiOnTimeFilterParams,
+    KpiOnTimeResponse,
+    KpiOnTimeDetailData,
+    KpiOnTimeSummaryData,
+    KpiPercentDailyData,
+} from '../../models/kpi-on-time';
