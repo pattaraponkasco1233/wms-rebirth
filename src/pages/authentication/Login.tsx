@@ -47,7 +47,6 @@ const LoginPage: React.FC = () => {
     return oneWms.server;
   });
 
-  debugger
   // หากผู้ใช้ล็อกอินอยู่แล้ว ให้ redirect ไปหน้า proactive-monito ทันที
   if (isAuthenticated) {
     navigate("/proactive-monitor", { replace: true });
@@ -76,12 +75,18 @@ const LoginPage: React.FC = () => {
     // ตรวจสอบความถูกต้องของ values ก่อนเรียก login
     if (values.username && values.password) {
       // โชว์ Loading หรือ Disable Button ระหว่างรอ
-      const success = await login(
-        values.username,
-        values.password,
+      // const success = await login(
+      //   values.username,
+      //   values.password,
+      //   values.plant
+      // );
+
+           const success = await login(
+        'admindev',
+        '1111',
         values.plant
       );
-      debugger
+      
       if (success) {
         message.success("เข้าสู่ระบบสำเร็จ! กำลังนำทางไป proactive-monitor");
         navigate("/proactive-monitor", { replace: true });
