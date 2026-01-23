@@ -207,7 +207,7 @@ const ProactiveMonitorDetailTable: React.FC<ProactiveMonitorDetailProps> = ({
         // showTotal: (total) => `ทั้งหมด ${total} รายการ`,
         // pageSizeOptions: ["10", "20", "50", "100"],
       }}
-      scroll={{ x: 1500 }}
+      scroll={{ x: 1500, y: 250 }}
       bordered
       size="small"
     />
