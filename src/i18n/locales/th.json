@@ -91,6 +91,7 @@
     "title": "Proactive Monitoring",
     "description": "ตรวจสอบสถานะระบบและแจ้งเตือนล่วงหน้า",
     "kpi": {
+      "percentageontime": "เปอร์เซ็นต์ตรงเวลา",
       "driverCheckIns": "การเช็คอินคนขับรถ",
       "readyToShip": "พร้อมจัดส่ง",
       "multipickOperations": "การดำเนินงานมัลติพิค",

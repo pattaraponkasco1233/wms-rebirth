@@ -91,6 +91,7 @@
     "title": "Proactive Monitoring",
     "description": "Monitor system status and provide advance alerts",
     "kpi": {
+      "percentageontime": "Percent On time",
       "driverCheckIns": "Driver Check-Ins",
       "readyToShip": "Ready to Ship",
       "multipickOperations": "Multipick Operations",

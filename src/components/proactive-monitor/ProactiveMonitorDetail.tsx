@@ -195,24 +195,22 @@ const ProactiveMonitorDetailTable: React.FC<ProactiveMonitorDetailProps> = ({
   ];
 
   return (
-    <Card>
-      <Title level={4}>รายละเอียด (Detail)</Title>
-      <Table
-        columns={columns}
-        dataSource={data}
-        rowKey="shipmentNo"
-        loading={loading}
-        pagination={{
-          defaultPageSize: TABLE.pageSizeDefault,
-          // showSizeChanger: true,
-          // showTotal: (total) => `ทั้งหมด ${total} รายการ`,
-          // pageSizeOptions: ["10", "20", "50", "100"],
-        }}
-        scroll={{ x: 2500 }}
-        bordered
-        size="small"
-      />
-    </Card>
+    <Table
+      style={{ marginTop: "15px" }}
+      columns={columns}
+      dataSource={data}
+      rowKey="shipmentNo"
+      loading={loading}
+      pagination={{
+        defaultPageSize: TABLE.pageSizeDefault,
+        // showSizeChanger: true,
+        // showTotal: (total) => `ทั้งหมด ${total} รายการ`,
+        // pageSizeOptions: ["10", "20", "50", "100"],
+      }}
+      scroll={{ x: 1500 }}
+      bordered
+      size="small"
+    />
   );
 };
 

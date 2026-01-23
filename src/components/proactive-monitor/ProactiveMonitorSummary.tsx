@@ -36,7 +36,7 @@ const ProactiveMonitorSummaryTable: React.FC<ProactiveMonitorSummaryProps> = ({
       dataIndex: "plantLoadTime",
       key: "plantLoadTime",
       fixed: "left",
-      width: 150,
+      width: 140,
     },
     {
       title: "Check In Yes",
@@ -120,19 +120,18 @@ const ProactiveMonitorSummaryTable: React.FC<ProactiveMonitorSummaryProps> = ({
   );
 
   return (
-    <Card style={{ marginBottom: 16 }}>
-      <Title level={4}>สรุปข้อมูล (Summary)</Title>
+    // <Card style={{ marginBottom: 16 }}>
       <Table
         columns={columns}
         dataSource={data}
         rowKey="plantLoadTime"
         pagination={false}
-        scroll={{ x: 1500 }}
+        // scroll={{ x: 1500 }}
         bordered
         size="small"
         summary={renderSummary}
       />
-    </Card>
+    // </Card>
   );
 };
 

@@ -34,7 +34,7 @@ const ProactiveMonitorCockpit: React.FC = () => {
 
   return (
     <div>
-      <Card>
+      <Card bodyStyle={{ paddingTop: 0, paddingBottom: 0 }}>
         <Tabs
           activeKey={activeTab}
           onChange={setActiveTab}

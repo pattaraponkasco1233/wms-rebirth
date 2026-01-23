@@ -1,7 +1,7 @@
 // src/pages/proactive-monitor/ProactiveMonitoringTab.tsx
 
 import React, { useState, useEffect } from "react";
-import { Card, Col, message, Row } from "antd";
+import { Table, Card, Col, message, Row } from "antd";
 import { useTranslation } from "react-i18next";
 import dayjs from "dayjs";
 import {
@@ -16,15 +16,16 @@ import type { ProactiveMonitorResponse } from "../../models/proactive-monitor";
 // Shared styles
 const styles = {
   labelText: {
-    fontSize: 18,
-    fontWeight: 'bold' as const,
+    fontSize: 14,
   },
   valueText: {
-    fontSize: 18,
-    fontWeight: 'bold' as const,
+    fontSize: 14,
   },
   centerText: {
-    textAlign: 'center' as const,
+    textAlign: "center" as const,
+  },
+  rightText: {
+    textAlign: "right" as const,
   },
 };
 
@@ -42,7 +43,11 @@ const ProactiveMonitoringTab: React.FC = () => {
     operationDate: "",
   });
   const [data, setData] = useState<ProactiveMonitorResponse>({
-    target: { delivey_check_in: { target: 0, actual: 0, diff: 0 }, ready_to_ship: { target: 0, actual: 0, diff: 0 }, multipick: { target: 0, actual: 0, diff: 0 } },
+    target: {
+      delivey_check_in: { target: 0, actual: 0, diff: 0 },
+      ready_to_ship: { target: 0, actual: 0, diff: 0 },
+      multipick: { target: 0, actual: 0, diff: 0 },
+    },
     summary: [],
     details: [],
     grandTotal: {
@@ -85,113 +90,170 @@ const ProactiveMonitoringTab: React.FC = () => {
     setFilter(newFilter);
   };
 
+  const dataSourceMultipick = [
+    {
+      key: "1",
+      name: t("proactive.kpi.target"),
+      value: data.target.multipick.target + "%",
+    },
+    {
+      key: "2",
+      name: t("proactive.kpi.actual"),
+      value: data.target.multipick.actual + "%",
+    },
+    {
+      key: "3",
+      name: t("proactive.kpi.diff"),
+      value: data.target.multipick.diff + "%",
+    },
+  ];
+
+  const columnsMultipick = [
+    {
+      title: t("proactive.kpi.multipickOperations"),
+      dataIndex: "name",
+      key: "name",
+      width: "60%",
+    },
+    {
+      title: t("labels.total"),
+      dataIndex: "value",
+      key: "value",
+      width: "40%",
+      align: "right" as const,
+    },
+  ];
+
+  const dataSourceRTS = [
+    {
+      key: "1",
+      name: t("proactive.kpi.target"),
+      value: data.target.ready_to_ship.target + "%",
+    },
+    {
+      key: "2",
+      name: t("proactive.kpi.actual"),
+      value: data.target.ready_to_ship.actual + "%",
+    },
+    {
+      key: "3",
+      name: t("proactive.kpi.diff"),
+      value: data.target.ready_to_ship.diff + "%",
+    },
+  ];
+
+  const columnsRTS = [
+    {
+      title: t("proactive.kpi.readyToShip"),
+      dataIndex: "name",
+      key: "name",
+      width: "60%",
+    },
+    {
+      title: t("labels.total"),
+      dataIndex: "value",
+      key: "value",
+      width: "40%",
+      align: "right" as const,
+    },
+  ];
+
+  const dataSourceDCI = [
+    {
+      key: "1",
+      name: t("proactive.kpi.target"),
+      value: data.target.delivey_check_in.target + "%",
+    },
+    {
+      key: "2",
+      name: t("proactive.kpi.actual"),
+      value: data.target.delivey_check_in.actual + "%",
+    },
+    {
+      key: "3",
+      name: t("proactive.kpi.diff"),
+      value: data.target.delivey_check_in.diff + "%",
+    },
+  ];
+
+  const columnsDCI = [
+    {
+      title: t("proactive.kpi.driverCheckIns"),
+      dataIndex: "name",
+      key: "name",
+      width: "60%",
+    },
+    {
+      title: t("labels.total"),
+      dataIndex: "value",
+      key: "value",
+      width: "40%",
+      align: "right" as const,
+    },
+  ];
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      {/* เป็นแบบ แยก เป็น Component */}
-      {/* Filter Section */}
-      <ProactiveMonitorFilter
-        filter={filter}
-        onFilterChange={handleFilterChange}
-        onSearch={handleSearch}
-      />
-
-      {/* KPI Cards Section */}
+    <div>
       <Row gutter={[16, 16]}>
-        {/* Driver Check-Ins KPI */}
-        <Col span={8}>
-          <Card title={t('proactive.kpi.driverCheckIns')}>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.target')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.delivey_check_in.target}%</div>
-              </Col>
+        <Col span={14}>
+          {/* Summary Table */}
+          <ProactiveMonitorSummary
+            data={data.summary}
+            grandTotal={data.grandTotal}
+          />
+        </Col>
+        <Col span={4}>
+          <Card bodyStyle={{ paddingTop: 0 }}>
+            <Row gutter={[16, 16]}>
+              <h4>{t("proactive.kpi.percentageontime")}</h4>
             </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.actual')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.delivey_check_in.actual}%</div>
-              </Col>
+            <Row gutter={[16, 16]}>
+              {/* Driver Check-Ins KPI */}
+              <Table
+                dataSource={dataSourceDCI}
+                columns={columnsDCI}
+                pagination={false}
+                style={{ width: "100%" }}
+                bordered
+                size="small"
+              />
             </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.diff')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={{ ...styles.valueText, color: '#f5222d' }}>{data.target.delivey_check_in.diff}%</div>
-              </Col>
+            <Row gutter={[16, 16]} style={{ marginTop: "15px" }}>
+              {/* Ready to Ship KPI */}
+
+              <Table
+                dataSource={dataSourceRTS}
+                columns={columnsRTS}
+                pagination={false}
+                style={{ width: "100%" }}
+                bordered
+                size="small"
+              />
+            </Row>
+            <Row gutter={[16, 16]} style={{ marginTop: "15px" }}>
+              {/* Multipick Operations KPI */}
+
+              <Table
+                dataSource={dataSourceMultipick}
+                columns={columnsMultipick}
+                pagination={false}
+                style={{ width: "100%" }}
+                bordered
+                size="small"
+              />
             </Row>
           </Card>
         </Col>
-
-        {/* Ready to Ship KPI */}
-        <Col span={8}>
-          <Card title={t('proactive.kpi.readyToShip')}>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.target')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.ready_to_ship.target}%</div>
-              </Col>
-            </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.actual')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.ready_to_ship.actual}%</div>
-              </Col>
-            </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.diff')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={{ ...styles.valueText,color: '#311de4' } }>{data.target.ready_to_ship.diff}%</div>
-              </Col>
-            </Row>
-          </Card>
-        </Col>
-
-        {/* Multipick Operations KPI */}
-        <Col span={8}>
-          <Card title={t('proactive.kpi.multipickOperations')}>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.target')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.multipick.target}%</div>
-              </Col>
-            </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.actual')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.valueText}>{data.target.multipick.actual}%</div>
-              </Col>
-            </Row>
-            <Row justify="space-between" align="middle">
-              <Col span={12} style={styles.centerText}>
-                <div style={styles.labelText}>{t('proactive.kpi.diff')}</div>
-              </Col>
-              <Col span={12} style={styles.centerText}>
-                <div style={{ ...styles.valueText,   color: '#03c51d' }}>{data.target.multipick.diff}%</div>
-              </Col>
-            </Row>
-          </Card>
+        <Col span={6}>
+          {/* เป็นแบบ แยก เป็น Component */}
+          {/* Filter Section */}
+          <ProactiveMonitorFilter
+            filter={filter}
+            onFilterChange={handleFilterChange}
+            onSearch={handleSearch}
+          />
         </Col>
       </Row>
-      {/* Summary Table */}
-      <ProactiveMonitorSummary
-        data={data.summary}
-        grandTotal={data.grandTotal}
-      />
 
       {/* Detail Table */}
       <ProactiveMonitorDetail data={data.details} loading={loading} />
