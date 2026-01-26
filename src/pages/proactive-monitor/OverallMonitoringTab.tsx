@@ -357,6 +357,7 @@ const OverallMonitoringTab: React.FC = () => {
                   <Card
                     title="จำนวน Shipment แยกตามภาค"
                     style={{ height: "100%" }}
+                    bodyStyle={{ padding: "12px" }}
                   >
                     <ResponsiveContainer width="100%" height={400}>
                       <BarChart data={regionData} layout="vertical">
@@ -405,6 +406,7 @@ const OverallMonitoringTab: React.FC = () => {
                   <Card
                     title="จำนวน Shipment แยกตาม Status"
                     style={{ height: "100%" }}
+                    bodyStyle={{ padding: "12px" }}
                   >
                     <ResponsiveContainer width="100%" height={400}>
                       <BarChart data={statusData} layout="vertical">
