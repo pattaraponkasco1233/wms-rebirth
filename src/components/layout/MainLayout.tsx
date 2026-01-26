@@ -151,7 +151,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         {/* ส่วนเนื้อหาของ Page (Content) */}
         <Content
           style={{
-            margin: "24px 16px",
+            margin: "6px 16px",
             // padding: 24,
             minHeight: 280,
             // background: colorBgContainer,
