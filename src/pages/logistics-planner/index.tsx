@@ -1,17 +1,16 @@
 // src/pages/logistics-planner/index.tsx
 
 import React, { useState, useEffect } from "react";
-import { Card, Tabs, message } from "antd";
-import type { TabsProps } from "antd";
+import { Card, message } from "antd";
 import TimeSummaryTab from "./TimeSummaryTab";
 import DataTableTab from "./DataTableTab";
 import { LogisticsShipment } from "../../models/logistics-planner/logistics-planner.model";
 
-const { TabPane } = Tabs;
-
 const LogisticsPlannerCockpit: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("1");
   const [shipments, setShipments] = useState<LogisticsShipment[]>([]);
+  const [filteredShipments, setFilteredShipments] = useState<
+    LogisticsShipment[]
+  >([]);
 
   // Mock data สำหรับทดสอบ
   useEffect(() => {
@@ -114,8 +113,8 @@ const LogisticsPlannerCockpit: React.FC = () => {
   const handleUpdateShipment = (updatedShipment: LogisticsShipment) => {
     setShipments((prevShipments) =>
       prevShipments.map((shipment) =>
-        shipment.id === updatedShipment.id ? updatedShipment : shipment
-      )
+        shipment.id === updatedShipment.id ? updatedShipment : shipment,
+      ),
     );
     message.success("อัพเดทข้อมูลสำเร็จ");
   };
@@ -123,38 +122,27 @@ const LogisticsPlannerCockpit: React.FC = () => {
   // ฟังก์ชันสำหรับลบข้อมูล shipment
   const handleDeleteShipment = (id: string) => {
     setShipments((prevShipments) =>
-      prevShipments.filter((shipment) => shipment.id !== id)
+      prevShipments.filter((shipment) => shipment.id !== id),
     );
     message.success("ลบข้อมูลสำเร็จ");
   };
 
-  const items: TabsProps["items"] = [
-    {
-      key: "1",
-      label: "สรุปตามช่วงเวลา",
-      children: <TimeSummaryTab shipments={shipments} />,
-    },
-    {
-      key: "2",
-      label: "ตารางข้อมูล",
-      children: (
-        <DataTableTab
+  return (
+    <div style={{ padding: "0" }}>
+      {/* สรุปตามช่วงเวลา */}
+      <Card>
+        <TimeSummaryTab
           shipments={shipments}
+          onFilterChange={setFilteredShipments}
+        />
+      </Card>
+
+      {/* ตารางข้อมูล */}
+      <Card>
+        <DataTableTab
+          shipments={filteredShipments}
           onUpdate={handleUpdateShipment}
           onDelete={handleDeleteShipment}
-        />
-      ),
-    },
-  ];
-
-  return (
-    <div>
-      <Card>
-        <Tabs
-          activeKey={activeTab}
-          onChange={setActiveTab}
-          items={items}
-          size="large"
         />
       </Card>
     </div>

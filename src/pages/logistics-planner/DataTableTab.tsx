@@ -1,19 +1,8 @@
 // src/pages/logistics-planner/DataTableTab.tsx
 
-import React, { useState, useMemo } from "react";
-import {
-  Table,
-  Button,
-  Space,
-  Input,
-  Select,
-  Row,
-  Col,
-  Card,
-  InputNumber,
-  DatePicker,
-} from "antd";
-import { SearchOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import { Table, Button, Space, Input, Select, InputNumber } from "antd";
+import { EditOutlined, SaveOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import {
   LogisticsShipment,
@@ -21,8 +10,6 @@ import {
   CARRIERS,
 } from "../../models/logistics-planner/logistics-planner.model";
 import { TABLE, LIST_TIME_OPTIONS } from "../../constant/constants";
-
-import { Dayjs } from "dayjs";
 
 import { useTranslation } from "react-i18next";
 import { formatDDMMYYYY } from "../../utils/Utils";
@@ -54,25 +41,7 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   onUpdate,
   onDelete,
 }) => {
-  const { t } = useTranslation(); // เพิ่ม useTranslation hook
-  // Filter states
-  const [filterPlant, setFilterPlant] = useState<string>("");
-  const [filterLicense, setFilterLicense] = useState<string>("");
-  const [filterShipmentNo, setFilterShipmentNo] = useState<string>("");
-  const [filterRoute, setFilterRoute] = useState<string>("");
-  const [filterDate, setFilterDate] = useState<Dayjs | null>(null);
-  const [filterTime, setFilterTime] = useState<string>("");
-
-  // Applied filter states (ค่าที่ใช้กรองจริง)
-  const [appliedFilterPlant, setAppliedFilterPlant] = useState<string>("");
-  const [appliedFilterLicense, setAppliedFilterLicense] = useState<string>("");
-  const [appliedFilterShipmentNo, setAppliedFilterShipmentNo] =
-    useState<string>("");
-  const [appliedFilterRoute, setAppliedFilterRoute] = useState<string>("");
-  const [appliedFilterDate, setAppliedFilterDate] = useState<Dayjs | null>(
-    null
-  );
-  const [appliedFilterTime, setAppliedFilterTime] = useState<string>("");
+  const { t } = useTranslation();
 
   // Edit states
   const [editingKey, setEditingKey] = useState<string>("");
@@ -111,55 +80,6 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
       });
     }
   };
-
-  // กรองข้อมูล
-  const filteredData = useMemo(() => {
-    return shipments.filter((shipment) => {
-      const matchPlant = appliedFilterPlant
-        ? shipment.plant
-            .toLowerCase()
-            .includes(appliedFilterPlant.toLowerCase())
-        : true;
-      const matchLicense = appliedFilterLicense
-        ? shipment.truckLicense
-            .toLowerCase()
-            .includes(appliedFilterLicense.toLowerCase())
-        : true;
-      const matchShipmentNo = appliedFilterShipmentNo
-        ? shipment.shipmentNo
-            .toLowerCase()
-            .includes(appliedFilterShipmentNo.toLowerCase())
-        : true;
-      const matchRoute = appliedFilterRoute
-        ? shipment.route
-            .toLowerCase()
-            .includes(appliedFilterRoute.toLowerCase())
-        : true;
-      const matchDate = appliedFilterDate
-        ? shipment.loadDate === appliedFilterDate.format("DDMMYYYY")
-        : true;
-      const matchTime = appliedFilterTime
-        ? shipment.firstTime === appliedFilterTime
-        : true;
-
-      return (
-        matchPlant &&
-        matchLicense &&
-        matchShipmentNo &&
-        matchRoute &&
-        matchDate &&
-        matchTime
-      );
-    });
-  }, [
-    shipments,
-    appliedFilterPlant,
-    appliedFilterLicense,
-    appliedFilterShipmentNo,
-    appliedFilterRoute,
-    appliedFilterDate,
-    appliedFilterTime,
-  ]);
 
   // Columns สำหรับตาราง
   const columns: ColumnsType<LogisticsShipment> = [
@@ -385,124 +305,12 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
     },
   ];
 
-  // ค้นหาข้อมูล
-  const handleSearch = () => {
-    // นำค่าจากช่อง input ไปใช้กรองข้อมูล
-    setAppliedFilterPlant(filterPlant);
-    setAppliedFilterLicense(filterLicense);
-    setAppliedFilterShipmentNo(filterShipmentNo);
-    setAppliedFilterRoute(filterRoute);
-    setAppliedFilterDate(filterDate);
-    setAppliedFilterTime(filterTime);
-  };
-
-  // รีเซ็ตฟิลเตอร์
-  const handleResetFilters = () => {
-    setFilterPlant("");
-    setFilterLicense("");
-    setFilterShipmentNo("");
-    setFilterRoute("");
-    setFilterDate(null);
-    setFilterTime("");
-    setAppliedFilterPlant("");
-    setAppliedFilterLicense("");
-    setAppliedFilterShipmentNo("");
-    setAppliedFilterRoute("");
-    setAppliedFilterDate(null);
-    setAppliedFilterTime("");
-  };
-
   return (
     <div>
-      {/* Filter Section */}
-      <Card>
-        <Row gutter={[16, 16]}>
-          <Col xs={24} sm={12} md={6}>
-            <div>
-              <Input
-                placeholder="ค้นหา Plant"
-                value={filterPlant}
-                onChange={(e) => setFilterPlant(e.target.value)}
-              />
-            </div>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <div>
-              <Input
-                placeholder="ค้นหาทะเบียนรถ"
-                value={filterLicense}
-                onChange={(e) => setFilterLicense(e.target.value)}
-              />
-            </div>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <div>
-              <Input
-                placeholder="ค้นหา Route"
-                value={filterRoute}
-                onChange={(e) => setFilterRoute(e.target.value)}
-              />
-            </div>
-          </Col>
-          <Col xs={24} sm={12} md={6}>
-            <DatePicker
-              placeholder={t("truckCheckin.selectDate")}
-              format="DD/MM/YYYY"
-              value={filterDate}
-              onChange={(date) => setFilterDate(date)}
-              style={{ width: "100%" }}
-              allowClear
-            />
-          </Col>
-        </Row>
-        <Row gutter={[16, 16]} style={{ marginTop: "10px" }}>
-          <Col xs={24} sm={12} md={6}>
-            <div>
-              <Input
-                placeholder="ค้นหา Shipment No"
-                value={filterShipmentNo}
-                onChange={(e) => setFilterShipmentNo(e.target.value)}
-              />
-            </div>
-          </Col>
-
-          <Col xs={24} sm={12} md={6}>
-            <Select
-              placeholder="เลือกเวลา First Time"
-              value={filterTime || undefined}
-              onChange={(val) => setFilterTime(val)}
-              style={{ width: "100%" }}
-              allowClear
-            >
-              {LIST_TIME_OPTIONS.map((time) => (
-                <Option key={time.value} value={time.value}>
-                  {time.label}
-                </Option>
-              ))}
-            </Select>
-          </Col>
-
-          <Col xs={24} sm={12} md={6}>
-            <div style={{ display: "flex", gap: "8px" }}>
-              <Button
-                type="primary"
-                icon={<SearchOutlined />}
-                onClick={handleSearch}
-              >
-                {t("actions.search")}
-              </Button>
-              <Button onClick={handleResetFilters}>
-                {t("actions.clearFilter")}
-              </Button>
-            </div>
-          </Col>
-        </Row>
-      </Card>
-
       {/* Table Section */}
       <Table
         columns={columns}
-        dataSource={filteredData}
+        dataSource={shipments}
         rowKey="id"
         pagination={{
           pageSize: TABLE.pageSizeDefault,
