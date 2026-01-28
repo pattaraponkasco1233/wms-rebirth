@@ -12,6 +12,13 @@ export { warehouseStatusApi } from './warehouseStatus.service';
 // KPI On Time APIs
 export { kpiOnTimeApi } from './kpiOnTime.service';
 
+// Logistics Planner APIs
+export {
+    logisticsPlannerApi,
+    mockLogisticsPlannerApi,
+    mockLogisticsShipments
+} from './logisticsPlanner.service';
+
 // Re-export types from models
 export type {
     // Auth Types
@@ -39,3 +46,14 @@ export type {
     KpiOnTimeSummaryData,
     KpiPercentDailyData,
 } from '../../models/kpi-on-time';
+
+export type {
+    // Logistics Planner Types
+    LogisticsFilterParams,
+    LogisticsShipmentsResponse,
+} from './logisticsPlanner.service';
+
+export type {
+    LogisticsShipment,
+    TimeSlotSummary,
+} from '../../models/logistics-planner/logistics-planner.model';

@@ -1,6 +1,6 @@
 // src/models/logistics-planner/logistics-planner.model.ts
 
-import { CARRIER_OPTIONS, VEHICLE_TYPE_OPTIONS, LIST_TIME_OPTIONS, LIST_TIEM_SLOTS } from "../../constant/constants";
+import { PLANT_OPTIONS, VEHICLE_TYPE_OPTIONS, LIST_TIME_OPTIONS, LIST_TIEM_SLOTS } from "../../constant/constants";
 
 /**
  * Interface สำหรับข้อมูล Logistics Planner
@@ -15,9 +15,13 @@ export interface LogisticsShipment {
     pickSequence: number;
     truckLicense: string;
     vehicleType: string;
+    vehicleType_key: string;
     firstTime: string;
     carrier: string;
+    carrier_name: string;
     generator: "auto" | "manual";
+    status_name: string;
+    status: string;
     field1: string;
     field2: string;
     field3: string;
@@ -31,8 +35,8 @@ export interface TimeSlotSummary {
     timeSlot: string; // เช่น "8:00 - 9:00"
     count: number;
     shipments: LogisticsShipment[];
-    // Dynamic properties for carrier_vehicleType combinations
-    [key: string]: any; // เช่น KERRY_EXPRESS_4_WHEEL: 5
+    // Dynamic properties for plant_vehicleType combinations
+    [key: string]: any; // เช่น snk_4_WHEEL: 5, glx_6_WHEEL: 3
 }
 
 /**
@@ -41,9 +45,9 @@ export interface TimeSlotSummary {
 export const VEHICLE_TYPES = VEHICLE_TYPE_OPTIONS.map((option) => option.label);
 
 /**
- * ตัวเลือกสำหรับ Carrier (นำมาจาก constants)
+ * ตัวเลือกสำหรับ Plant (นำมาจาก constants)
  */
-export const CARRIERS = CARRIER_OPTIONS.map((option) => option.label);
+export const PLANTS = PLANT_OPTIONS.map((option) => option.label);
 
 /**
  * ตัวเลือกสำหรับ First Time (นำมาจาก constants)
@@ -84,16 +88,16 @@ export const calculateTimeSlotSummary = (
         summaryMap.set(targetSlot, [...currentShipments, shipment]);
     });
 
-    // Helper function to count shipments by carrier and vehicle type
-    const countByCarrierAndVehicle = (
+    // Helper function to count shipments by plant and vehicle type
+    const countByPlantAndVehicle = (
         slotShipments: LogisticsShipment[],
-        carrierLabel: string,
-        vehicleLabel: string
+        plantValue: string,
+        vehicleTypeValue: string
     ): number => {
         return slotShipments.filter(
             (shipment) =>
-                shipment.carrier === carrierLabel &&
-                shipment.vehicleType === vehicleLabel
+                shipment.plant.toLowerCase() === plantValue.toLowerCase() &&
+                shipment.vehicleType_key === vehicleTypeValue
         ).length;
     };
 
@@ -106,14 +110,14 @@ export const calculateTimeSlotSummary = (
             shipments: slotShipments,
         };
 
-        // คำนวณจำนวนสำหรับแต่ละ carrier และ vehicle type
-        CARRIER_OPTIONS.forEach((carrier) => {
+        // คำนวณจำนวนสำหรับแต่ละ plant และ vehicle type
+        PLANT_OPTIONS.forEach((plant) => {
             VEHICLE_TYPE_OPTIONS.forEach((vehicleType) => {
-                const key = `${carrier.value}_${vehicleType.value}`;
-                summary[key] = countByCarrierAndVehicle(
+                const key = `${plant.value}_${vehicleType.value}`;
+                summary[key] = countByPlantAndVehicle(
                     slotShipments,
-                    carrier.label,
-                    vehicleType.label
+                    plant.value,
+                    vehicleType.value
                 );
             });
         });

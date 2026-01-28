@@ -11,7 +11,7 @@ import {
 } from "../../models/logistics-planner/logistics-planner.model";
 import {
   TABLE,
-  CARRIER_OPTIONS,
+  PLANT_OPTIONS,
   VEHICLE_TYPE_OPTIONS,
   LIST_TIME_OPTIONS,
 } from "../../constant/constants";
@@ -23,11 +23,20 @@ const { Option } = Select;
 interface TimeSummaryTabProps {
   shipments: LogisticsShipment[];
   onFilterChange: (filteredShipments: LogisticsShipment[]) => void;
+  onSearch: (filters: {
+    plant?: string;
+    license?: string;
+    shipmentNo?: string;
+    route?: string;
+    date?: string;
+    time?: string;
+  }) => void;
 }
 
 const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
   shipments,
   onFilterChange,
+  onSearch,
 }) => {
   const { t } = useTranslation();
 
@@ -109,6 +118,18 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
     return calculateTimeSlotSummary(filteredShipments);
   }, [filteredShipments]);
 
+  // คำนวณสรุปตาม Status
+  const statusSummary = useMemo(() => {
+    const pending = filteredShipments.filter((s) => s.status === "001").length;
+    const assigned = filteredShipments.filter((s) => s.status === "002").length;
+    const interfaced = filteredShipments.filter(
+      (s) => s.status === "003",
+    ).length;
+    const total = filteredShipments.length;
+
+    return { pending, assigned, interfaced, total };
+  }, [filteredShipments]);
+
   // ค้นหาข้อมูล
   const handleSearch = () => {
     setAppliedFilterPlant(filterPlant);
@@ -117,6 +138,16 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
     setAppliedFilterRoute(filterRoute);
     setAppliedFilterDate(filterDate);
     setAppliedFilterTime(filterTime);
+
+    // เรียก API ผ่าน callback
+    onSearch({
+      plant: filterPlant,
+      license: filterLicense,
+      shipmentNo: filterShipmentNo,
+      route: filterRoute,
+      date: filterDate?.format("DDMMYYYY"),
+      time: filterTime,
+    });
   };
 
   // รีเซ็ตฟิลเตอร์
@@ -133,6 +164,9 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
     setAppliedFilterRoute("");
     setAppliedFilterDate(null);
     setAppliedFilterTime("");
+
+    // เรียก API โดยไม่มี filter
+    onSearch({});
   };
 
   // Columns สำหรับตาราง
@@ -141,49 +175,54 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
       title: "ช่วงเวลา",
       dataIndex: "timeSlot",
       key: "timeSlot",
-      width: 120,
+      width: 100,
       fixed: "left",
       render: (timeSlot: string) => (
-        <span style={{ fontWeight: "bold" }}>{timeSlot}</span>
+        <span style={{ fontWeight: "bold", fontSize: "12px" }}>{timeSlot}</span>
       ),
     },
     {
       title: "Plant",
       dataIndex: "plant",
       key: "plant",
-      width: 150,
+      width: 120,
       render: (plant: string) => (
         <span style={{ fontWeight: "bold" }}>{plant}</span>
       ),
-      children: CARRIER_OPTIONS.map((carrier) => ({
-        title: carrier.label,
-        dataIndex: carrier.value,
-        key: carrier.value,
-        width: 150,
+      children: PLANT_OPTIONS.map((plant) => ({
+        title: plant.label,
+        dataIndex: plant.value,
+        key: plant.value,
+        width: 120,
         children: [
           ...VEHICLE_TYPE_OPTIONS.map((vehicleType) => ({
             title: vehicleType.label,
-            dataIndex: `${carrier.value}_${vehicleType.value}`,
-            key: `${carrier.value}_${vehicleType.value}`,
-            width: 100,
+            dataIndex: `${plant.value}_${vehicleType.value}`,
+            key: `${plant.value}_${vehicleType.value}`,
+            width: 60,
             align: "center" as const,
             render: (value: number) => (
-              <span style={{ fontWeight: value > 0 ? "bold" : "normal" }}>
+              <span
+                style={{
+                  fontWeight: value > 0 ? "bold" : "normal",
+                  fontSize: "12px",
+                }}
+              >
                 {value || 0}
               </span>
             ),
           })),
           {
             title: "Total",
-            dataIndex: `${carrier.value}_total`,
-            key: `${carrier.value}_total`,
-            width: 100,
+            dataIndex: `${plant.value}_total`,
+            key: `${plant.value}_total`,
+            width: 60,
             align: "center" as const,
             render: (_: any, record: TimeSlotSummary) => {
-              // คำนวณผลรวมของทุก vehicle type ใน carrier นี้
+              // คำนวณผลรวมของทุก vehicle type ใน plant นี้
               const total = VEHICLE_TYPE_OPTIONS.reduce((sum, vehicleType) => {
                 const key =
-                  `${carrier.value}_${vehicleType.value}` as keyof TimeSlotSummary;
+                  `${plant.value}_${vehicleType.value}` as keyof TimeSlotSummary;
                 const value = (record[key] as number) || 0;
                 return sum + value;
               }, 0);
@@ -191,6 +230,7 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
                 <span
                   style={{
                     fontWeight: "bold",
+                    fontSize: "12px",
                     color:
                       total > 0
                         ? "var(--color-success)"
@@ -209,12 +249,13 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
       title: "Total",
       dataIndex: "count",
       key: "count",
-      width: 150,
+      width: 80,
       align: "center",
+      fixed: "right",
       render: (count: number) => (
         <span
           style={{
-            fontSize: "18px",
+            fontSize: "16px",
             fontWeight: "bold",
             color:
               count > 0 ? "var(--color-primary)" : "var(--color-text-disabled)",
@@ -224,35 +265,6 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
         </span>
       ),
     },
-    // {
-    //   title: "รายละเอียด",
-    //   dataIndex: "shipments",
-    //   key: "shipments",
-    //   render: (shipments: LogisticsShipment[]) => (
-    //     <div>
-    //       {shipments.length > 0 ? (
-    //         <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-    //           {shipments.map((shipment) => (
-    //             <div
-    //               key={shipment.id}
-    //               style={{
-    //                 padding: "4px 8px",
-    //                 backgroundColor: "#e6f7ff",
-    //                 border: "1px solid #91d5ff",
-    //                 borderRadius: "4px",
-    //                 fontSize: "12px",
-    //               }}
-    //             >
-    //               {shipment.shipmentNo} - {shipment.route}
-    //             </div>
-    //           ))}
-    //         </div>
-    //       ) : (
-    //         <span style={{ color: "#d9d9d9" }}>-</span>
-    //       )}
-    //     </div>
-    //   ),
-    // },
   ];
 
   return (
@@ -264,16 +276,96 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
             columns={columns}
             dataSource={timeSlotSummary}
             rowKey="timeSlot"
-            pagination={{
-              pageSize: TABLE.pageSizeDefault,
-              //   showSizeChanger: true,
-              showTotal: (total) => `ทั้งหมด ${total} ช่วงเวลา`,
-            }}
+            pagination={false}
+            scroll={{ y: 400, x: "max-content" }}
             bordered
+            size="small"
           />
         </Col>
         <Col span={6}>
           <Card>
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Summary Status Shipment
+                </span>
+              </Col>
+            </Row>
+            <Row gutter={[8, 8]} style={{ marginTop: "10px" }}>
+              <Col span={12}>
+                <span style={{ fontWeight: "500" }}>Shipment Pending:</span>
+              </Col>
+              <Col span={12} style={{ textAlign: "right" }}>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: "var(--color-warning)",
+                    fontSize: "16px",
+                  }}
+                >
+                  {statusSummary.pending}
+                </span>
+              </Col>
+            </Row>
+            <Row gutter={[8, 8]}>
+              <Col span={12}>
+                <span style={{ fontWeight: "500" }}>Shipment Assigned:</span>
+              </Col>
+              <Col span={12} style={{ textAlign: "right" }}>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: "var(--color-info)",
+                    fontSize: "16px",
+                  }}
+                >
+                  {statusSummary.assigned}
+                </span>
+              </Col>
+            </Row>
+            <Row gutter={[8, 8]}>
+              <Col span={12}>
+                <span style={{ fontWeight: "500" }}>Shipment Interface:</span>
+              </Col>
+              <Col span={12} style={{ textAlign: "right" }}>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: "var(--color-success)",
+                    fontSize: "16px",
+                  }}
+                >
+                  {statusSummary.interfaced}
+                </span>
+              </Col>
+            </Row>
+            <Row
+              gutter={[8, 8]}
+              style={{
+                marginTop: "10px",
+                paddingTop: "10px",
+                borderTop: "2px solid #f0f0f0",
+              }}
+            >
+              <Col span={12}>
+                <span style={{ fontWeight: "bold", fontSize: "16px" }}>
+                  Shipment Total:
+                </span>
+              </Col>
+              <Col span={12} style={{ textAlign: "right" }}>
+                <span
+                  style={{
+                    fontWeight: "bold",
+                    color: "var(--color-primary)",
+                    fontSize: "18px",
+                  }}
+                >
+                  {statusSummary.total}
+                </span>
+              </Col>
+            </Row>
+          </Card>
+          <Card className="mt-15">
             <Row gutter={[16, 16]}>
               <Col xs={24} sm={12} md={12}>
                 <div>
@@ -345,12 +437,16 @@ const TimeSummaryTab: React.FC<TimeSummaryTabProps> = ({
                   type="primary"
                   icon={<SearchOutlined />}
                   onClick={handleSearch}
+                  className="btn-search-filter"
                 >
                   {t("actions.search")}
                 </Button>
               </Col>
               <Col xs={24} sm={12} md={12}>
-                <Button onClick={handleResetFilters}>
+                <Button
+                  onClick={handleResetFilters}
+                  className="btn-clear-filter"
+                >
                   {t("actions.clearFilter")}
                 </Button>
               </Col>

@@ -1,113 +1,67 @@
 // src/pages/logistics-planner/index.tsx
 
-import React, { useState, useEffect } from "react";
-import { Card, message } from "antd";
-import TimeSummaryTab from "./TimeSummaryTab";
-import DataTableTab from "./DataTableTab";
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, message, Spin } from "antd";
+import TimeSummaryTab from "../../components/logistics-planner/TimeSummaryTab";
+import DataTableTab from "../../components/logistics-planner/DataTableTab";
 import { LogisticsShipment } from "../../models/logistics-planner/logistics-planner.model";
+import {
+  mockLogisticsPlannerApi,
+  LogisticsFilterParams,
+} from "../../services/api/logisticsPlanner.service";
 
 const LogisticsPlannerCockpit: React.FC = () => {
   const [shipments, setShipments] = useState<LogisticsShipment[]>([]);
   const [filteredShipments, setFilteredShipments] = useState<
     LogisticsShipment[]
   >([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  // Mock data สำหรับทดสอบ
+  // ฟังก์ชันสำหรับดึงข้อมูลจาก API
+  const fetchShipments = useCallback(
+    async (filters?: LogisticsFilterParams) => {
+      try {
+        setLoading(true);
+        const response = await mockLogisticsPlannerApi.getShipments(filters);
+        setShipments(response.data);
+        message.success(`ดึงข้อมูลสำเร็จ ${response.total} รายการ`);
+      } catch (error) {
+        console.error("Error fetching shipments:", error);
+        message.error("เกิดข้อผิดพลาดในการดึงข้อมูล");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [],
+  );
+
+  // โหลดข้อมูลครั้งแรก
   useEffect(() => {
-    const mockShipments: LogisticsShipment[] = [
-      {
-        id: "1",
-        plant: "Plant A",
-        shipmentNo: "SHP-2026-001",
-        route: "BKK-CNX",
-        loadDate: "15012026",
-        jobNumber: "JOB-001",
-        pickSequence: 1,
-        truckLicense: "กข-1234",
-        vehicleType: "รถ 6 ล้อ",
-        firstTime: "080000",
-        carrier: "Kerry Express",
-        generator: "auto",
-        field1: "A",
-        field2: "B",
-        field3: "C",
-        field4: "D",
-      },
-      {
-        id: "2",
-        plant: "Plant B",
-        shipmentNo: "SHP-2026-002",
-        route: "BKK-HDY",
-        loadDate: "16012026",
-        jobNumber: "JOB-002",
-        pickSequence: 2,
-        truckLicense: "คง-5678",
-        vehicleType: "รถ 4 ล้อ",
-        firstTime: "090000",
-        carrier: "Flash Express",
-        generator: "manual",
-        field1: "E",
-        field2: "F",
-        field3: "G",
-        field4: "H",
-      },
-      {
-        id: "3",
-        plant: "Plant C",
-        shipmentNo: "SHP-2026-003",
-        route: "BKK-PKT",
-        loadDate: "16012026",
-        jobNumber: "JOB-003",
-        pickSequence: 3,
-        truckLicense: "ขค-9999",
-        vehicleType: "รถ 6 ล้อ",
-        firstTime: "100000",
-        carrier: "J&T Express",
-        generator: "auto",
-        field1: "I",
-        field2: "J",
-        field3: "K",
-        field4: "L",
-      },
-      {
-        id: "4",
-        plant: "Plant D",
-        shipmentNo: "SHP-2026-004",
-        route: "BKK-CMI",
-        loadDate: "16012026",
-        jobNumber: "JOB-004",
-        pickSequence: 4,
-        truckLicense: "งจ-7777",
-        vehicleType: "รถ 4 ล้อ",
-        firstTime: "083000",
-        carrier: "Thailand Post",
-        generator: "manual",
-        field1: "M",
-        field2: "N",
-        field3: "O",
-        field4: "P",
-      },
-      {
-        id: "5",
-        plant: "Plant D",
-        shipmentNo: "SHP-2026-005",
-        route: "BKK-UBN",
-        loadDate: "17012026",
-        jobNumber: "JOB-005",
-        pickSequence: 5,
-        truckLicense: "ฉช-3333",
-        vehicleType: "รถ 6 ล้อ",
-        firstTime: "140000",
-        carrier: "Kerry Express",
-        generator: "auto",
-        field1: "Q",
-        field2: "R",
-        field3: "S",
-        field4: "T",
-      },
-    ];
-    setShipments(mockShipments);
-  }, []);
+    fetchShipments();
+  }, [fetchShipments]);
+
+  // ฟังก์ชันสำหรับค้นหาด้วย filter จาก TimeSummaryTab
+  const handleSearch = useCallback(
+    (filters: {
+      plant?: string;
+      license?: string;
+      shipmentNo?: string;
+      route?: string;
+      date?: string;
+      time?: string;
+    }) => {
+      const apiFilters: LogisticsFilterParams = {
+        plant: filters.plant,
+        truckLicense: filters.license,
+        shipmentNo: filters.shipmentNo,
+        route: filters.route,
+        loadDate: filters.date,
+        firstTime: filters.time,
+      };
+      fetchShipments(apiFilters);
+    },
+    [fetchShipments],
+  );
 
   // ฟังก์ชันสำหรับอัพเดทข้อมูล shipment
   const handleUpdateShipment = (updatedShipment: LogisticsShipment) => {
@@ -129,22 +83,25 @@ const LogisticsPlannerCockpit: React.FC = () => {
 
   return (
     <div style={{ padding: "0" }}>
-      {/* สรุปตามช่วงเวลา */}
-      <Card>
-        <TimeSummaryTab
-          shipments={shipments}
-          onFilterChange={setFilteredShipments}
-        />
-      </Card>
+      <Spin spinning={loading} tip="กำลังโหลดข้อมูล...">
+        {/* สรุปตามช่วงเวลา */}
+        <Card>
+          <TimeSummaryTab
+            shipments={shipments}
+            onFilterChange={setFilteredShipments}
+            onSearch={handleSearch}
+          />
+        </Card>
 
-      {/* ตารางข้อมูล */}
-      <Card>
-        <DataTableTab
-          shipments={filteredShipments}
-          onUpdate={handleUpdateShipment}
-          onDelete={handleDeleteShipment}
-        />
-      </Card>
+        {/* ตารางข้อมูล */}
+        <Card>
+          <DataTableTab
+            shipments={filteredShipments}
+            onUpdate={handleUpdateShipment}
+            onDelete={handleDeleteShipment}
+          />
+        </Card>
+      </Spin>
     </div>
   );
 };

@@ -7,9 +7,13 @@ import type { ColumnsType } from "antd/es/table";
 import {
   LogisticsShipment,
   VEHICLE_TYPES,
-  CARRIERS,
+  PLANTS,
 } from "../../models/logistics-planner/logistics-planner.model";
-import { TABLE, LIST_TIME_OPTIONS } from "../../constant/constants";
+import {
+  TABLE,
+  LIST_TIME_OPTIONS,
+  CARRIER_OPTIONS,
+} from "../../constant/constants";
 
 import { useTranslation } from "react-i18next";
 import { formatDDMMYYYY } from "../../utils/Utils";
@@ -74,10 +78,20 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
   // อัพเดทข้อมูลในโหมดแก้ไข
   const updateEditData = (field: keyof LogisticsShipment, value: any) => {
     if (editData) {
-      setEditData({
+      const updates: any = {
         ...editData,
         [field]: value,
-      });
+      };
+
+      // ถ้าเป็นการ update carrier ให้ update carrier_name ด้วย
+      if (field === "carrier") {
+        const selectedCarrier = CARRIER_OPTIONS.find((c) => c.value === value);
+        if (selectedCarrier) {
+          updates.carrier_name = selectedCarrier.label;
+        }
+      }
+
+      setEditData(updates);
     }
   };
 
@@ -94,12 +108,6 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
       title: "Plant",
       dataIndex: "plant",
       key: "plant",
-      width: 120,
-    },
-    {
-      title: "Route",
-      dataIndex: "route",
-      key: "route",
       width: 120,
     },
     {
@@ -214,37 +222,43 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
               onChange={(val) => updateEditData("carrier", val)}
               style={{ width: "100%" }}
             >
-              {CARRIERS.map((carrier) => (
-                <Option key={carrier} value={carrier}>
-                  {carrier}
+              {CARRIER_OPTIONS.map((carrier) => (
+                <Option key={carrier.value} value={carrier.value}>
+                  {carrier.label}
                 </Option>
               ))}
             </Select>
           );
         }
-        return value;
+        return record.carrier_name || value;
       },
     },
+    // {
+    //   title: "Generator",
+    //   dataIndex: "generator",
+    //   key: "generator",
+    //   width: 120,
+    //   render: (value: string, record: LogisticsShipment) => {
+    //     if (isEditing(record)) {
+    //       return (
+    //         <Select
+    //           value={editData?.generator}
+    //           onChange={(val) => updateEditData("generator", val)}
+    //           style={{ width: "100%" }}
+    //         >
+    //           <Option value="auto">Auto</Option>
+    //           <Option value="manual">Manual</Option>
+    //         </Select>
+    //       );
+    //     }
+    //     return value;
+    //   },
+    // },
     {
-      title: "Generator",
-      dataIndex: "generator",
-      key: "generator",
+      title: "Status",
+      dataIndex: "status_name",
+      key: "status_name",
       width: 120,
-      render: (value: string, record: LogisticsShipment) => {
-        if (isEditing(record)) {
-          return (
-            <Select
-              value={editData?.generator}
-              onChange={(val) => updateEditData("generator", val)}
-              style={{ width: "100%" }}
-            >
-              <Option value="auto">Auto</Option>
-              <Option value="manual">Manual</Option>
-            </Select>
-          );
-        }
-        return value;
-      },
     },
     {
       title: "1",
@@ -317,8 +331,9 @@ const DataTableTab: React.FC<DataTableTabProps> = ({
           //   showSizeChanger: true,
           showTotal: (total) => `ทั้งหมด ${total} รายการ`,
         }}
-        scroll={{ x: 1800 }}
+        scroll={{ y: 500 }}
         bordered
+        size="small"
       />
     </div>
   );
