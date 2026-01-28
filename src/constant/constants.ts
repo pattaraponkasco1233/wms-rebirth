@@ -86,6 +86,10 @@ export const ROUTE_OPTIONS = [
 ] as const;
 
 
+export const STATUS_CHECKIN_OPTIONS = [
+    { value: "CHECKED_IN", label: "เช็คอินแล้ว", color: "#BAF7A5" },
+    { value: "NOT_CHECKED_IN", label: "ยังไม่เช็คอิน", color: "#FFC2EB" },
+] as const;
 
 /**
  * List time options  ไว้สำหรับเลือกเวลาเช็คอินรถบรรทุก รูปแบบ HHMMSS 8 โมงเช้า - ตี 5
@@ -190,8 +194,9 @@ export const ListConditionKPI = [
  * Truck Check-in Status options with translation keys
  */
 export const TRUCK_CHECKIN_STATUS_OPTIONS = [
-    { value: "CHECKED_IN", labelKey: "truckCheckin.statusCheckedIn" },
-    { value: "NOT_CHECKED_IN", labelKey: "truckCheckin.statusNotCheckedIn" },
+    { value: "CHECKED_IN", labelKey: "truckCheckin.statusCheckedIn", color: "success" },
+    { value: "NOT_CHECKED_IN", labelKey: "truckCheckin.statusNotCheckedIn", color: "error" },
+    { value: "PENDING", labelKey: "truckCheckin.statusPending", color: "warning" },
 ] as const;
 
 // Truck Check-in Types

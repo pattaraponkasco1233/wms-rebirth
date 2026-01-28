@@ -2,10 +2,10 @@
 
 export interface TruckCheckin {
     id: string;
-    plant?: string;
+    plant: string;
     carrier?: string;
     vehicleType?: string;
-    shipmentNo?: string;
+    shipmentNo: string;
     license: string;
     driver?: string;
     tel?: string;
@@ -18,8 +18,7 @@ export interface TruckCheckin {
 
 export enum TruckCheckinStatus {
     CHECKED_IN = 'CHECKED_IN',
-    NOT_CHECKED_IN = 'NOT_CHECKED_IN',
-    PENDING = 'PENDING'
+    NOT_CHECKED_IN = 'NOT_CHECKED_IN'
 }
 
 export interface TruckCheckinSearchParams {
