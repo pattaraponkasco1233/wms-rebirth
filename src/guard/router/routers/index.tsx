@@ -2,7 +2,7 @@ import React from "react";
 import { RouteProps } from "react-router-dom";
 
 // นำเข้า Components
-import LoginPage from "../../../pages/authentication/Login";
+import LoginPage from "../../../pages/login/Login";
 import RootRedirect from "../../../pages/misc/RootRedirect";
 import TruckCheckinPage from "../../../pages/truck-checkin/index";
 import LogisticsPlannerCockpit from "../../../pages/logistics-planner/index";
