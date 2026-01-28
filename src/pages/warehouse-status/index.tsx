@@ -53,7 +53,7 @@ const WarehouseStatusMonitor: React.FC = () => {
 
   return (
     <div>
-      <Space direction="vertical" size="large" style={{ width: "100%" }}>
+      <Space direction="vertical" size="small" style={{ width: "100%" }}>
         <WarehouseStatusFilter
           filter={filter}
           onFilterChange={setFilter}

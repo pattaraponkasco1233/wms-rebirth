@@ -60,15 +60,15 @@ export const REGION_OPTIONS = [
  * Status Data options
  */
 export const STATUS_OPTIONS = [
-    { value: '001', label: 'Loading Scheduler', color: '#FFFFFF' },//white
-    { value: '002', label: 'Booked', color: '#ffbcf6' }, // ชมพู
-    { value: '003', label: 'Start Pick', color: '#e9eb8f' },
-    { value: '004', label: 'End Pick', color: '#acf18c' },
-    { value: '005', label: 'RTS', color: '#57ebde' },
-    { value: '006', label: 'Assign Bay', color: '#73a6f3' },
-    { value: '007', label: 'Start Load', color: '#3f68da' },
-    { value: '008', label: 'End Load', color: '#79b37c' },
-    { value: '009', label: 'Check Out', color: '#57f152' },
+    { value: '001', label: 'Loading Scheduler', color: '#F5F5F5' },//white
+    { value: '002', label: 'Booked', color: '#FFC2EB' }, // ชมพู
+    { value: '003', label: 'Start Pick', color: '#F7F791' },
+    { value: '004', label: 'End Pick', color: '#ECF7E9' },
+    { value: '005', label: 'RTS', color: '#91D7F1' },
+    { value: '006', label: 'Assign Bay', color: '#E5EFF8' },
+    { value: '007', label: 'Start Load', color: '#91BEDE' },
+    { value: '008', label: 'End Load', color: '#D3E9C4' },
+    { value: '009', label: 'Check Out', color: '#BAF7A5' },
 ] as const;
 
 /**

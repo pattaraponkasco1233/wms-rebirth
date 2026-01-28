@@ -63,7 +63,7 @@ const WarehouseStatusFilterComponent: React.FC<WarehouseStatusFilterProps> = ({
       : getDefaultDateRange();
 
   return (
-    <Card >
+    <Card>
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} md={6}>
           <Select
@@ -103,7 +103,7 @@ const WarehouseStatusFilterComponent: React.FC<WarehouseStatusFilterProps> = ({
             type="primary"
             icon={<SearchOutlined />}
             onClick={onSearch}
-            style={{ width: "100%" }}
+            className="btn-search-filter"
           >
             ค้นหา
           </Button>

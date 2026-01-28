@@ -394,13 +394,13 @@ const TruckCheckinPage: React.FC = () => {
                 {t("actions.search")}
               </Button>
               <Button onClick={handleReset}>{t("actions.clearFilter")}</Button>
-              {/* <Button
+              <Button
                 type="primary"
                 icon={<PlusOutlined />}
                 onClick={handleAdd}
               >
                 {t("actions.addData")}
-              </Button> */}
+              </Button>
             </Space>
           </Col>
         </Row>

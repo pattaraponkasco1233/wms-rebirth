@@ -3,15 +3,15 @@
 import React from "react";
 import { Card, Table } from "antd";
 import { WarehouseStatusSummary } from "../../models/warehouse-status";
-import { PLANT_OPTIONS } from "../../constant/constants";
+import { PLANT_OPTIONS, STATUS_OPTIONS } from "../../constant/constants";
 
 interface WarehouseStatusSummaryProps {
   data: WarehouseStatusSummary[];
 }
 
-const WarehouseStatusSummaryComponent: React.FC<WarehouseStatusSummaryProps> = ({
-  data,
-}) => {
+const WarehouseStatusSummaryComponent: React.FC<
+  WarehouseStatusSummaryProps
+> = ({ data }) => {
   // Calculate total row
   const calculateTotal = () => {
     const totals: any = {
@@ -56,10 +56,26 @@ const WarehouseStatusSummaryComponent: React.FC<WarehouseStatusSummaryProps> = (
       fixed: "left",
       width: 150,
       render: (value: string, record: any) => {
+        // Find the color for this status
+        const statusOption = STATUS_OPTIONS.find(
+          (opt) => opt.value === record.status,
+        );
+        const backgroundColor = statusOption?.color || "transparent";
+
         if (record.status === "TOTAL") {
           return <strong>{value}</strong>;
         }
-        return value;
+        return (
+          <div
+            style={{
+              backgroundColor,
+              padding: "8px",
+              margin: "-8px -8px",
+            }}
+          >
+            {value}
+          </div>
+        );
       },
     },
   ];
@@ -119,15 +135,25 @@ const WarehouseStatusSummaryComponent: React.FC<WarehouseStatusSummaryProps> = (
   });
 
   return (
-    <Card title="สรุปสถานะคลังสินค้า" >
+    <Card>
       <Table
         columns={columns}
         dataSource={dataWithTotal}
         rowKey="status"
         pagination={false}
         bordered
-        scroll={{ x: 1200 }}
         size="small"
+        onRow={(record) => {
+          // Find the color for this status
+          const statusOption = STATUS_OPTIONS.find(
+            (opt) => opt.value === record.status,
+          );
+          return {
+            style: {
+              backgroundColor: statusOption?.color || "transparent",
+            },
+          };
+        }}
       />
     </Card>
   );
