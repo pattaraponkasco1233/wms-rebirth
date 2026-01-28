@@ -87,8 +87,8 @@ export const ROUTE_OPTIONS = [
 
 
 export const STATUS_CHECKIN_OPTIONS = [
-    { value: "CHECKED_IN", label: "เช็คอินแล้ว", color: "#BAF7A5" },
-    { value: "NOT_CHECKED_IN", label: "ยังไม่เช็คอิน", color: "#FFC2EB" },
+    { key: 1, value: "CHECKED_IN", label: "เช็คอินแล้ว", color: "#BAF7A5" },
+    { key: 0, value: "NOT_CHECKED_IN", label: "ยังไม่เช็คอิน", color: "#FFC2EB" },
 ] as const;
 
 /**

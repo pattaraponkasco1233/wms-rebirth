@@ -102,6 +102,7 @@ const TruckCheckinPage: React.FC = () => {
       shipmentNo: record.shipmentNo || "",
       checkin: record.checkin,
       status: record.status,
+      status_key: record.status_key,
     });
     setIsModalVisible(true);
   };
@@ -110,6 +111,10 @@ const TruckCheckinPage: React.FC = () => {
   const handleAdd = () => {
     setEditingRecord(null);
     form.resetFields();
+    // Set default status เป็นค่าแรกจาก TRUCK_CHECKIN_STATUS_OPTIONS
+    form.setFieldsValue({
+      status: TRUCK_CHECKIN_STATUS_OPTIONS[0].value,
+    });
     setIsModalVisible(true);
   };
 
@@ -125,6 +130,9 @@ const TruckCheckinPage: React.FC = () => {
     try {
       const values = await form.validateFields();
 
+      // ตรวจสอบว่าเป็นการ Edit ข้อมูลที่ยังไม่ได้ Check in (status_key = 0)
+      const isCheckingIn = editingRecord && editingRecord.status_key === "0";
+
       const updateData: UpdateTruckCheckinRequest = {
         plant: values.plant,
         carrier: values.carrier,
@@ -133,8 +141,18 @@ const TruckCheckinPage: React.FC = () => {
         driver: values.driver,
         tel: values.tel,
         shipmentNo: values.shipmentNo,
-        checkin: Date.now().toString(), // สมมติใช้เวลาปัจจุบัน
-        status: values.status,
+        // ถ้าเป็นการ Check in ครั้งแรก ให้ใช้เวลาปัจจุบัน
+        checkin: isCheckingIn
+          ? new Date().toLocaleString("th-TH", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : values.checkin,
+        // ถ้าเป็นการ Check in ครั้งแรก ให้เปลี่ยน status เป็น CHECKED_IN
+        status: isCheckingIn ? "CHECKED_IN" : values.status,
       };
 
       if (editingRecord) {
@@ -204,6 +222,34 @@ const TruckCheckinPage: React.FC = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
+                name="shipmentNo"
+                label={t("truckCheckin.shipmentNo")}
+                rules={[
+                  {
+                    required: true,
+                    message: t("truckCheckin.shipmentNoRequired"),
+                  },
+                  // {
+                  //   pattern: /^[A-Z0-9-]+$/,
+                  //   message: t("truckCheckin.shipmentNoInvalid"),
+                  // },
+                  // {
+                  //   min: 5,
+                  //   message: t("truckCheckin.shipmentNoMinLength"),
+                  // },
+                ]}
+              >
+                <Input
+                  placeholder={t("truckCheckin.shipmentNoPlaceholder")}
+                  maxLength={20}
+                  disabled={!!editingRecord}
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
                 name="plant"
                 label={t("truckCheckin.plant")}
                 rules={[
@@ -264,26 +310,6 @@ const TruckCheckinPage: React.FC = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="status"
-                label={t("truckCheckin.status")}
-                rules={[
-                  { required: true, message: t("truckCheckin.statusRequired") },
-                ]}
-              >
-                <Select placeholder={t("truckCheckin.selectStatus")}>
-                  {TRUCK_CHECKIN_STATUS_OPTIONS.map((status) => (
-                    <Option key={status.value} value={status.value}>
-                      {t(status.labelKey)}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={16}>
-            <Col span={12}>
-              <Form.Item
                 name="license"
                 label={t("truckCheckin.truckLicense")}
                 rules={[
@@ -294,32 +320,6 @@ const TruckCheckinPage: React.FC = () => {
                 ]}
               >
                 <Input placeholder={t("truckCheckin.licensePlaceholder")} />
-              </Form.Item>
-            </Col>
-
-            <Col span={12}>
-              <Form.Item
-                name="shipmentNo"
-                label={t("truckCheckin.shipmentNo")}
-                rules={[
-                  {
-                    required: true,
-                    message: t("truckCheckin.shipmentNoRequired"),
-                  },
-                  // {
-                  //   pattern: /^[A-Z0-9-]+$/,
-                  //   message: t("truckCheckin.shipmentNoInvalid"),
-                  // },
-                  // {
-                  //   min: 5,
-                  //   message: t("truckCheckin.shipmentNoMinLength"),
-                  // },
-                ]}
-              >
-                <Input
-                  placeholder={t("truckCheckin.shipmentNoPlaceholder")}
-                  maxLength={20}
-                />
               </Form.Item>
             </Col>
           </Row>
@@ -363,3 +363,11 @@ const TruckCheckinPage: React.FC = () => {
 };
 
 export default TruckCheckinPage;
+
+///
+
+// เอาใหม่นะ จะบอก กระบวนการ หน้านี้ใหม่
+
+// ข้อมูล หลักๆจะมี Shipment ทุก row และมี Status ยังไม่ Check in ถ้าข้อมูล Carrier,vehicle_type,ทะเบียนรถ,ชื่อคนขับ เบอร์โทร  จะไม่มี เพราะยังไม่ check in
+
+// พอกด เพิ่มข้อมูล ช่อง Shipment จะ เป็น DropDown ให้เลือกโดย เอาข้อมูลในตาราง มา map เพื่อทำ dropdown ให้เลือก

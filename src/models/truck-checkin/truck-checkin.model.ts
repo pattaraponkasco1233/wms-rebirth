@@ -10,22 +10,19 @@ export interface TruckCheckin {
     driver?: string;
     tel?: string;
     checkin: string;
-    status: TruckCheckinStatus;
+    status: string;
+    status_key?: string;
     remark?: string;
     createdAt?: string;
     updatedAt?: string;
 }
 
-export enum TruckCheckinStatus {
-    CHECKED_IN = 'CHECKED_IN',
-    NOT_CHECKED_IN = 'NOT_CHECKED_IN'
-}
 
 export interface TruckCheckinSearchParams {
     search?: string;
     plant?: string;
     checkinDate?: string;
-    status?: TruckCheckinStatus;
+    status?: string;
     page?: number;
     limit?: number;
 }
@@ -46,6 +43,6 @@ export interface UpdateTruckCheckinRequest {
     driver?: string;
     tel?: string;
     checkin?: string;
-    status?: TruckCheckinStatus;
+    status?: string;
     remark?: string;
 }

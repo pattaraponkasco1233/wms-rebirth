@@ -5,10 +5,7 @@ import { Table, Button, Tag, Card } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import { useTranslation } from "react-i18next";
-import type {
-  TruckCheckin,
-  TruckCheckinStatus,
-} from "../../models/truck-checkin/truck-checkin.model";
+import type { TruckCheckin } from "../../models/truck-checkin/truck-checkin.model";
 import { TRUCK_CHECKIN_STATUS_OPTIONS } from "../../constant/constants";
 
 interface TruckCheckinTableProps {
@@ -33,7 +30,7 @@ const TruckCheckinTable: React.FC<TruckCheckinTableProps> = ({
   const { t } = useTranslation();
 
   // ฟังก์ชันแสดง Tag สถานะ
-  const renderStatusTag = (status: TruckCheckinStatus) => {
+  const renderStatusTag = (status: string) => {
     const statusOption = TRUCK_CHECKIN_STATUS_OPTIONS.find(
       (option) => option.value === status,
     );
@@ -109,7 +106,7 @@ const TruckCheckinTable: React.FC<TruckCheckinTableProps> = ({
       key: "status",
       width: 150,
       align: "center",
-      render: (status: TruckCheckinStatus) => renderStatusTag(status),
+      render: (status: string) => renderStatusTag(status),
     },
     {
       title: t("truckCheckin.action"),
