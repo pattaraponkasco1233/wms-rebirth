@@ -21,10 +21,10 @@ export const PATTERN = {
  * Plant options for Truck Check-in
  */
 export const PLANT_OPTIONS = [
-    { value: "snk", label: "SNK" },
-    { value: "glx", label: "GLX" },
-    { value: "ssi", label: "SSI" },
-    { value: "ssf", label: "SSF" },
+    { value: "snk", label: "SNK", maxCapacity: 7 },
+    { value: "glx", label: "GLX", maxCapacity: 6 },
+    { value: "ssi", label: "SSI", maxCapacity: 5 },
+    { value: "ssf", label: "SSF", maxCapacity: 3 },
 ] as const;
 
 /**

@@ -48,28 +48,11 @@ const ProactiveMonitorFilterComponent: React.FC<
       });
     };
 
-  const dataSource = [
-    {
-      key: "1",
-      name: "SNK",
-      value: "7",
-    },
-    {
-      key: "1",
-      name: "GLX",
-      value: "5",
-    },
-    {
-      key: "1",
-      name: "SSI",
-      value: "3",
-    },
-    {
-      key: "1",
-      name: "SSF",
-      value: "6",
-    },
-  ];
+  const dataSource = PLANT_OPTIONS.map((plant) => ({
+    key: plant.value,
+    name: plant.label,
+    value: plant.maxCapacity.toString(),
+  }));
 
   const columns = [
     {

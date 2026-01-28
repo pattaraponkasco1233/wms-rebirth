@@ -22,6 +22,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   LabelList,
+  Cell,
 } from "recharts";
 import {
   getPlantLabel,
@@ -122,10 +123,11 @@ const OverallMonitoringTab: React.FC = () => {
       statusCounts[statusLabel] = (statusCounts[statusLabel] || 0) + 1;
     });
 
-    // แปลงเป็น format ที่กราฟต้องการ
+    // แปลงเป็น format ที่กราฟต้องการ พร้อมกับเพิ่มสี
     return STATUS_OPTIONS.map((status) => ({
       status: status.label,
       count: statusCounts[status.label] || 0,
+      color: status.color, // เพิ่มสีจาก STATUS_OPTIONS
     }));
   }, [shipmentDataSource]);
 
@@ -180,7 +182,7 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Plant Load Time",
       dataIndex: "timeSlot",
       key: "timeSlot",
-      width: 100,
+      width: 150,
       fixed: "left",
       align: "center" as const,
       render: (timeSlot: string) => (
@@ -192,39 +194,40 @@ const OverallMonitoringTab: React.FC = () => {
       key: "plant",
       children: [
         ...PLANT_OPTIONS.map((plant) => ({
-          title: (
-            <div>
-              <div>{plant.label}</div>
-              <div style={OVERALL_MONITORING_STYLES.plantSum}>
-                {t("labels.sum")}: {plantTotals[plant.value]}
-              </div>
-            </div>
-          ),
+          title: plant.label,
           dataIndex: plant.value,
           key: plant.value,
-          width: 150,
+          // width: 80,
           align: "center" as const,
-          render: (value: number) => (
-            <span
-              style={
-                value > 0
-                  ? OVERALL_MONITORING_STYLES.activeValue
-                  : OVERALL_MONITORING_STYLES.inactiveValue
-              }
-            >
-              {value || 0}
-            </span>
-          ),
+          onCell: (record: PlantLoadData) => {
+            const value = record[plant.value] as number;
+            // เช็คค่ากับ maxCapacity
+            let backgroundColor = "transparent";
+            if (value > plant.maxCapacity) {
+              backgroundColor = "#ffcccc"; // สีแดงอ่อน
+            } else if (value === plant.maxCapacity && value > 0) {
+              backgroundColor = "#ffffcc"; // สีเหลืองอ่อน
+            }
+            return {
+              style: { backgroundColor },
+            };
+          },
+          render: (value: number) => {
+            return (
+              <span
+                style={
+                  value > 0
+                    ? OVERALL_MONITORING_STYLES.activeValue
+                    : OVERALL_MONITORING_STYLES.inactiveValue
+                }
+              >
+                {value || 0}
+              </span>
+            );
+          },
         })),
         {
-          title: (
-            <div>
-              <div>{t("labels.total")}</div>
-              <div style={OVERALL_MONITORING_STYLES.plantSum}>
-                {t("labels.sum")}: {plantTotals["total"] || 0}
-              </div>
-            </div>
-          ),
+          title: t("labels.total"),
           dataIndex: "total",
           key: "total",
           width: 120,
@@ -243,7 +246,7 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Shipment No",
       dataIndex: "shipmentNo",
       key: "shipmentNo",
-      width: 130,
+      // width: 130,
       fixed: "left",
       align: "center" as const,
       render: (shipmentNo: string) => (
@@ -254,7 +257,7 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Plant",
       dataIndex: "plant",
       key: "plant",
-      width: 100,
+      // width: 100,
       align: "center" as const,
       render: (plant: string) => (
         <span style={OVERALL_MONITORING_STYLES.plantLabel}>
@@ -266,7 +269,7 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Carrier",
       dataIndex: "carrier",
       key: "carrier",
-      width: 150,
+      // width: 150,
       align: "center" as const,
       render: (carrier: string) => getCarrierLabel(carrier),
     },
@@ -274,26 +277,32 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Shipment Status",
       dataIndex: "shipmentStatus",
       key: "shipmentStatus",
-      width: 150,
+      // width: 150,
       align: "center" as const,
-      render: (status: string) => (
-        <span style={OVERALL_MONITORING_STYLES.statusBadge}>
-          {getStatusLabel(status)}
-        </span>
-      ),
+      onCell: (record: ShipmentData) => {
+        const statusOption = STATUS_OPTIONS.find(
+          (opt) => opt.value === record.shipmentStatus,
+        );
+        return {
+          style: {
+            backgroundColor: statusOption?.color || "transparent",
+          },
+        };
+      },
+      render: (status: string) => <span>{getStatusLabel(status)}</span>,
     },
     {
       title: "Plant Load Date",
       dataIndex: "plantLoadDate",
       key: "plantLoadDate",
-      width: 130,
+      // width: 130,
       align: "center" as const,
     },
     {
       title: "Loading Scheduled",
       dataIndex: "loadingScheduled",
       key: "loadingScheduled",
-      width: 150,
+      // width: 150,
       align: "center" as const,
       render: (time: string) => {
         const formattedTime = formatTimeHHMMSS(time);
@@ -308,7 +317,7 @@ const OverallMonitoringTab: React.FC = () => {
       title: "Booked",
       dataIndex: "booked",
       key: "booked",
-      width: 180,
+      // width: 180,
       align: "center" as const,
     },
   ];
@@ -330,6 +339,50 @@ const OverallMonitoringTab: React.FC = () => {
               // scroll={{ x: 500 }}
               bordered
               size="small"
+              summary={() => (
+                <Table.Summary fixed>
+                  <Table.Summary.Row>
+                    <Table.Summary.Cell index={0} align="center">
+                      <span style={{ fontWeight: "bold" }}>
+                        {t("labels.sum")}
+                      </span>
+                    </Table.Summary.Cell>
+                    {PLANT_OPTIONS.map((plant, index) => (
+                      <Table.Summary.Cell
+                        key={plant.value}
+                        index={index + 1}
+                        align="center"
+                      >
+                        <span
+                          style={{
+                            fontWeight: "bold",
+                            color:
+                              plantTotals[plant.value] > 0
+                                ? "var(--color-success)"
+                                : "var(--color-text-disabled)",
+                          }}
+                        >
+                          {plantTotals[plant.value] || 0}
+                        </span>
+                      </Table.Summary.Cell>
+                    ))}
+                    <Table.Summary.Cell
+                      index={PLANT_OPTIONS.length + 1}
+                      align="center"
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "16px",
+                          color: "var(--color-primary)",
+                        }}
+                      >
+                        {plantTotals["total"] || 0}
+                      </span>
+                    </Table.Summary.Cell>
+                  </Table.Summary.Row>
+                </Table.Summary>
+              )}
             />
           </Col>
           <Col xs={24} sm={24} md={14}>
@@ -340,7 +393,7 @@ const OverallMonitoringTab: React.FC = () => {
                 </Col>
               </Row>
               <Row gutter={[16, 16]}>
-                <Col span={6}>
+                <Col span={8}>
                   <DatePicker
                     value={selectedDate}
                     onChange={(date) => setSelectedDate(date || dayjs())}
@@ -351,6 +404,21 @@ const OverallMonitoringTab: React.FC = () => {
                     disabled={loading}
                   />
                 </Col>
+                <Col span={16}>
+                  <Row gutter={[16, 16]}>
+                    {PLANT_OPTIONS.map((plant) => (
+                      <Col
+                        span={6}
+                        key={plant.value}
+                        style={{ textAlign: "center" }}
+                      >
+                        <span style={{ fontWeight: "bold" }}>
+                          {plant.label} : {plant.maxCapacity}
+                        </span>
+                      </Col>
+                    ))}
+                  </Row>
+                </Col>
               </Row>
               <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
                 <Col xs={24} lg={12}>
@@ -359,7 +427,7 @@ const OverallMonitoringTab: React.FC = () => {
                     style={{ height: "100%" }}
                     bodyStyle={{ padding: "12px" }}
                   >
-                    <ResponsiveContainer width="100%" height={400}>
+                    <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={regionData} layout="vertical">
                         <defs>
                           <linearGradient
@@ -408,38 +476,16 @@ const OverallMonitoringTab: React.FC = () => {
                     style={{ height: "100%" }}
                     bodyStyle={{ padding: "12px" }}
                   >
-                    <ResponsiveContainer width="100%" height={400}>
+                    <ResponsiveContainer width="100%" height={300}>
                       <BarChart data={statusData} layout="vertical">
-                        <defs>
-                          <linearGradient
-                            id="colorStatus"
-                            x1="0"
-                            y1="0"
-                            x2="1"
-                            y2="0"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor="#ffc658"
-                              stopOpacity={0.8}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor="#ff7c7c"
-                              stopOpacity={0.8}
-                            />
-                          </linearGradient>
-                        </defs>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis type="number" />
                         <YAxis dataKey="status" type="category" width={130} />
                         <Tooltip />
-                        <Bar
-                          dataKey="count"
-                          name="จำนวน"
-                          fill="url(#colorStatus)"
-                          radius={[0, 8, 8, 0]}
-                        >
+                        <Bar dataKey="count" name="จำนวน" radius={[0, 8, 8, 0]}>
+                          {statusData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
                           <LabelList
                             dataKey="count"
                             position="center"

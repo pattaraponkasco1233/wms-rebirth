@@ -95,9 +95,17 @@ const ProactiveMonitorDetailTable: React.FC<ProactiveMonitorDetailProps> = ({
       dataIndex: "shipmentStatus",
       key: "shipmentStatus",
       width: 150,
+      onCell: (record: ProactiveMonitorDetail) => {
+        const status = STATUS_OPTIONS.find(
+          (s) => s.value === record.shipmentStatus,
+        );
+        return {
+          style: { backgroundColor: status?.color || "transparent" },
+        };
+      },
       render: (value: string) => {
         const status = STATUS_OPTIONS.find((s) => s.value === value);
-        return status ? <Tag color="blue">{status.label}</Tag> : value;
+        return status ? <span>{status.label}</span> : value;
       },
     },
     {
